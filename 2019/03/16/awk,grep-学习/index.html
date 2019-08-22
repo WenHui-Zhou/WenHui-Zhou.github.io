@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>awk,grep 学习 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">awk,grep 学习</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">awk,grep 学习</h1><div class="post-meta">Mar 16, 2019<span> | </span><span class="category"><a href="/categories/tool/">tool</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/03/16/awk,grep-学习/#vcomment"><span class="valine-comment-count" data-xid="/2019/03/16/awk,grep-学习/"></span><span> 条评论</span></a><div class="post-content"><p>awk是一个文本解释型语言，在文本处理领域十分的常用。awk的典型用途如：</p>
+<ul>
+<li>文本处理</li>
+<li>执行算术运算</li>
+<li>执行字符串操作</li>
+</ul>
+<a id="more"></a>
+<h3 id="awk的工作流："><a href="#awk的工作流：" class="headerlink" title="awk的工作流："></a>awk的工作流：</h3><p>awk的工作流十分简单：<strong>读取-&gt;执行-&gt;重复</strong></p>
+<p>read：从标准输入流中读取一行</p>
+<p>execute：所有awk执行对文本中每一行都执行处理</p>
+<p>repeat：处理过程不断重复，直到文件到达结尾</p>
+<h3 id="awk命令行"><a href="#awk命令行" class="headerlink" title="awk命令行"></a>awk命令行</h3><p>awk的命令行格式为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk [option] afile.py</span><br></pre></td></tr></table></figure>
+<p>我们可以使用单引号来指定awk命令，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk '&#123;print&#125;' afile.py</span><br></pre></td></tr></table></figure>
+<p>以下语句输出数据中第三列和第四列：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F , '&#123;print $3 "\t" $4&#125;' marks.txt</span><br></pre></td></tr></table></figure>
+<p>其中<code>-F</code>设置分割符为<code>,</code>，awk默认分割符号为空格。在使用程序语句如<code>print</code>时，需要加上大括号。其中<code>$3,$4</code>表示数据中的第3列和第4列。<code>$0</code>表示一整行都输出。</p>
+<p>以下语句输出匹配字符(不指定输出则输出一整行)：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk '/a/' aw.txt # 输出含有a的一整行</span><br><span class="line">awk '/a/ &#123;print $1 $2&#125;'  aw.txt # 输出含有a的行的1,2列</span><br></pre></td></tr></table></figure>
+<p>重定向输出：即将awk的输出，输出到文件中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk '/a/' aw.txt &gt;&gt; new.txt</span><br></pre></td></tr></table></figure>
+<p>不显示重复行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F , '!seen[$1]++' aw.txt</span><br></pre></td></tr></table></figure>
+<p>其中seen可以看成一个字典dict，当没有这个值的时候!seen[$1] == 0,因此允许输出。但当这个值以及存在时，则不输出。</p>
+<p>单引号内可以使用各种判断语句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F , '$1&gt;$2 &#123;print $0&#125;' aw.txt</span><br></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#以空格为分割符，输出log.txt 文件中的每一行的第1和第4个数（从1开始）</span></span><br><span class="line">$ awk <span class="string">'&#123;print $1,$4&#125;'</span> log.txt</span><br><span class="line"><span class="comment"># 指定 , 为分割符（-F），将字符串分割</span></span><br><span class="line">$  awk -F, <span class="string">'&#123;print $1,$2&#125;'</span>   log.txt</span><br><span class="line"><span class="comment"># 多个分割符，先用 空格后用 ,</span></span><br><span class="line">$ awk -F <span class="string">'[ ,]'</span>  <span class="string">'&#123;print $1,$2,$5&#125;'</span>   log.txt</span><br><span class="line"><span class="comment"># 设置变量 -v</span></span><br><span class="line">$ awk -va=1 -vb=s <span class="string">'&#123;print $1,$1+a,$1b&#125;'</span> log.txt</span><br><span class="line"><span class="comment"># 过滤出第一列大于2的数</span></span><br><span class="line">$ awk <span class="string">'$1&gt;2'</span> log.txt </span><br><span class="line"><span class="comment"># CSV_PATH为输入，TRAIN_PATH为输出 ,-v 为定义变量</span></span><br><span class="line">awk -v min_area=<span class="variable">$&#123;MIN_AREA&#125;</span> -F <span class="string">','</span> <span class="string">'&#123;   </span></span><br><span class="line"><span class="string">    area=(($4-$2)*($5-$3));</span></span><br><span class="line"><span class="string">    if(area&gt;min_area)&#123;</span></span><br><span class="line"><span class="string">        print $0;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;'</span>&lt;<span class="variable">$&#123;CSV_PATH&#125;</span> &gt;&gt; <span class="variable">$&#123;TRAIN_PATH&#125;</span></span><br></pre></td></tr></table></figure>
+<p><a href="https://coolshell.cn/articles/9070.html" target="_blank" rel="noopener">awk参考链接</a></p>
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><p>grep是类unix系统中执行正则表达式的命令 ,下面是grep使用的<a href="https://www.cnblogs.com/sky-heaven/p/10187395.html" target="_blank" rel="noopener">15个场景</a>：</p>
+<ol>
+<li>下面语句判断文件中是否含有搜索的内容：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep 'tf' afile.py</span><br><span class="line">cat afile.py |grep 'tf'</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>从多个文件中查找指定字符：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 文件夹有	demo_1.txt,demo_2 文件</span></span><br><span class="line">grep 'this' demo_1.txt demo_2.txt</span><br><span class="line">grep 'this' demo_*</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>忽略大小写(-i)：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -i 'The' demo.txt</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>在文件中匹配正则表达式：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep 'a*b' demo.txt</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>grep -w 完全匹配</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep -w 'ab' demo.txt</span><br><span class="line">grep -iw 'ab' demo.txt # 不区分大小写</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>grep显示匹配出的前后几行</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">grep -A 3 'a' demo.txt # 显示a出现的行，以及后三行</span><br><span class="line">grep -B 3 'a' demo.txt # 显示a出现的行，以及前三行</span><br><span class="line">grep -C 3 'a' demo.txt # 显示a出现的行，以及上下三行</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>用GREP_OPTIONS来让查找的项醒目</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export GREP_OPTIONS='--color=auto' GREP_COLOR='100;8'</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>用grep -r来搜索所有的文件及子目录</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -r 'file' *</span><br></pre></td></tr></table></figure>
+<ol start="9">
+<li>显示不匹配的项</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -v 'match' demo.txt</span><br></pre></td></tr></table></figure>
+<ol start="10">
+<li>匹配多个项</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep -e '1' -e 'a' -e 'q' demo.txt</span><br><span class="line">grep -v -e '1' -e 'q' demo.txt # 输出一个都不匹配的项</span><br></pre></td></tr></table></figure>
+<ol start="11">
+<li>计算匹配的项</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep -c 'a' aw.txt</span><br><span class="line">grep -v -c 'a' aw.txt # 不匹配的项</span><br></pre></td></tr></table></figure>
+<ol start="12">
+<li>显示匹配的文件名:</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -l 'a' a*  #输出a开头且匹配的文件名</span><br></pre></td></tr></table></figure>
+<ol start="13">
+<li>只显示匹配的字符串：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -o 'a.*b' aw.txt  # 而不是显示一行</span><br></pre></td></tr></table></figure>
+<ol start="14">
+<li>显示匹配字符的行号:</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -n 'a' aw.txt</span><br></pre></td></tr></table></figure>
+<ol start="15">
+<li>显示匹配字符的字节位置：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -b 'a' aw.txt</span><br></pre></td></tr></table></figure>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/03/16/awk,grep-学习/">https://wenhui-zhou.github.io/2019/03/16/awk,grep-学习/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/03/16/Faster-RCNN-复现/">Faster RCNN 复现</a><a class="next" href="/2019/03/13/Vim-学习/">Vim 学习</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

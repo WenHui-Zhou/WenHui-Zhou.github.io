@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>SSD M2Det 详解 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">SSD M2Det 详解</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">SSD M2Det 详解</h1><div class="post-meta">Mar 10, 2019<span> | </span><span class="category"><a href="/categories/论文阅读/">论文阅读</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/03/10/SSD-M2Det-详解/#vcomment"><span class="valine-comment-count" data-xid="/2019/03/10/SSD-M2Det-详解/"></span><span> 条评论</span></a><div class="post-content"><p>SSD是经典的one-stage算法，可以认为是关于类别的多尺度分类网络，作为很多one-stage网络的基础框架，有必要阅读一下。</p>
+<p>M2Det是今年（2019）CPVR论文，基于SSD框架的扩展，M2Det 若采用 single-scale inference 可达到 11 FPS, AP 41 的准确率，采用 multi-scale inference 可达到 AP 44.2 的准确度。</p>
+<a id="more"></a>
+<h2 id="SSD-详解"><a href="#SSD-详解" class="headerlink" title="SSD 详解"></a>SSD 详解</h2><blockquote>
+<p>SSD: Single Shot MultiBox Detector</p>
+<p>submit time：2015</p>
+<p><a href="https://arxiv.org/abs/1512.02325" target="_blank" rel="noopener">arxiv link</a></p>
+</blockquote>
+<h3 id="网络的背景及作用"><a href="#网络的背景及作用" class="headerlink" title="网络的背景及作用"></a>网络的背景及作用</h3><p>当前网络通过提取候选框等方式进行目标检测，运行速度对于一些应用场景来说太慢了。</p>
+<p>SSD是一种使用单个深度神经网络来检测图像中的目标的方法，SSD 速度的根本改进来自消除边界框proposal和随后的像素或特征重采样阶段。他的主要特点如下：</p>
+<ul>
+<li>one-stage检测器，用于多个类别目标检测，比先前技术相比（YOLO）速度更快，且更准确。</li>
+<li>SSD方法的核心是<strong>使用小卷积滤波器来预测特征图上固定的一组默认边界框的类别分数和位置偏移。</strong></li>
+<li>为了实现高检测精度，我们从<strong>不同尺度的特征图产生不同尺度的预测</strong>，并且通过宽高比来明确地分离预测。</li>
+<li>这些设计特性得到了简单的端到端训练和高精度，进一步提高速度和精度的权衡，即使输入相对低分辨率图像。</li>
+</ul>
+<h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p><img src="/images/article/SSD.png" alt=""></p>
+<p>SSD的检测过程如下：</p>
+<ol>
+<li>SSD输入为包含类别以及真实框标记的图片数据。 </li>
+<li>卷积处理时，我们在具有不同尺度（例如（b）和（c）中的8×8和4×4）的若干特征图中的<strong>每个位置处选择不同横宽比的小集合（例如4个）默认框</strong>。 </li>
+<li>对于每个默认框，我们预测对所有对象类别（c 1，c2，…，cp）的形状偏移和置信度。在训练时，我们首先将这些默认框匹配到真实标签框。 例如，两个默认框匹配到猫和狗，这些框为正，其余视为负。 </li>
+<li>模型损失是位置损失（例如平滑L1 [6]）和置信损失（例如Softmax）之间的加权和。 </li>
+</ol>
+<p> SSD方法基于前馈卷积网络，采用多尺度特征度检测的方式，产生固定大小的边界框集合和框中对象类别的分数，接着是非最大化抑制步骤以产生最终检测,如下图：</p>
+<p><img src="/images/article/SSDstructure.png" alt=""></p>
+<ul>
+<li><p>输入：300x300</p>
+</li>
+<li><p>经过VGG-16（只到conv4_3这一层，由于更深的网络特征难以恢复）</p>
+</li>
+<li><p>经过几层卷积，得到多层尺寸逐渐减小的feature map</p>
+</li>
+<li><p>每层feature map分别做3x3卷积，每个feature map cell对应k个类别和4个bounding box offset，同时对应原图中6（或4）个anchor，<strong>即每一个位置将会预测4或6个anchor，然后每个anchor有k个类别概率值以及4个位置偏移值。</strong></p>
+</li>
+<li><p>38x38层, 最后3x3层, 1x1层三个feature map的每个feature map cell只对应4个anchor，分别为宽高比: 1:1两种，1:2, 2:1两种，其他feature map的feature map cell对应6个anchor，分别为宽高比: 1:1两种，1:2, 2:1两种，1:3， 3:1两种。因此总共有<br>$$<br>38* 38*4+19*19*6+10*10*6+5*5*6+3*3*4+1*1*4=8732<br>$$<br>个anchor。</p>
+</li>
+</ul>
+<h3 id="anchor的中心："><a href="#anchor的中心：" class="headerlink" title="anchor的中心："></a>anchor的中心：</h3><p>每层的feature map cell对应的anchor中心的计算方法如下<br>$$<br>(\frac{i+0.5}{|fk|},\frac{j+0.5}{|fk|})<br>$$<br>其中i,j是当前的位置，fk是当前feature map的大小。</p>
+<h3 id="anchor缩放因子"><a href="#anchor缩放因子" class="headerlink" title="anchor缩放因子:"></a>anchor缩放因子:</h3><p>$$<br>S_k = S_{min}+\frac{S_{max}-S_{min}}{m-1} (k-1),k\in[1,m]<br>$$</p>
+<p>缩放因子指不同大小的feature map对应不同大小的anchor。<em>m</em>表示最终有m个 feature maps将要作为预测,对每一个k层的feature map计算其anchor的大小，即$ S_k$。 此外$S_{min}$ 为 0.2，$S_{max}$ 为 0.9。因此对于所有层，scale都在[0.2,0.9]之间。</p>
+<p>对于每一个尺度，都可以计算其相应的anchor大小，如下：<br>$$<br>\begin{align}<br>w_k^{\alpha} &amp;= S_k \sqrt{\alpha_r} \\<br>h_k^{\alpha} &amp;= S_k \sqrt{\alpha_r}\\<br>\alpha \in &amp;{1,2,3,\frac{1}{2},\frac{1}{3}}<br>\end{align}<br>$$<br>特别的，当 $a_r=1$ 时，增加一种 $s_k = \sqrt{s_{k-1}{s_{k+1}}}$ ，对应6种anchor的长宽比，对于4个anchor来说，不使用3和$\frac{1}{3}$。</p>
+<h3 id="网络损失函数"><a href="#网络损失函数" class="headerlink" title="网络损失函数"></a>网络损失函数</h3><p>SSD的损失函数由两部分组成，分别是置信度损失（softmax loss)以及位置损失（L1 loss），如下：<br>$$<br>L(x,c,l,g)=\frac{1}{N}(L_{conf}(x,c)+\alpha L_{loc}(x,l,g))<br>$$<br>其中N是匹配的GT框个数，当N = 0时loss等于0。$\alpha$是置信度与位置loss之间的一个权衡因子。</p>
+<p>对于置信度loss ：<br>$$<br>L_{conf}(x,c) = - \sum_{i\in Pos}^N x_{ij}^p log(\hat{c}_{i}^p) - \sum_{i\in Neg} log(\hat{c}_{i}^0)\quad where \quad\hat{c}_{i}^p=\frac{exp^{c_{i}^p}}{\sum_p exp(c_{i}^p)}<br>$$<br>即softmax的交叉熵loss。</p>
+<p>位置损失如下：<br>$$<br>\begin{align}<br>L_{loc}(x,l,g)&amp;=\sum_{i\in Pos}^N \sum_{m \in {cx,cy,w,h}}x_{ij}^k smooth_{L1}(l_i^m-\hat{g}_j^m) \\<br>\hat{g}_j^{cx}&amp;=(g_j^{cx}-d_i^{cx})/d_i^w \quad \hat{g}_j^{cy}=(g_j^{cy}-d_i^{cy})/d_i^h\\<br>\hat{g}_j^{w}&amp;=log(\frac{g_j^w}{d_i^w})\quad \hat{g}_j^{h}=log(\frac{g_j^h}{d_i^h})<br>\end{align}<br>$$<br>其中g表示GT的边框中心，d表示预测的边框的中心，该loss与Faster RCNN的loss 相同。即我们去学习的是边框的偏移量，而不是直接预测边框。当预测值l与g的指标相同时即完成，反向可推导出目标的边框。</p>
+<h3 id="样本选择"><a href="#样本选择" class="headerlink" title="样本选择"></a>样本选择</h3><p>正样本：预测框与GT的重叠程度大于0.5的认为是正样本</p>
+<p>副样本：将边框置信度排序，找出置信度高的边框，保持正负比例为1:3.</p>
+<h3 id="train-trick"><a href="#train-trick" class="headerlink" title="train trick"></a>train trick</h3><p><img src="/images/article/ssdtrain.png" alt=""></p>
+<p>SSD使用了诸如数据增强，空洞卷积等操作，是的进度进一步提升。</p>
+<p>数据增强的方式为：</p>
+<ul>
+<li>整图输入</li>
+<li>截取图上一部分进行输入</li>
+<li>随机crop</li>
+<li>将上面的图片都resize到一个固定大小，输入网络</li>
+</ul>
+<h3 id="MS-COCO上的精度"><a href="#MS-COCO上的精度" class="headerlink" title="MS COCO上的精度"></a>MS COCO上的精度</h3><p>SSD在coco上的精度如下：</p>
+<p><img src="/images/article/ssdcocoTest.png" alt=""></p>
+<hr>
+<h2 id="M2Det-详解"><a href="#M2Det-详解" class="headerlink" title="M2Det 详解"></a>M2Det 详解</h2><p>M2Det是一个one-stage的目标检测网络。基于SSD框架扩展而来。主要的思想是Multi-Level Feature Pyramid Network(MLFPN)，多层次的特征金字塔网络。</p>
+<h3 id="网络的背景及应用"><a href="#网络的背景及应用" class="headerlink" title="网络的背景及应用"></a>网络的背景及应用</h3><p>论文中提出物体分类和物体检测问题上的缩放尺度变化矛盾，即物体分类模型提取高层次的特征，高层次的特征往往更容易学到具有辨别力的信息，模型会专注于一些辨认力强的点，例如鸟🐦，倾向于检测翅膀。</p>
+<p>但是由于物体检测问题需要将整个物体框起来，仅仅识别出有辨别力的点无法保证完全把目标框起来，因此作者提出使用浅层的特征来辅助学习目标的检测任务，即确定边框位置。</p>
+<p><strong>因此高阶的特征有助于分类，低价的特征有助于物体的检测。</strong></p>
+<p>作者提出，通常解决尺度变化的问题采样的方法是<strong>从输入图像提取出的特征金字塔，从而克服原始图片的缩放问题</strong>。该方法可以同时用于训练和测试阶段中，相对开销较小，易于集成，适合end-to-end。本文的目的即是构造一个更加高效的金字塔模型用于检测不同缩放大小的对象。作者将该结构加入到SSD中去，取得了超过benchmark的成绩。</p>
+<h3 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h3><p>作者通过对比多种金字塔特征提取方式，总结了这些模型的确定，并提出自己的特征提取方式。</p>
+<p>先前模型的缺点：</p>
+<ul>
+<li>先前的模型都是基于分类网络作为特征提取的主干网络，对目标检测任务而言，先前金字塔结构提取的特征表达不足以预测目标位置。即特征太少。</li>
+<li>每个feature map仅由主干网络的single level给出，仅含单层信息不够全面。</li>
+</ul>
+<p><img src="/images/article/M2detpyramid.png" alt=""></p>
+<ul>
+<li>SSD型：使用了主干网络的最后两层，再加上4个使用stride=2卷积的下采样层构成；</li>
+<li>FPN型：也称为U型网络，经过上采样操作，然后对应融合相同的scale；</li>
+<li>STDN型：基于DenseNet的最后一个dense block，通过池化和scale-transfer操作来构建；</li>
+<li>MLFPN型：Multi-level&amp;Multi-scale</li>
+</ul>
+<p>MLFPN结构如下，对主干网络(vgg)提取到的特征进行融合；然后通过TUM和FFM提取更有代表性的Multi-level&amp;Mutli-scale特征；最后通过SFAM融合多级特征，得到多级特征金字塔用于最终阶段的预测。</p>
+<p><img src="/images/article/M2Detstructure.png" alt=""></p>
+<h3 id="FFMv1"><a href="#FFMv1" class="headerlink" title="FFMv1"></a>FFMv1</h3><p>FFMv1整合了VGG网络中浅层conv4_3的特征以及深层conv5_3的特征作为base feature（从Figure1中可以看出）。其结构如下所示，先进行一个1*1的卷积压缩channel，然后upsample到相同的大小，进行如何得到base feature。</p>
+<p><img src="/images/article/MMFv1.png" alt=""></p>
+<p>###TUM</p>
+<p>TUM的结构是一个U-Net的结构，如Figure1所示。他的内部结构如下：</p>
+<p><img src="/images/article/TUM.png" alt=""></p>
+<p> TUM结构输出的左右feature map均输入SFAM中，同时将最大一个feature map(128,40,40)传入FFMv2中作为下一次TUM的输入。</p>
+<h3 id="FFMv2"><a href="#FFMv2" class="headerlink" title="FFMv2"></a>FFMv2</h3><p>FFMv2输入为base feature与上一层最大的feature map结构如下：</p>
+<p><img src="/images/article/ffmv2.png" alt=""></p>
+<p>通过堆叠TUM以及FFMv2产生不同层次的feature map，最终分别提取出图片的shallow，medium，deep的特征。每个TUM以及FFMv2的输出特征计算如下：</p>
+<p><img src="/images/article/multi-scale.png" alt=""></p>
+<h3 id="尺度特征聚合模块SFAM"><a href="#尺度特征聚合模块SFAM" class="headerlink" title="尺度特征聚合模块SFAM"></a>尺度特征聚合模块SFAM</h3><p>SFAM负责将每个金字塔的输入聚合起来，得到Multi-level feature pyramid。然后输出值prediction layer。</p>
+<p><img src="/images/article/SFAM.png" alt=""></p>
+<p>每个TUM都会输出一个六层的特征金字塔，SFAM首先对每一层相同channel的特征进行融合。第二步采用SENet的方法，即是透过 Fully-connected layer 来学习每个 feature 应该给多少权重。最终 prediction layer 会接受的是 i 个不同尺度的 Feature maps。</p>
+<h3 id="模块配置"><a href="#模块配置" class="headerlink" title="模块配置"></a>模块配置</h3><ul>
+<li>M2Det 网络采用VGG-16和ResNet-101作为特征提取的主干网络。</li>
+<li>MLFPN的默认配置包含有8个TUM，每个TUM包含5个跨步卷积核5个上采样操作，输出为6个不同scale的特征。</li>
+<li>在检测阶段，<strong>为6组金字塔特征每组后面添加两个卷积层，以分别实现位置回归和分类。</strong></li>
+<li>后处理阶段，使用soft-NMS来过滤无用的包围框。</li>
+</ul>
+<h3 id="网络损失函数-1"><a href="#网络损失函数-1" class="headerlink" title="网络损失函数"></a>网络损失函数</h3><p>网络的顺势函数沿用了SSD的方法，即置信度softmax损失以及边框回归损失。</p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/03/10/SSD-M2Det-详解/">https://wenhui-zhou.github.io/2019/03/10/SSD-M2Det-详解/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/深度学习/">深度学习</a></div><div class="post-nav"><a class="pre" href="/2019/03/13/Tensorflow 笔记（CNN分类器VI）/">Tensorflow 笔记（CNN分类器VI）</a><a class="next" href="/2019/03/08/data training tip/">data training tip</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

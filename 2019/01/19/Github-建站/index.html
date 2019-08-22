@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>Github 建站 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Github 建站</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Github 建站</h1><div class="post-meta">Jan 19, 2019<span> | </span><span class="category"><a href="/categories/建站/">建站</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/01/19/Github-建站/#vcomment"><span class="valine-comment-count" data-xid="/2019/01/19/Github-建站/"></span><span> 条评论</span></a><div class="post-content"><p>github上搭建一个博客网站（windows）</p>
+<p><strong>1. 前期准备</strong></p>
+<ul>
+<li><strong>node.js:</strong> 2009年由Ryan推出的，基于javascript（负责解释并执行代码）与google 浏览器V8引擎（c++编写的一个超快的解释器）的一个后端服务器应用程序。旨在增大服务器并发连接的数量（非阻塞，时间驱动I/O）。</li>
+<li><strong>git:</strong>开源分布式版本控制系统。<a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">见链接</a></li>
+<li><strong>hexo:</strong>一个快速简洁的博客框架。<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">见链接</a>，hexo支持makdown，<strong>是一个生成静态网页，并将网页上传到服务器上的工具。</strong></li>
+</ul>
+<p><strong>2. Github上创建一个registry</strong></p>
+<ul>
+<li>Github上新建项目，项目必须要遵守格式：账户名.github.io，同时勾选Initialize this repository with a README。（eg：WenHuiZhou.github.io）</li>
+</ul>
+<p><strong>3. 下载安装node.js，以及git</strong><br><strong>4. 安装hexo</strong></p>
+<ul>
+<li>命令行内输入指令：<code>npm install -g hexo-cli</code><br>&emsp;&emsp;npm (node package manager)：运行在node.js上的一个使用javascript写的类库管理器，npm内置于node.js中，作为node.js的包管理器。可以使用npm来查找安装一些库(nmp install jquery.js)。<br>&emsp;&emsp;有时使用npm进行下载文件时经常出现网络上的问题，此时可以对npm换源。<code>npm config set registry https://registry.npm.taobao.org</code></li>
+<li>创建文件夹，作为hexo博客文件存储文件夹，输入指令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init&lt;blog&gt;</span><br><span class="line"><span class="built_in">cd</span> &lt;blog&gt;</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<pre><code>完成创建后hexo将生成如下文件：
+</code></pre><p><img src="/images/hexo_forder.jpg" alt="hexo生成目录结构"></p>
+<ul>
+<li>正常使用中修改最多的文件夹为<strong>_config.yml</strong>，其中包括博客的基础配置以及模板信息。<strong>source</strong>为写文章所需的目录，如果要针对下载的模板修改，那么需要修改<strong>themes</strong>模板目录。</li>
+<li><strong>启动hexo：</strong><br><code>hexo g</code>：hexo生成网页（generate），<br><code>hexo s</code>：hexo启动服务器server。</li>
+</ul>
+<p><strong>5 . hexo 连接 github</strong></p>
+<ul>
+<li>打开git bash，进入blog文件夹</li>
+<li><p>配置用户名，以及邮箱输入：<br><code>git config --global user.name WenHuiZhou</code><br><code>git config --global user.email myemail</code></p>
+<p>  每次使用git进行commit时都需要用到用户名和邮箱记录。用于指定push到的github。</p>
+</li>
+</ul>
+<p><strong>6. SSH密钥登陆：</strong></p>
+<ul>
+<li>利用密钥生成器制作一对密钥——一只公钥和一只私钥。将公钥添加到服务器的某个账户上，然后在客户端利用私钥即可完成认证并登录。<ul>
+<li>生成密钥对：<code>ssh -keygen -t rsa -C &quot;myemail.com&quot;</code>，将生成id_rsa 和 id_rsa.pub两个文件。</li>
+<li>添加密钥对到ssh-agent：<code>eval &quot;$(ssh-agent -s)&quot;</code></li>
+<li>添加生成的SSH key到ssh-agent：<code>ssh-add ~/.ssh/id_rsa</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>7 .设置github的ssh密匙</strong></p>
+<ul>
+<li>打开github setting，将添加ssh key，将id_rsa.pub内容复制进去即可。</li>
+<li>在git bash上输入<code>ssh -T git@github.com</code> 此时返回 hi WenHuiZhou表明配置成功。</li>
+</ul>
+<p><strong>8 . 配置_config.yml文件</strong></p>
+<ul>
+<li><p>在_config.yml文件最后添加：<br><code>deploy:
+type:git
+repository:git@github.com:WenHui-Zhou/WenHuiZhou.github.io.git
+branch: master</code></p>
+<p>  repository地址可以从github上download那得到。</p>
+</li>
+</ul>
+<p><strong>9. 在hexo上写博客</strong></p>
+<ul>
+<li><code>hexo new post &quot;blog name&quot;</code>，hexo将会在<strong>source</strong>文件夹中生成.md文件，编辑.md文件写博客。</li>
+<li><code>hexo s</code>: 进入本地博客地址观察效果</li>
+<li><code>hexo d -g</code>: 将博客上传至github上</li>
+<li>输入github上的访问地址：<strong><a href="https://wenhui-zhou.github.io/">https://wenhui-zhou.github.io/</a></strong>即可博客网站。</li>
+</ul>
+<p><strong>10. 总结</strong></p>
+<ul>
+<li>使用hexo和github搭建了一个博客</li>
+<li>使用hexo模板 maupassant对博客进行美化，<a href="https://www.haomwei.com/technology/maupassant-hexo.html" target="_blank" rel="noopener">见链接</a></li>
+<li>该模板还需要做大量的个人定制工作，这是接下来要做的。</li>
+</ul>
+<p><strong>PREFERENCE</strong></p>
+<ul>
+<li><a href="https://www.jianshu.com/p/1c888a6b8297?utm_source=oschina-app" target="_blank" rel="noopener">reference1</a></li>
+<li><a href="https://buptwc.com/2018/05/10/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%B6%85%E9%AA%9A%E7%9A%84%E5%8D%9A%E5%AE%A2%EF%BC%9F/" target="_blank" rel="noopener">reference2</a></li>
+</ul>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/01/19/Github-建站/">https://wenhui-zhou.github.io/2019/01/19/Github-建站/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/netStation/">netStation</a></div><div class="post-nav"><a class="pre" href="/2019/01/21/C-刷题常用数据及函数的语法记录/">C++ 刷题常用数据及函数的语法记录</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

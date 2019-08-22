@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>深度学习中常用的技术（面试考点） | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">深度学习中常用的技术（面试考点）</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">深度学习中常用的技术（面试考点）</h1><div class="post-meta">Feb 19, 2019<span> | </span><span class="category"><a href="/categories/论文阅读/">论文阅读</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/02/19/深度学习中常用的技术（面试考点）/#vcomment"><span class="valine-comment-count" data-xid="/2019/02/19/深度学习中常用的技术（面试考点）/"></span><span> 条评论</span></a><div class="post-content"><h3 id="深度学习中常用的技术（面试考点）"><a href="#深度学习中常用的技术（面试考点）" class="headerlink" title="深度学习中常用的技术（面试考点）"></a>深度学习中常用的技术（面试考点）</h3><p>（一）神经网络中，防止过拟合的方法有：</p>
+<ul>
+<li>early stop（及早停止），当在测试集上出现错误率上升时，及时停止。</li>
+<li>data expanding (扩大训练数据)</li>
+<li>dropout 技术（随机丢弃）</li>
+<li>加入正则项</li>
+<li>BN（让激活函数的输入分布保持在一个稳定状态来尽可能避免它们陷入梯度饱和区。）</li>
+</ul>
+<h4 id="dropout技术"><a href="#dropout技术" class="headerlink" title="dropout技术"></a>dropout技术</h4><p>dropout是一种防止过拟合的正则化技术，具体做法是，对每个隐藏层的输入进行一个概率判决，比如我们设置概率为0.5（通常命名为keep_prob）,根据0.5，<strong>随机生成一个跟隐藏层神经元个数相同的向量，true:false的比例是1：1（因为keep_prob=0.5）</strong>，与隐藏层的神经元进行相乘，那么会有一半隐藏层的神经元被舍弃，不参与训练。重复迭代上诉操作。<br><img src="/images/trick/dropout.png" alt="dropout"><br><strong>dropout的实现：</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#用一个二项分布的函数，等概率的生成0/1，既可以随机的屏蔽掉某些神经元</span></span><br><span class="line"><span class="comment">#dropout函数的实现</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropout</span><span class="params">(x, level)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> level &lt; <span class="number">0.</span> <span class="keyword">or</span> level &gt;= <span class="number">1</span>:<span class="comment">#level是概率值，必须在0~1之间</span></span><br><span class="line">	    <span class="keyword">raise</span> Exception(<span class="string">'Dropout level must be in interval [0, 1[.'</span>)</span><br><span class="line">	retain_prob = <span class="number">1.</span> - level</span><br><span class="line">    <span class="comment">#我们通过binomial函数，生成与x一样的维数向量。binomial函数就像抛硬币一样，我们可以把每个神经元当做抛硬币一样</span></span><br><span class="line">	<span class="comment">#硬币 正面的概率为p，n表示每个神经元试验的次数</span></span><br><span class="line">	<span class="comment">#因为我们每个神经元只需要抛一次就可以了所以n=1，size参数是我们有多少个硬币。</span></span><br><span class="line">	sample=np.random.binomial(n=<span class="number">1</span>,p=retain_prob,size=x.shape)<span class="comment">#即将生成一个0、1分布的向量，0表示这个神经元被屏蔽，不工作了，也就是dropout了</span></span><br><span class="line">	<span class="keyword">print</span> sample</span><br><span class="line">	x *=sample<span class="comment">#0、1与x相乘，我们就可以屏蔽某些神经元，让它们的值变为0</span></span><br><span class="line">	<span class="keyword">print</span> x</span><br><span class="line">	x /= retain_prob  <span class="comment"># 归一化</span></span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> x</span><br><span class="line"><span class="comment">#对dropout的测试</span></span><br><span class="line">x=np.asarray([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>],dtype=np.float32)</span><br><span class="line">dropout(x,<span class="number">0.4</span>)</span><br></pre></td></tr></table></figure></p>
+<p>dropout通常使用在一些较大的网络中，在训练阶段使用，在测试或者预测时并不会去dropout，工业上的做法是在输入的X上乘以P得到X的期望，或者输入不做变化而是对所有的有dropout层都做X/p。<br><strong>dropout能防止过拟合：</strong></p>
+<ul>
+<li>多尺度学习：由于每次dropout舍弃的神经元均不相同，因此每次训练都产生一个不同的神经网络。这种组合多种神经网络的综合效果的方式能够有效的缓解过拟合效应。</li>
+<li>阻止特征的协同作用：可以通过阻止某些特征的协同作用来缓解。在每次训练的时候，每个神经元有百分之50的几率被移除，这样可以让一个神经元的出现不依赖于另外一个神经元。</li>
+</ul>
+<h4 id="Batch-Normalization-参考链接"><a href="#Batch-Normalization-参考链接" class="headerlink" title="Batch Normalization 参考链接"></a>Batch Normalization <a href="https://zhuanlan.zhihu.com/p/34879333" target="_blank" rel="noopener">参考链接</a></h4><p>深层网络难以训练，由于底层网络中参数发生微弱变化时，由于每一层中的线性变换与非线性激活映射，这些微弱变化随着网络层数的加深而被放大（类似蝴蝶效应）；参数的变化导致每一层的输入分布会发生改变，进而上层的网络需要不停地去适应这些分布变化，使得我们的模型训练变得困难。上述这一现象叫做Internal Covariate Shift。<br><strong>Internal Covariate Shift：</strong> 在深层网络训练的过程中，由于网络中参数变化而引起内部结点数据分布发生变化的这一过程被称作Internal Covariate Shift。<br>因此而带来的问题：</p>
+<ul>
+<li>上层网络需要不停调整来适应输入数据分布的变化，导致网络学习速度的降低</li>
+<li>网络的训练过程容易陷入梯度饱和区，减缓网络收敛速度（可以使用线性整流函数ReLU因为它可以在一定程度上解决训练进入梯度饱和区的问题）</li>
+</ul>
+<p><strong>缓解Internal Covariate shift</strong><br>ICS产生的原因是由于参数更新带来的网络中每一层输入值分布的改变，并且随着网络层数的加深而变得更加严重，因此我们可以通过固定每一层网络输入值的分布来对减缓ICS问题。常用的方法如下：<br><strong>白化</strong>：<br>使得输入特征分布具有相同的均值与方差。其中PCA白化保证了所有特征分布均值为0，方差为1；而ZCA白化则保证了所有特征分布均值为0，方差相同；去除特征之间的相关性。<br>但是由于白化操作计算成本高，且将会改变网络每一层参数的分布，使得网络底层学到的信息被丢弃<br><strong>batch normalization</strong><br> 单独对每个特征进行normalizaiton(每一层)，让每个特征都有均值为0，方差为1的分布，减少计算量。线性变换操作，让网络恢复本身的表达能力。<br>BN插在在全连接层之后如下图：<br><img src="/images/trick/bn.png" alt="bn"><br>BN操作如下：<br><img src="/images/trick/bnstep.png" alt="bnstep"></p>
+<ol>
+<li>对输入取均值</li>
+<li>对输入取方差</li>
+<li>计算normalize后的输入（其中 $\epsilon$ 是为了防止方差为0产生无效计算）</li>
+<li>反标准化进行学习</li>
+</ol>
+<p>反标准化是为了让神经网络能够学习batch normalization的平移拉伸，让数据再能够尽可能恢复本身的表达能力就好，达到学习的目的。</p>
+<p><strong>BN作用：</strong></p>
+<ul>
+<li>BN使得网络中每层输入数据的分布相对稳定，加速模型学习速度</li>
+<li>BN使得模型对网络中的参数不那么敏感，简化调参过程，使得网络学习更加稳定。<strong>BN不会受到权重scale的影响</strong>，因此其能够使模型保持在一个稳定的训练状态；而没有加入BN的网络则在一开始就由于学习率过大导致训练失败BN的网络能够克服如此bad的权重初始化</li>
+<li>BN允许网络使用饱和性激活函数（例如sigmoid，tanh等），缓解梯度消失问题</li>
+<li><strong>BN具有一定的正则化效果</strong>：在Batch Normalization中，由于我们使用mini-batch的均值与方差作为对整体训练样本均值与方差的估计，尽管每一个batch中的数据都是从总体样本中抽样得到，但不同mini-batch的均值与方差会有所不同，这就为网络的学习过程中增加了随机噪音，在一定程度上对模型起到了正则化的效果。</li>
+</ul>
+<h4 id="正则项"><a href="#正则项" class="headerlink" title="正则项"></a>正则项</h4><p><strong>L1 正则项：</strong> L1是模型各个参数的绝对值之和,将它添加到损失函数上：<br>$$\min  \frac{1}{N}\sum_{i = 1}^{N}{(y_{i} -\omega^{T} x_{i})^{2} } + C||\omega||_1<br>$$<br><strong>L2 正则项：</strong>是模型各个参数的平方和的开方值：<br>$$<br>\min  \frac{1}{N} \sum_{i = 1}^{N}{(y_{i} -\omega^{T} x_{i})^{2} } + C||\omega||_{2}^{2}<br>$$<br>添加L1和L2正则项之后的损失函数如下：<br><img src="/images/trick/normal.jpg" alt="normal"><br>如图可以看出，如果仅有损失函数的话，优化目标为损失函数最内圈的紫色的环。但是给loss function加上正则化项，能使得新得到的优化目标函数h = f+normal，需要在f和normal中做一个权衡（trade-off），即最优解应该使得正则项和模型损失函数之和最小。</p>
+<p>可以看出来，<strong>L1正则项与loss更多的相交于坐标轴，因此L1更容易产生稀疏解。L2的解比较接近与坐标轴，L2范数能让解比较小（靠近0），但是比较平滑（不等于0）</strong>。</p>
+<p><strong>正则项降低过拟合程度：</strong></p>
+<ul>
+<li>L1正则化：在loss function后边所加正则项为L1范数，加上L1范数容易得到稀疏解（0比较多），能够避免过拟合。有助于生成一个稀疏权重矩阵，进而可用于特征选择。</li>
+<li>L2正则化：在loss function后边所加正则项为L2范数的平方，L2控制w的大小，则w的幅度较小且较均匀。一般认为参数值较小的模型比较简单，能适应不同的数据集，一定程度上避免了过拟合。（缺点是L2对离群点敏感，而且容易造成梯度爆炸）</li>
+<li>在Faster RCNN中，边框回归通常情况下，使用平方误差最小，即L2loss，但是由于，L2 loss对离群点比较敏感，同时，当预测边框距离真值边框比较远的时候，容易出现梯度爆炸的问题，因此使用smooth L1替代L2 loss，smooth L1 相比于正常的L1它是可导的。且导数是一个常数。</li>
+</ul>
+<p><strong>如何处理数据特征缺失项：</strong></p>
+<ul>
+<li>如果数据集样本很多，可以删除掉缺失的特征的个别样本。</li>
+<li>用平均值，中位数，众数进行替换补全。（人为的增加了噪声）</li>
+<li>使用一些机器学习的算法对数据特征进行恢复，如EM算法等等，KNN算法</li>
+</ul>
+<p><strong>异常值的检测：</strong></p>
+<ul>
+<li>当数值在$(\mu -3\sigma,\mu+3\sigma)$之外时，属于异常数值。</li>
+<li>使用K nearnest neighbour计算每一个点的K近邻，然后距离临近点距离最远，而且周围的邻居位置很稀疏的情况下，这个点很可能是异常点。</li>
+</ul>
+<p><strong>canny边缘检测介绍：</strong><br>canny边缘检测是一个基于图像梯度的边缘检测算法。由于图像边缘即图像中的高频部分，噪音也属于高频信息，因此首先需要对图像进行去噪（高斯滤波器），然后提取图片梯度，然后对提取的梯度做一些例如非极大值抑制等处理，总之canny算子没有考虑到图片全局的信息，仅仅使用了梯度来提取边缘。对于一些梯度不明显的边缘信息可能无法很好的提取。</p>
+<p><strong>max pooling 与 average pooling的应用有何不同：</strong></p>
+<p>使用pooling技术将小邻域内的特征点整合，同时保持某种不变性（旋转、平移、伸缩等）。<strong>average-pooling对领域内特征取平均值</strong>，结果融合了所有的特征。平均操作类似与平滑处理，能够保留图片的低频信息，即更多的保留图像的背景信息。因此更多用在最后的分类中。<br>max-pooling对领域内的特征值取最大值，即能够极大的保留图片的边缘信息，纹理信息。一张图片的高频信息能够极大程度的表示一个物体，因此进行下采样特征缩减时更多用到max-pooling。</p>
+<p><strong>训练过程中学习率如何调整：</strong></p>
+<ul>
+<li>从大到小依次衰减</li>
+<li>或者使用RMSprop更新法，在累计梯度的平方项上进行衰减。</li>
+</ul>
+<p><strong>CNN网络中全连接层的作用：</strong><br>全连接层将学到的“分布式特征表示”映射到样本标记空间（进行分类）。全连接层参数过多（一个大型的分类问题，参数量通常占到80%）不宜有太多层全连接层。<br>是把卷积提取的特征看做多层感知机的输入节点，后面只需要接两层全连接理论上就可以拟合任意非线性函数，</p>
+<p><strong>GAP（全局平均池化）：</strong><br>将每张feature的值全部加起来，取平均，每一个均值代表一个类别。比如有10个类，就在最后输出10个 feature map，每个feature map中的值加起来求平均值，这十个数字就是对应的概率或者叫置信度。然后把得到的这些平均值直接作为属于某个类别的 confidence value，再输入softmax中分类。用GAP代替全连接层可以大幅减小参数量，同时检测效果不会变差。</p>
+<p><strong>维度灾难：</strong><br>对于大多数数据，在一维空间或者说是低维空间都是很难完全分割的，但是在高维空间间往往可以找到一个超平面，将其完美分割。于是我们将维度提升，例如从2维到3维这样就可以区分开物体了。但是无限制的增大数据的纬度，会出现分类进度极速下降的问题。即分类器过拟合，出现维度灾难。</p>
+<p><strong>聚类方法：</strong><br>K-means 聚类</p>
+<ul>
+<li>首先确定样本的类别数n，然后在样本上随机确定n个中心</li>
+<li>然后计算每一个样本到样本中心的距离，将该样本划分到距离它最近的那一类中</li>
+<li>对划分过的样本重新计算各类的类中心</li>
+<li>重复上述步骤，直到类中新位置不发生明显变化为止</li>
+</ul>
+<p>基于密度的聚类方法(DBSCAN)</p>
+<ul>
+<li>首先确定半径r和minPoints. 从一个没有被访问过的任意数据点开始，以这个点为中心，r为半径的圆内包含的点的数量是否大于或等于minPoints，如果大于或等于minPoints则该点被标记为central point，反之则会被标记为noise point。 </li>
+<li>重复上面的步骤，如果一个noise point存在于某个central point为半径的圆内，则这个点被标记为边缘点，反之仍为noise point。重复上述步骤，直到所有的点都被访问过。 </li>
+</ul>
+<p><strong>混合高斯模型（GMM）最大期望（EM）聚类：</strong></p>
+<ul>
+<li>选择簇的数量（与K-Means类似）并随机初始化每个簇的高斯分布参数（均值和方差）。</li>
+<li>给定每个簇的高斯分布，计算每个数据点属于每个簇的概率。一个点越靠近高斯分布的中心就越可能属于该簇。 </li>
+<li>基于这些概率我们计算高斯分布参数使得数据点的概率最大化，可以使用数据点概率的加权来计算这些新的参数，权重就是数据点属于该簇的概率。 </li>
+<li>重复迭代2和3直到在迭代中的变化不大。</li>
+</ul>
+<p><strong>自顶向下的层次分类：</strong></p>
+<ul>
+<li>将所有样本视为一类，然后对样本进行m次二分实验，然后选择一种分类，分类后的两簇SSE（Sum of the Squared Error）之和最小。</li>
+<li>选择最大SSE的簇，然后对他重复上述分类，直到分类到k个簇。</li>
+</ul>
+<p><strong>L1 loss 为什么会导致稀疏解：</strong><br>如下图，原函数设为L，它的极小点为绿色的点，不在原点。加上L2 loss之后L+L2的极小点为黄点。加上L1后L+L1的极小点为红点。<br><img src="/images/trick/L1loss.jpg" alt=""></p>
+<p>为什么L1 loss的最小点就是原点呢？<br>要形成极小值点，以上图为例，x<0 时="" l+c|x|="" 的导数要小于0(函数减)，同理x="">0 时导数&gt;0 (函数增)，x从左边趋近于0 时，C|x|的导数是-C，假设此时 L 的导数为 La ，必须有 La -C &lt;0，即C&gt;La，同理x从右边趋近于0时，必须有 Lb + C &gt; 0 ，即C&gt;-Lb，所以说C要大于L在0点附近的绝对值。<strong>即原点左右两边的导数正负不同，原点为一个极小点。</strong></0></p>
+<p><strong>海量数据球中位数：</strong><br>使用堆的思想。查找中位数，也就是找出中间最大的数字，总共10G的数据，查找第5G大的数据，创建一个1G的大顶堆，遍历一遍这个10G的数据，找出前1G大的数据，在这个大顶堆中找出最小的值，这个最小的值就是这10G数据中第1G大的元素，然后利用这个元素在创建大顶堆，比这个元素小的才能进堆，那么就创建了从1G到2G的元素，这么一来，就找到了第2G大的元素，利用第2G大的元素就可以找到第5G大的元素，这么一来就可以找到中位数了。</p>
+<p><strong>pooling 层如何进行反向传播：</strong></p>
+<ul>
+<li>max pooling层：对于max pooling，下一层的误差项的值会原封不动的传递到上一层对应区块中的最大值所对应的神经元，而其他神经元的误差项的值都是0；</li>
+<li>mean pooling层：对于mean pooling，下一层的误差项的值会平均分配到上一层对应区块中的所有神经元。</li>
+</ul>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/02/19/深度学习中常用的技术（面试考点）/">https://wenhui-zhou.github.io/2019/02/19/深度学习中常用的技术（面试考点）/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/深度学习/">深度学习</a></div><div class="post-nav"><a class="pre" href="/2019/02/19/卷积神经网络-CNN/">卷积神经网络-- CNN</a><a class="next" href="/2019/02/14/Faster-RCNN详解/">Faster RCNN详解</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

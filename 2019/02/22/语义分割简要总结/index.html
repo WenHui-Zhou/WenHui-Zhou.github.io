@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>语义分割简要总结 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">语义分割简要总结</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">语义分割简要总结</h1><div class="post-meta">Feb 22, 2019<span> | </span><span class="category"><a href="/categories/论文阅读/">论文阅读</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/02/22/语义分割简要总结/#vcomment"><span class="valine-comment-count" data-xid="/2019/02/22/语义分割简要总结/"></span><span> 条评论</span></a><div class="post-content"><h3 id="语义分割简要总结"><a href="#语义分割简要总结" class="headerlink" title="语义分割简要总结"></a>语义分割简要总结</h3><p>CNN padding 的方式：</p>
+<ul>
+<li>valid padding：当卷积到边界时，最后边界位置不够卷积则直接舍弃。</li>
+<li>SAME padding：当卷积到边界时，最后边界位置不够卷积则用0补充，保持图片尺寸大小不变。</li>
+</ul>
+<p>视觉未来研究方向：</p>
+<ul>
+<li>三维数据集</li>
+<li>序列数据集</li>
+<li>使用图卷积网络（GCN）对点云进行分割</li>
+<li>上下文知识</li>
+<li>实时分割</li>
+<li>存储空间</li>
+<li>序列数据的时间一致性</li>
+<li>多视角整合</li>
+</ul>
+<h4 id="SegNet"><a href="#SegNet" class="headerlink" title="SegNet"></a>SegNet</h4><p>FCN之后，CNN网络在语义分割领域引起了人们极大的兴趣。SegNet在FCN的基础上引入了更多的shortcut，它不是直接对不同层的feature map进行融合，而是通过Max pooling的方式传到后面的层中，这种方式能够包含更多的信息。<br><img src="/images/FCN/segnet_architecture.png" alt="segnet_architecture"></p>
+<h4 id="Dilated-Convolutions孔洞卷积"><a href="#Dilated-Convolutions孔洞卷积" class="headerlink" title="Dilated Convolutions孔洞卷积"></a>Dilated Convolutions孔洞卷积</h4><p>在FCN中有两个关键，一个是pooling减小图像尺寸增大感受野，另一个是upsampling扩大图像尺寸。在先减小再增大尺寸的过程中，将会有一些信息损失掉，那么能不能设计一种新的操作，不通过pooling也能有较大的感受野看到更多的信息呢？答案就是dilated conv 空洞卷积。<br><img src="/images/FCN/dilated.png" alt="dilated"><br><strong>空洞卷积的一个最大的特点就是可以增大感受野，避免使用pooling。</strong>图中，对于一个7x7的图像patch（a图），只有9个红色的点和3x3的kernel发生卷积操作，其余的点略过。也可以理解为kernel的size为7x7<br>(a) 普通卷积，1-dilated convolution，卷积核的感受野为$3 \times 3 = 9$。<br>(b) 扩张卷积，2-dilated convolution，卷积核的感受野为$7 \times 7 = 49$。<br>(c) 扩张卷积，4-dilated convolution，卷积核的感受野为$15 \times 15 = 225$。<br><img src="/images/FCN/dilategif.gif" alt="dilategif"><br>但是由于dilated convolution 存在一些问题：</p>
+<ul>
+<li>kernel 并不连续，也就是并不是所有的 pixel 都用来计算了，因此这里将信息看做 checker-board 的方式会损失信息的连续性。（在还原的标注图片上就会出现一些不连续的小格）</li>
+<li>对于一些尺寸比较小的物体分割效果差。</li>
+</ul>
+<p><strong>解决方案：</strong><br><strong>通向标准化设计：Hybrid Dilated Convolution (HDC)</strong>，图森组的文章对其提出了较好的解决的方法。他们设计了一个称之为 HDC 的设计结构。</p>
+<ul>
+<li>第一个特性是，叠加卷积的 dilation rate 不能有大于1的公约数。比如 [2, 4, 6] 则不是一个好的三层卷积，依然会出现 gridding effect。</li>
+<li>第二个特性是，我们将 dilation rate 设计成 锯齿状结构，例如 [1, 2, 5, 1, 2, 5] 循环结构。</li>
+<li>第三个特性是，我们需要满足这个式子：<br><img src="/images/FCN/tusample.png" alt="tusample"><br>就可以保证对所有的pixel都能够卷积到，同时层次的锯齿结构对小物体也有很好的检测效果。<h3 id="DeepLab-V1："><a href="#DeepLab-V1：" class="headerlink" title="DeepLab V1："></a><strong>DeepLab V1：</strong></h3></li>
+</ul>
+<p>DCNNs的成功得益于<strong>DCNNs定位图像变换（平移等）的内在不变性</strong>, 这一属性能加强它们学习数据的分层抽象能力。不变性非常适用于高级视觉任务（目标检测）。但不利于低级任务，如语义分割，哪些我们需要知道他们精确的位置信息而不是他们的抽象特征。</p>
+<p><strong>DCNN定位图像变换的内在不变性理解：</strong>即对图像进行pooling 降低分辨率提高感受野，尽管图像变得比较模糊，位置信息也不准确，但是不影响网络对物体的识别，但是对于位置信息比较关心的语义分割来说就是一大缺点。</p>
+<p>DCNN在图像标注任务应用上的两大技术障碍:</p>
+<ul>
+<li><strong>信号的降采样，分辨率低：</strong><br> DCNN中多次的max-pooling及downsampling(striding)造成信号分辨率减小, 信息失真比较严重</li>
+<li><strong>空间不灵敏性：</strong><br> DCNN对空间信息不敏感，它可以可靠的预测物体的存在与粗略的位置，但不能精确的定位目标的轮廓</li>
+</ul>
+<h4 id="孔洞卷积："><a href="#孔洞卷积：" class="headerlink" title="孔洞卷积："></a><strong>孔洞卷积：</strong></h4><p>对于<strong>信息降采样，信息丢失</strong>的问题，我们使用’atrous’孔洞卷积，减少pooling的使用，同时扩展感受野，以获得更多的上下文信息。<br><img src="/images/FCN/holeconv.png" alt="holeconv"><br>其中（a）为stride为2的pooling，pooling之后四个神经元的感受野对应为7。（b）中为stride = 1的pooling，四个神经元的感受野为5，虽然保留了更多的信息，但是感受野降低了，信息更加的冗余。（c）中使用stride=1，hole = 2的卷积核，四个神经元的感受野仍然为7，同时保留了更多的信息（features map的分辨率较高）。</p>
+<p><strong>感受野的计算：</strong><br>感受野是这一层一个元素对应输入层的区域大小，可以一层一层回推到输入层。对于这一层相对于上一层的感受野也就是卷积核的大小。<br>当已知上一层的感受野计算下一层的感受野时有：<br>$$<br>r = (m-1) <em> stride+ksize<br>$$<br>其中m为上一层的感受野。<br><strong>空洞卷积的感受野计算：</strong><br>dilate rate = 1与普通卷积相同。dilate rate = 2可以视为卷积核由3\</em>3变成了5*5，计算方法相同。对于dilate rate = 3，可可视为卷积核变成了9*9。</p>
+<h4 id="全连接的CRF（条件随机场）"><a href="#全连接的CRF（条件随机场）" class="headerlink" title="全连接的CRF（条件随机场）"></a>全连接的CRF（条件随机场）</h4><p>DCNN的预测图可以可靠的预测物体的存在与粗略的位置，但不能精确的定位目标的轮廓，其内在的不变性限制了对位置精度的预测<strong>（平移不变性破坏了模型对位置信息的预测）</strong>，<strong>本文使用了全连接的CRF作为后处理操作，通过耦合DCNN的识别能力进一步优化分割的边缘。</strong><br><strong>DenseDRF：</strong><br>对于每一个位置i，如果有观测值$x_i$(该位置的颜色)，标签$y_i$(类别信息)，。以像素为节点，像素与像素之间的关系作为边，就可以构成一个条件随机场，通过观测$x_i$的值来推断对应的类别信息$y_i$。<br><img src="/images/FCN/crf.png" alt="crf"><br>denseCRF的公式如下：<br><img src="/images/FCN/crfformula.png" alt="crfformula"><br>由式子可以看出来，CRF预测像素类别和像素的颜色强度，像素位置有关系，<strong>模型包含耦合相邻节点的能量项，有利于对空间邻近像素进行相同标签的分配。    </strong><br>下图是dilate conv + CRF的组合效果。<br><img src="/images/FCN/convCRF.png" alt="convCRF"></p>
+<h4 id="Deeplab-v2"><a href="#Deeplab-v2" class="headerlink" title="Deeplab v2"></a>Deeplab v2</h4><p>deeplab v2在v1的基础上进行升级，其提出的<strong>ASPP技术来更好地分割多尺度的物体</strong>。通过采用最新的ResNet 图像分类DCNN构建了DeepLab的残差网络变体，实现了<strong>更好的语义分割性能。</strong><br>deeplab v2的特点：</p>
+<ul>
+<li>使用Atrous Convolution 代替原来上采样的方法，能有效地扩大卷积核的视野，增加更多的上下文信息而不增加参数的数量或计算量。 </li>
+<li>提出多孔空间金字塔池化(ASPP)，在多尺度上鲁棒地分割物体。ASPP使用多个采样率和有效视野的滤波器对features map进行多尺度信息提取。 </li>
+<li>第三，通过合并DCNN和概率图模型全连接CRF方法，增强物体边界的定位。</li>
+</ul>
+<p>DCNN应用于语义图像分割中的三个挑战:</p>
+<ol>
+<li><strong>特征分辨率下降问题解决：</strong><br>该问题是由连续DCNN层中的最大池化和下采样(滑动步长)的重复组合引起的。为了克服这一障碍并有效地产生更密集的特征图，<strong>将最后的池化层替换为atrous convolution 层</strong><br><img src="/images/FCN/convcompare.png" alt="convcompare"></li>
+<li><p><strong>多尺度下的物体的存在</strong><br>该问题由于物体的多尺度状态引起的，有些物体太小或者太大无法检测出来。处理这种情况的一个标准方法是向DCNN提供相同图像的重缩放版本，然后聚合特征或分数图，但开销很大。我们的方法：<strong>我们有效地使用具有不同采样率的多个并行的多孔卷积层来实现对特征图的采样，称之为“多孔 space pyramid pooling”(ASPP)技术。</strong>在多个尺度上捕获物体的上下文信息。<br><img src="/images/FCN/spppool.png" alt="spppool"></p>
+</li>
+<li><p><strong>DCNN位移不变性导致对位置定位模糊：</strong><br>一种减轻此问题的方法是当计算最终的分割结果时使用跳跃层(skip-layers)从多个网络层提取特征。我们的方法是：<strong>通过全连接的条件随机场(CRF)来提高模型捕获精细细节的能力。</strong></p>
+</li>
+</ol>
+<p><img src="/images/FCN/deeplap2.png" alt="deeplap2"></p>
+<h4 id="deeplap-v2工作流程"><a href="#deeplap-v2工作流程" class="headerlink" title="deeplap v2工作流程"></a>deeplap v2工作流程</h4><ol>
+<li>将所有全连接的层转换为卷积层</li>
+<li>通过多孔卷积层对conv5输出的features map进行多尺度的特征提取，提高特征分辨率以及感受野，然后送入softmax进行分类。此时产生的features map大小为原图的1/8</li>
+<li>采用双线性插值对features map进行8倍上采样以达到原始图像分辨率</li>
+<li>生成全连接的CRF的输入，优化分割结果 </li>
+</ol>
+<p>值得注意的是：特征图的训练和全连接CRF的训练是分开进行的，先用DCNN生成预测结果图，然后用全连接CRF进行分割结果的优化。<br><img src="/images/FCN/resultCRF.png" alt="resultCRF"><br>上图是DCNN产生的预测图，然后通过1，2，10次的CRF迭代的结果。</p>
+<h4 id="deeplab-v3"><a href="#deeplab-v3" class="headerlink" title="deeplab v3"></a>deeplab v3</h4><p>V3在v2的基础上进行了结构上了一些改进，<br><img src="/images/FCN/deeplabv3.png" alt="deeplabv3"><br>v3，v3+，Xecption这里实在不想在看了，以后有机会回来补充。先留一个flag。可能就是之后几天里某一天吧。state of art 似乎绕不过。</p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/02/22/语义分割简要总结/">https://wenhui-zhou.github.io/2019/02/22/语义分割简要总结/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/深度学习/">深度学习</a></div><div class="post-nav"><a class="pre" href="/2019/02/22/project-one/">project one</a><a class="next" href="/2019/02/21/DP动态规划问题/">DP动态规划问题</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

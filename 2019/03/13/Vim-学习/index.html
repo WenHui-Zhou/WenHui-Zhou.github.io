@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>Vim 学习 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Vim 学习</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Vim 学习</h1><div class="post-meta">Mar 13, 2019<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/03/13/Vim-学习/#vcomment"><span class="valine-comment-count" data-xid="/2019/03/13/Vim-学习/"></span><span> 条评论</span></a><div class="post-content"><h3 id="Vim-简介"><a href="#Vim-简介" class="headerlink" title="Vim 简介"></a>Vim 简介</h3><p>Vim是在Linux环境下的一种强大的文本编辑工具，之所以学习它，是由于在服务器上写代码需要直接在服务器上操作，不像windows上有那种简单课操作的编辑器，如sublime等等。</p>
+<h3 id="Vim-模式"><a href="#Vim-模式" class="headerlink" title="Vim 模式"></a>Vim 模式</h3><p>Vim与大多数文本编辑器不同，它的默认模式为移动光标，删除文本等，而不是大多数编辑器那样直接为插入模式。</p>
+<p><strong>普通模式：</strong></p>
+<p>普通模式能进行的操作如移动光标，删除文本等。</p>
+<p>删除指令：</p>
+<p><code>dd</code> ：删除当前行</p>
+<p><code>d</code>+ 上下左右移动指令，分别表示删除上一行，左一个，下一行，或右一个</p>
+<p><code>2dd</code>: 删除两行</p>
+<p><strong>插入模式：</strong></p>
+<p>在普通模式按i，或a进入插入模式，ESC推出插入模式。</p>
+<p><strong>可视模式：</strong></p>
+<p>这个模式类似与普通模式，对样本有高亮</p>
+<p><strong>命令行模式：</strong></p>
+<p>在命令行模式中可以输入会被解释成并执行的文本。例如执行命令（<code>:</code>键），搜索（<code>/</code>和<code>?</code>键）或者过滤命令（<code>!</code>键）</p>
+<h3 id="游标使用："><a href="#游标使用：" class="headerlink" title="游标使用："></a>游标使用：</h3><p>h，j，k，l：分别表示上下左右移动</p>
+<p>w: 向下一个单词，b: 向上一个单词</p>
+<h3 id="进入插入模式"><a href="#进入插入模式" class="headerlink" title="进入插入模式"></a>进入插入模式</h3><p><code>i</code> : 当前光标出插入</p>
+<p><code>A</code>: 当前光标所在行最后一个位置插入 </p>
+<p><code>o</code>: 当前光标的下一行插入</p>
+<p><code>a</code>: 当前光标的后一个位置</p>
+<h3 id="退出Vim模式"><a href="#退出Vim模式" class="headerlink" title="退出Vim模式"></a>退出Vim模式</h3><p><code>:x</code>: 保存并退出，等同于<code>:wq</code></p>
+<p><code>:q!</code>: 强制退出，不保存</p>
+<p><code>:q</code>: 退出不保存</p>
+<p><code>shift + zz</code>: 退出并保存</p>
+<h3 id="删除文本"><a href="#删除文本" class="headerlink" title="删除文本"></a>删除文本</h3><p>普通模式下的删除文本操作。</p>
+<p><code>x</code>: 删除当前光标处的一个字符</p>
+<p><code>X</code>:删除光标前一个字符</p>
+<p><code>dd</code>: 删除整行</p>
+<p><code>dw</code>: 删除整个单词</p>
+<p><code>D</code>: 删除至句尾</p>
+<p><code>d^</code>: 删除至句首</p>
+<p><code>dG</code>: 删除至文章末尾</p>
+<p><code>d1G</code>: 删除至文章开头</p>
+<h3 id="重复执行上次命令"><a href="#重复执行上次命令" class="headerlink" title="重复执行上次命令"></a>重复执行上次命令</h3><p>普通模式下<code>.</code>表示重复执行上一次命令。执行相同执行操作代码：<code>N&lt;command&gt;</code>,如<code>10x</code>,<code>20dd</code>,<code>d5w</code>。</p>
+<p>显示行号: <code>:set nu</code></p>
+<h3 id="行间跳跃"><a href="#行间跳跃" class="headerlink" title="行间跳跃"></a>行间跳跃</h3><p><code>NG</code>: 游标跳到第N行</p>
+<p><code>gg</code>: 游标跳到第一行</p>
+<p><code>G</code>: 游标跳到最后一行</p>
+<p><code>ctrl + o</code>: 回到上一次跳转的位置</p>
+<h3 id="行内跳跃"><a href="#行内跳跃" class="headerlink" title="行内跳跃"></a>行内跳跃</h3><p><code>w</code>: 跳到下一个单词的开头</p>
+<p><code>e</code>: 当前单词的结尾</p>
+<p><code>0</code>: 跳到行头</p>
+<p><code>$</code>: 跳到行尾</p>
+<p><code>f 字母</code>：向后搜索字母并跳到第一个该字母的位置</p>
+<p><code>F 字母</code>：向前搜索字母，第一个字母位置</p>
+<p><code>t 字母</code>： 向后搜索字母，并跳到这个字母的前一个数</p>
+<p><code>T 字母</code>： 向前搜索字母，并跳到其后一个数</p>
+<p><code>~</code>: 将字母大小写转换</p>
+<h3 id="文本的复制"><a href="#文本的复制" class="headerlink" title="文本的复制"></a>文本的复制</h3><p><code>yy</code>: 复制游标所在的整行</p>
+<p><code>3yy</code>：复制3行</p>
+<p><code>y0</code>: 复制到行首</p>
+<p><code>y$</code>: 复制到行尾</p>
+<h2 id="字符替换及坐标操作"><a href="#字符替换及坐标操作" class="headerlink" title="字符替换及坐标操作"></a>字符替换及坐标操作</h2><p><code>r + &lt;替换字母&gt;</code>: 替换掉光标所在位置的字母</p>
+<p><code>R</code>： 连续替换，知道按下esc</p>
+<p><code>cc</code>: 删掉这一行，换为插入模式</p>
+<p><code>cw</code>: 删掉一个词然后进入插入模式</p>
+<p><code>C</code>: 删除光标位置一直到行末，进入插入模式</p>
+<p><code>u</code>: 撤销当前操作</p>
+<p><code>U</code>: 撤销当前所有操作</p>
+<h3 id="指令替换"><a href="#指令替换" class="headerlink" title="指令替换"></a>指令替换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%s/imgs/car_openimg\/imgs # 使用car_openimg/imgs替换imgs</span><br></pre></td></tr></table></figure>
+<h3 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h3><p><code>shift + &gt;</code>: 向右缩进</p>
+<p><code>shift + &lt;</code>: 向左缩进</p>
+<h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><p><code>/ + word</code>: 表示查找word，输入n或N查找下一个位置</p>
+<p><code>? + word</code>: 与上相同，只不过查找方向不同</p>
+<p><code>\*</code>: 查找游标所在位置的单词</p>
+<p><code>g\*</code>： 查找部分符合要求的单词</p>
+<h3 id="视窗"><a href="#视窗" class="headerlink" title="视窗"></a>视窗</h3><p><code>:new</code>: 新建视窗</p>
+<p><code>:close</code>: 关闭视窗</p>
+<p><code>:q</code>: 同上</p>
+<h3 id="执行外部shell命令"><a href="#执行外部shell命令" class="headerlink" title="执行外部shell命令"></a>执行外部shell命令</h3><p><code>:! command</code>:执行外部shell 命令</p>
+<p><code>:w filename</code>: 将当前编辑的文件另存为filename</p>
+<p>vim 确认当前的括号：</p>
+<p><code>shift + e</code>: 光标跳到当前内容的第一个框</p>
+<p>重复上次操作：小数点 <code>.</code></p>
+<h3 id="VIM-打开多个文件"><a href="#VIM-打开多个文件" class="headerlink" title="VIM 打开多个文件"></a>VIM 打开多个文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim 1.py 2.py</span><br><span class="line">:bn ## 切换</span><br></pre></td></tr></table></figure>
+<h3 id="Vim-行移动"><a href="#Vim-行移动" class="headerlink" title="Vim 行移动"></a>Vim 行移动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd,k,p</span><br></pre></td></tr></table></figure>
+<p>k为向上移动，当移动到合适的位置时用p粘贴。</p>
+<h3 id="tabe-多标签切换"><a href="#tabe-多标签切换" class="headerlink" title="tabe 多标签切换"></a>tabe 多标签切换</h3><p><code>:tabe a.txt</code>： 打开a.txt 文件</p>
+<p><code>gt</code>: 在多标签中切换</p>
+<p><code>:tabc</code> 关闭标签，或<code>:x</code>等</p>
+<h3 id="vim-跳转到变量或函数的定义处"><a href="#vim-跳转到变量或函数的定义处" class="headerlink" title="vim 跳转到变量或函数的定义处"></a>vim 跳转到变量或函数的定义处</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ ,ctrl+i #跳转</span><br><span class="line">ctrl + o : #跳转回来</span><br></pre></td></tr></table></figure>
+<p>查找鼠标所在位置的字符：<code>gd</code></p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/03/13/Vim-学习/">https://wenhui-zhou.github.io/2019/03/13/Vim-学习/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/tip/">tip</a></div><div class="post-nav"><a class="pre" href="/2019/03/16/awk,grep-学习/">awk,grep 学习</a><a class="next" href="/2019/03/13/linux-trick/">linux trick</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

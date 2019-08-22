@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>Deep Learning for image Super-resolution: a Survey | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Deep Learning for image Super-resolution: a Survey</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Deep Learning for image Super-resolution: a Survey</h1><div class="post-meta">Jul 23, 2019<span> | </span><span class="category"><a href="/categories/super-resolution/">super resolution</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/#vcomment"><span class="valine-comment-count" data-xid="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/"></span><span> 条评论</span></a><div class="post-content"><p>本篇论文是2019年2月份，发表在arxiv上的篇关于超分辨率的一篇综述。这篇文章系统且全面的介绍了一些基于深度学习的超分辨率方法。其中包括：</p>
+<ul>
+<li>超分辨率问题的定义 (problem setting)</li>
+<li>benchmark datasets</li>
+<li>性能评价指标 (performance metrics)</li>
+<li>基于深度学习的超分辨率方法</li>
+<li>特定领域的超分辨率应用 (domain-specific application)</li>
+</ul>
+<p>此外作者对比每个超分辨率方法，指出了网络的优点以及局限。最后对该领域的一些开放性问题(open issuse) 以及挑战提出了未来研究的方向。</p>
+<a id="more"></a>
+<h3 id="超分辨率问题的定义（problem-setting）"><a href="#超分辨率问题的定义（problem-setting）" class="headerlink" title="超分辨率问题的定义（problem setting）"></a>超分辨率问题的定义（problem setting）</h3><p>图像的超分辨率要解决的问题是：从一张低分辨率（LR）的图像中，恢复出一张高分辨率（HR）的图像。</p>
+<p>通常来说，我们通过下面的方式得到低分辨率的图像：<br>$$<br>I_{x}=\mathcal{D}\left(I_{y} ; \delta\right)<br>$$<br>$I_x$ 表示低分辨率图像，$I_y$ 表示高分辨率图像，$D()$ 表示下采样的映射函数，$\delta$ 表示映射函数的参数。图片清晰度不够的原因可能有很多种，例如聚焦，图片压缩，传感器噪声等问题。一些学者提出了下面的模型来模拟这种失真的映射。<br>$$<br>\mathcal{D}\left(I_{y} ; \delta\right)=\left(I_{y} \otimes \kappa\right) \downarrow_{s}+n_{\zeta},{\kappa, s, \zeta} \subset \delta<br>$$<br>$I_{y} \otimes \kappa$ 表示HR图片与模糊核（blur kernel）k的卷积操作，下箭头表示下采样，$n_{\zeta}$ 表示方差为$\zeta$ 的白高斯噪声。</p>
+<hr>
+<p>目前大多数的数据库，产生LR图像的方法是直接对SR图像做一些下采样(双三次插值算法(bicubic interpolation))，同时对图片作抗锯齿（anti aliasing），去模糊等操作(blur) 。关于下采样，上采样的一些方法可以看 <a href="http://eeweb.poly.edu/~yao/EL5123/lecture8_sampling.pdf" target="_blank" rel="noopener">这个课件</a>，或<a href="https://clouard.users.greyc.fr/Pantheon/experiments/rescaling/index-en.html#bicubic" target="_blank" rel="noopener">这里</a>。</p>
+<p>关于超分问题，我们更关注的是如何由低分辨率的图片得到高分辨率的图片，即：<br>$$<br>\hat{I}_{y}=\mathcal{F}\left(I_{x} ; \theta\right)<br>$$<br>其中$\mathcal{F}()$ 为超分模型，由低分辨率图片生成高分辨率的图片。</p>
+<p>对于一个典型的超分辨率问题来说，我们需要从一个LR图像中恢复出它的HR版本。模型的目标是最小化我们恢复出来的图片与原始HR图片的差距，<strong>目标方程</strong>如下：<br>$$<br>\hat{\theta}=\underset{\theta}{\arg \min } \mathcal{L}\left(\hat{I}_{y}, I_{y}\right)+\lambda \Phi(\theta)<br>$$<br>其中$\mathcal{L}\left(\hat{I}_{y}, I_{y}\right)$ 为生成的HR图像与原始图像的Loss，公式尾项是一个<strong>正则项</strong>。目前使用较多的loss为像素级别的MSE loss，同时一些组合型的loss也经常被使用。引入正则项的目的是控制参数的变化，使得网络更容易收敛。<a href="https://www.jianshu.com/p/70487abdf96b" target="_blank" rel="noopener">正则项可以看这里。</a></p>
+<hr>
+<h3 id="Benchmark-dataset"><a href="#Benchmark-dataset" class="headerlink" title="Benchmark dataset"></a>Benchmark dataset</h3><p>在一个典型的超分辨率的文章中，通常需要对一些公开数据集上进行试验，在这些公开数据集上的效果指标作为这个算法性能的评价标准。主要使用的数据集有：</p>
+<p><img src="../images/SR/dataset_7_25.png" alt=""></p>
+<hr>
+<h3 id="Image-Quality-Assessment"><a href="#Image-Quality-Assessment" class="headerlink" title="Image Quality Assessment"></a>Image Quality Assessment</h3><p>图片质量的评价是一个与感知，视觉相关的问题。通常存在客观和主观的两类方法。其中客观方法根据指标计算模型直接计算得出，如MSE。主观方法则与人们的感知更为接近。下面介绍一下常用的评价方法。</p>
+<h4 id="Peak-Signal-to-Noise-Ratio-峰值信噪比"><a href="#Peak-Signal-to-Noise-Ratio-峰值信噪比" class="headerlink" title="Peak Signal-to-Noise Ratio(峰值信噪比)"></a>Peak Signal-to-Noise Ratio(峰值信噪比)</h4><p>峰值信号比是一种图像的客观评价标准。他用最大值信号与背景噪声信号（重建与原始信号的差）的比值作为评价标准：<br>$$<br>\begin{aligned} \operatorname{MSE} &amp;=\frac{1}{N} \sum_{i=1}^{N}(I(i)-\hat{I}(i))^{2} \ \operatorname{PSNR} &amp;=10 \cdot \log _{10}\left(\frac{L^{2}}{\mathrm{MSE}}\right) \end{aligned}<br>$$<br>其中L为图像点颜色的最大数值，若采样点采样8位表示，那么L = 255。该指标更加注重像素点之间的误差。典型的<strong>PSNR值在20到40之间</strong>。指标越高越好。</p>
+<p>但是由于PSNR指标更多的放映相同位置上像素值的差异，而未考虑到人眼的视觉感知，因此作为质量评价指标是存在缺陷的。但这个指标仍是目前使用最多的一个指标。</p>
+<p><strong>人眼视觉特征</strong></p>
+<ol>
+<li>对空间频率较低的对比差异敏感度高</li>
+<li>人眼对亮度对比差异的敏感度较色度高</li>
+<li>人眼对一个区域的感知结果会影响到周围邻近区域</li>
+</ol>
+<hr>
+<h4 id="SSIM（Structural-Similarity-结构相似性）"><a href="#SSIM（Structural-Similarity-结构相似性）" class="headerlink" title="SSIM（Structural Similarity 结构相似性）"></a>SSIM（Structural Similarity 结构相似性）</h4><p>SSIM分别从亮度，对比度，结构三个方面度量图片的相似性。</p>
+<p>首先计算图片的mean和variance：<br>$$<br>\begin{aligned} \mu_{I} &amp;=\frac{1}{N} \sum_{i=1}^{N} I(i) \ \sigma_{I} &amp;=\left(\frac{1}{N-1} \sum_{i=1}^{N}\left(I(i)-\mu_{I}\right)^{2}\right)^{\frac{1}{2}} \end{aligned}<br>$$<br><strong>亮度</strong>（luminance）指标（$\hat{I}$ 指生成的图片）:<br>$$<br>\mathcal{C}_{l}(I, \hat{I})=\frac{2 \mu_{I} \mu_{\hat{I}}+C_{1}}{\mu_{I}^{2}+\mu_{\hat{I}}^{2}+C_{1}}<br>$$<br><strong>对比度（contrast）</strong>指标：<br>$$<br>\mathcal{C}_{c}(I, \hat{I})=\frac{2 \sigma_{I} \sigma_{\hat{I}}+C_{2}}{\sigma_{I}^{2}+\sigma_{\hat{I}}^{2}+C_{2}}<br>$$<br><strong>结构对比度（structure comparison）</strong>指标：<br>$$<br>\begin{aligned} \sigma_{I \hat{I}} &amp;=\frac{1}{N-1} \sum_{i=1}^{N}\left(I(i)-\mu_{I}\right)\left(\hat{I}(i)-\mu_{\hat{I}}\right) \ \mathcal{C}_{s}(I, \hat{I}) &amp;=\frac{\sigma_{I \hat{I}}+C_{3}}{\sigma_{I} \sigma_{\hat{I}}+C_{3}} \end{aligned}<br>$$<br>其中$C_1 = (K_1L)^2$,$C_2 = (K_2L)^2$,$C_3 = C_2 / 2$。</p>
+<p>SSIM的指标有三面三个指标组合而成：<br>$$<br>\operatorname{SSIM}(I, \hat{I})=\left[\mathcal{C}_{l}(I, \hat{I})\right]^{\alpha}\left[\mathcal{C}_{c}(I, \hat{I})\right]^{\beta}\left[\mathcal{C}_{s}(I, \hat{I})\right]^{\gamma}<br>$$<br>通常使用下面这个形式：<br>$$<br>\operatorname{SSIM}(I, \hat{I})=\frac{\left(2 \mu_{I} \mu_{\hat{I}}+C_{1}\right)\left(\sigma_{I \hat{I}}+C_{2}\right)}{\left(\mu_{I}^{2}+\mu_{\overline{I}}^{2}+C_{1}\right)\left(\sigma_{I}^{2}+\sigma_{\tilde{I}}^{2}+C_{2}\right)}<br>$$<br>一般的，$k_1 = 0.01,k_2 = 0.03, L =255$。</p>
+<p>此外还有一些主观的评价方法（mean opinion score），利用志愿者对生成图片的质量进行五个等级的评价，来确定图片的质量。</p>
+<p>对于图片的颜色空间来说，常用的颜色空间有RGB空间与YCbCr。</p>
+<hr>
+<h3 id="基于有监督的超分辨率方法"><a href="#基于有监督的超分辨率方法" class="headerlink" title="基于有监督的超分辨率方法"></a>基于有监督的超分辨率方法</h3><h4 id="超分辨率框架分类"><a href="#超分辨率框架分类" class="headerlink" title="超分辨率框架分类"></a>超分辨率框架分类</h4><p>超分辨率框架总结下来有以下四种：</p>
+<ol>
+<li>Pre-upsampling Super-resolution</li>
+<li>Post-upsampling Super-resolution</li>
+<li>Progressive Upsampling Super-resolution</li>
+<li>Iterative Up-and-down Sampling Super-resolution</li>
+</ol>
+<p>如下图：</p>
+<p><img src="../images/SR/sr_structure_725.png" height="700px" width="600px"></p>
+<p><strong>Pre-upsampling Super-resolution</strong></p>
+<p>该方法在将图片送入网络前先用传统方法进行图片的放大（bicubic interpolation上采样），将图片放大到输出的要求大小，然后送入CNN网络中，学习一个端到端的从LR到HR的映射。</p>
+<p>该方法的优点在于神经网络仅需要学习一张粗糙的（传统方法放大的）图片到HR图片的映射，大大降低了网络学习的难度；同时这种结构可以任意控制图片放大倍数。该方法框架也成为了一种较为主流的框架。</p>
+<p>该方法的缺点在于：传统的图片放大算法中通常需要包含去噪，去模糊等操作，需要花费很大的时间以及空间。</p>
+<hr>
+<p><strong>Post-upsampling Super-resolution</strong></p>
+<p>该方法将LR到HR的整个过程作为网络学习的目标，上采样层在网络的末端，这种设计可以极大发挥网络的潜力，同时能够显著降低网络训练时消耗的时间与空间。在train和inference阶段速度带来了很大的提升。</p>
+<p>缺点：仅通过一个upsample层来放大图片，使得网络学习的难度大大提升；由于upsample层的放大尺度是固定的，如果更换一个倍数，就要更换一个训练模型。</p>
+<hr>
+<p><strong>Progressive Upsampling Super-resolution</strong></p>
+<p>渐进式的上采样可以解决上诉post结构的问题（例如LapSRN网络 laplacian pyramid SR network）。该结构采用许多CNN的级联结构，每个阶段进行一个上采样重构HR，生成放大2倍，4倍，8倍等结果。</p>
+<p>该模型的缺点是结构复杂，训练难度大等等。</p>
+<hr>
+<p><strong>Iterative Up-and-down Sampling Super-resolution</strong></p>
+<p>该结构反复的放大，缩小图片，试图学习到一种后映射（back projection）的关系，该模型可以很好的学习到LR与HR之间的映射关系。基于该框架的网络DBPN也获得了NTIRE 2018的冠军。尽管这种up-down的结构设计标准还未确定，DBPN网络中存在着大量的复杂的结构设计以及繁重的人工设计过程，但是这种结构有很大的研究潜力。还需要进一步探索。</p>
+<h4 id="传统插值算法"><a href="#传统插值算法" class="headerlink" title="传统插值算法"></a>传统插值算法</h4><ol>
+<li>最近邻插值</li>
+<li>线性插值</li>
+<li>双三次插值</li>
+</ol>
+<p>详见<a href="www.baidu.com">这里</a></p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">https://wenhui-zhou.github.io/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/论文阅读/">论文阅读</a></div><div class="post-nav"><a class="pre" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a><a class="next" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/22/堆排序，python实现/">堆排序，python实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/16/深度学习代码的框架/">深度学习代码的框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/24/normalization/">normalization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/image-upsample-downsample-method/">image upsample-downsample method</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/">Deep Learning for image Super-resolution: a Survey</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/23/一些提升效率的方法/">一些提升效率的方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/21/xigua-支持向量机/">xigua-支持向量机</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/20/xigua-神经网络/">xigua-神经网络</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/19/19-7-2019-preview/">19/7/2019 preview</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/17/前缀树🌲-trie/">前缀树🌲:trie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
