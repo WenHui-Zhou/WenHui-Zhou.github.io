@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://wenhui-zhou.github.io/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/</loc>
+    <loc>https://wenhui-zhou.github.io/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey-I/</loc>
+    <lastmod>2019-08-29</lastmod>
+  </url>  <url>
+    <loc>https://wenhui-zhou.github.io/2019/08/29/Deep-Learning-for-image-Super-resolution-a-Survey-II/</loc>
     <lastmod>2019-08-29</lastmod>
   </url>  <url>
     <loc>https://wenhui-zhou.github.io/2019/08/27/%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%8Cpython%E7%A4%BA%E4%BE%8B/</loc>
