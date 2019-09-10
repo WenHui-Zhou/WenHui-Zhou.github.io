@@ -9,6 +9,15 @@
 <p><img src="../images/SR/rcan-net.png" alt=""></p>
 <p>RCAN网络结构由四部分组成，第一部分是卷积浅层特征提取模块，第二部分是RIR深层特征提取模块，第三部分是上采样模块，第四部分是重建模块，网络最后的卷积层具有三个通道，表示输出的颜色。 </p>
 <p>RCAN网络损失函数采用L1损失：<br>$$<br>L(\Theta)=\frac{1}{N} \sum_{i=1}^{N}\left|H_{R C A N}\left(I_{L R}^{i}\right)-I_{H R}^{i}\right|_{1}<br>$$</p>
+<h3 id="Residual-in-Residual-RIR"><a href="#Residual-in-Residual-RIR" class="headerlink" title="Residual in Residual (RIR)"></a>Residual in Residual (RIR)</h3><p>RIR结构中包含着若干个（10）residual groups（RG）结构以及long skip connection。每一个RG中包含着如果个（20）residual channel attention block（RCAB）模块，内部含有许多短的连接。</p>
+<p>RIR结构通过堆叠残差块，利用skip connection这种结构来克服网络难以训练的问题。</p>
+<h3 id="channel-attention（CA）"><a href="#channel-attention（CA）" class="headerlink" title="channel attention（CA）"></a>channel attention（CA）</h3><p><img src="../images/SR/ca.png" alt=""></p>
+<p>输入是一个 H×W×C（64） 的特征，我们先进行一个空间的全局平均池化得到一个 1×1×C 的通道描述。接着，再经过一个下采样层和一个上采样层得到每一个通道的权重系数，将权重系数和原来的特征相乘即可得到缩放后的新特征，整个过程实际上就是对不同通道的特征重新进行了加权分配。</p>
+<p>其中，下采样和上采样层都利用 1×1 的卷积来实现，下采样层的通道数减少 r 倍，激活函数为 Relu，上采样层的激活函数为 Sigmoid。在论文中，作者采用的通道数 C=64，r = 16。</p>
+<h3 id="Residual-channel-attention-Block（RCAB）"><a href="#Residual-channel-attention-Block（RCAB）" class="headerlink" title="Residual channel attention Block（RCAB）"></a>Residual channel attention Block（RCAB）</h3><p><img src="../images/SR/rcab.png" alt=""></p>
+<p>输入一个特征 input，我们首先进行一个卷积-Relu-卷积操作得到 f，然后 f 再经过一个 CA 模块进行重新缩放得到 x，最后将 x 和 input 相加得到输出特征。其中，卷积操作都采用 3×3 的卷积核。</p>
+<h3 id="实现的细节"><a href="#实现的细节" class="headerlink" title="实现的细节"></a>实现的细节</h3><p>RIR中RG个数：10；RG中RCAB的个数：20，conv的大小：3 x 3，channel：64</p>
+<p>通道下采样的scale：16，C/16 = 4。</p>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/09/05/Image-Super-Resolution-Using-Very-Deep-Residual-Channel-Attention-Networks-RCAN/">https://wenhui-zhou.github.io/2019/09/05/Image-Super-Resolution-Using-Very-Deep-Residual-Channel-Attention-Networks-RCAN/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/SR/">SR</a></div><div class="post-nav"><a class="pre" href="/2019/09/06/linux-环境安装/">linux 环境安装</a><a class="next" href="/2019/09/03/超分辨率论文摘要阅读/">超分辨率论文摘要阅读</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
 var GUEST_INFO = ['nick','mail','link'];
@@ -33,4 +42,7 @@ if (search_path.length == 0) {
 }
 var path = '/' + search_path;
 searchFunc(path, 'local-search-input', 'local-search-result');
-</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
