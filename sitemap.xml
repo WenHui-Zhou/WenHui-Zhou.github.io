@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wenhui-zhou.github.io/2019/09/18/some-tip-about-resume/</loc>
+    
+    <lastmod>2019-09-18T21:00:43.033Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wenhui-zhou.github.io/2019/09/05/Image-Super-Resolution-Using-Very-Deep-Residual-Channel-Attention-Networks-RCAN/</loc>
     
     <lastmod>2019-09-10T09:17:40.254Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wenhui-zhou.github.io/2019/09/03/%E8%B6%85%E5%88%86%E8%BE%A8%E7%8E%87%E8%AE%BA%E6%96%87%E6%91%98%E8%A6%81%E9%98%85%E8%AF%BB/</loc>
+    
+    <lastmod>2019-09-06T15:17:38.906Z</lastmod>
     
   </url>
   
@@ -26,13 +40,6 @@
     <loc>https://wenhui-zhou.github.io/2019/07/23/Deep-Learning-for-image-Super-resolution-a-Survey/</loc>
     
     <lastmod>2019-09-05T01:36:35.594Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wenhui-zhou.github.io/2019/09/03/%E8%B6%85%E5%88%86%E8%BE%A8%E7%8E%87%E8%AE%BA%E6%96%87%E6%91%98%E8%A6%81%E9%98%85%E8%AF%BB/</loc>
-    
-    <lastmod>2019-09-04T04:14:32.421Z</lastmod>
     
   </url>
   
