@@ -1,8 +1,184 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>Stanford cs231A | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Stanford cs231A</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Stanford cs231A</h1><div class="post-meta">Sep 19, 2019<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/09/19/Stanford-cs231A/#vcomment"><span class="valine-comment-count" data-xid="/2019/09/19/Stanford-cs231A/"></span><span> 条评论</span></a><div class="post-content"><p>Stanford cs231A与cs231N是分别从传统方法和深度学习方法介绍计算机视觉的一些技术与应用。这本课程适合作为计算机视觉的入门课程，分别从目标的几何学和语义学上两个角度对图像进行分析。</p>
 <a id="more"></a>
+<h2 id="slide-10-Active-stereo-amp-Volumetric-stereo"><a href="#slide-10-Active-stereo-amp-Volumetric-stereo" class="headerlink" title="slide 10: Active stereo &amp; Volumetric stereo"></a>slide 10: Active stereo &amp; Volumetric stereo</h2><p> <img src="../images/3D/act.png" style="zoom:43%;"></p>
+<p>使用一个光源发射器来代替相机，能够解决两张图片之间的关联问题。</p>
+<p>通常可以使用激光，从上到下扫描这个物体的表面，可以获得一个非常精确的三维结构信息。</p>
+<h3 id="traditional-stereo"><a href="#traditional-stereo" class="headerlink" title="traditional stereo"></a>traditional stereo</h3><p>传统的三维成像的方法：</p>
+<p><img src="../images/3D/tra.png" style="zoom:33%;"></p>
+<p><img src="../images/3D/tra1.png" style="zoom:33%;"></p>
+<p><strong>volumetric stereo</strong></p>
+<p><img src="../images/3D/vol.png" style="zoom:33%;"></p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture10_volumetric_stereo.pdf" target="_blank" rel="noopener">slide</a></p>
+<p>2019/09/26</p>
+<h2 id="silde-9-Detectors-and-descriptors"><a href="#silde-9-Detectors-and-descriptors" class="headerlink" title="silde 9: Detectors and descriptors"></a>silde 9: Detectors and descriptors</h2><p><strong>Detectors:</strong></p>
+<p><strong>边缘:</strong> 图片中深度不连续，表面朝向不连续，反射、光照不连续的位置。</p>
+<p>可以使用传统的canny算法进行边缘的检测，通常图片可以进行平滑或求导处理。</p>
+<p><strong>角点corner/blob光斑识别：</strong>角点通常较为突出，且具有重复性，局部性。可以使用harris角点检测算法来检测。</p>
+<p>光斑可以使用拉普拉斯或高斯来检测：</p>
+<p><img src="../images/3D/blob.png" style="zoom:33%;"></p>
+<p>常用的检测器SIFT：</p>
+<p><img src="../images/3D/sift.png" style="zoom:33%;"></p>
+<p>HOG:</p>
+<p><img src="../images/3D/hog.png" style="zoom:33%;"></p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture9_detector_descriptors.pdf" target="_blank" rel="noopener">slide</a></p>
+<p>2019/09/25</p>
+<h2 id="slide-8-Fitting-and-Matching"><a href="#slide-8-Fitting-and-Matching" class="headerlink" title="slide 8: Fitting and Matching"></a>slide 8: Fitting and Matching</h2><p><strong>问题定义：</strong></p>
+<p>特征点匹配问题存在着许多难以解决的问题：</p>
+<ul>
+<li>nosiy</li>
+<li>outliers（外点）</li>
+<li>missing data</li>
+<li>intra-class variantion</li>
+</ul>
+<h4 id="拟合方法"><a href="#拟合方法" class="headerlink" title="拟合方法"></a>拟合方法</h4><p><strong>least square methods：</strong></p>
+<p><img src="../images/3D/lse.png" style="zoom:33%;"></p>
+<p>最小二乘法用来拟合数据，可以一定程度上对较小的噪声鲁棒，但是对于较大的噪声处理效果不好。</p>
+<p><strong>RANSAC：</strong></p>
+<p>通常样本中包含正确数据(inliers，可以被模型描述的数据)，也包含异常数据(outliers，偏离正常范围很远、无法适应数学模型的数据)，即数据集中含有噪声。这些异常数据可能是由于错误的测量、错误的假设、错误的计算等产生的。</p>
+<p>RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出 。</p>
+<p>RANSAC算法的输入是一组观测数据（往往含有较大的噪声或无效点），一个用于解释观测数据的参数化模型以及一些可信的参数。RANSAC通过反复选择数据中的一组随机子集来达成目标。 被选取的子集被假设为局内点，并用下述方法进行验证：</p>
+<ul>
+<li>随机选择一组样本子集，并假设所选择的子集都为局内点</li>
+<li>寻找一个模型适应于假设的局内点，即所有的未知参数都能从假设的局内点计算得出。</li>
+<li>用1中得到的模型去测试所有的其它数据，若某个点适用于估计的模型，认为它也是局内点inlier</li>
+<li>如果有足够多的点被归类为假设的局内点，那么估计的模型就足够合理。</li>
+<li>用所有假设的局内点去重新估计模型（譬如使用最小二乘法）</li>
+<li>最后，通过估计局内点与模型的错误率来评估模型。</li>
+<li>上述过程被重复执行固定的次数，每次产生的模型要么因为局内点太少而被舍弃，要么因为比现有的模型更好而被选用。</li>
+</ul>
+<p><strong>霍夫变换：</strong></p>
+<p>霍夫变换(Hough Transform)是图像处理中的一种<strong>特征提取技术</strong>，它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。</p>
+<p>起初的方法要求知道物体边界线的解析方程，但不需要有关区域位置的先验知识。这种方法的一个突出优点是分割结果的Robustness , 对数据的不完全或噪声不是非常敏感。</p>
+<p>例如使用霍夫变换来找出图像中的直线（某些特定的形状），将原图中的每个点所在直线的参数空间画出来。当在参数空间中重叠最大的那个参数证明是所有数据都经过该参数的直线，因此可以认为参数所表示的直线为图中的直线。</p>
+<p><img src="../images/3D/hough.png" style="zoom:33%;"></p>
+<p>图中每一个点都将对应到一条参数空间上的曲线，找到参数重叠最大的一个参数，即是大多数数据经过的直线的参数。</p>
+<p>解释链接：<a href="https://zhuanlan.zhihu.com/p/47649796" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/47649796</a></p>
+<p>使用hough算法变换之后，能够更好的进行图片之间的匹配。</p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture8_fitting_matching.pdf" target="_blank" rel="noopener">slide</a></p>
+<p>2019/9/25</p>
+<h2 id="slide-7-Multi-view-geometry"><a href="#slide-7-Multi-view-geometry" class="headerlink" title="slide 7: Multi-view geometry"></a>slide 7: Multi-view geometry</h2><p><strong>问题描述：</strong></p>
+<p>从m张照片中的n个点中，去估计、还原出m个仿射矩阵，以及n个3D的点。</p>
+<p><img src="../images/3D/sfm1.png" style="zoom:37%;"></p>
+<p>三维空间中的点和图像二维上的点存在一个仿射关系：</p>
+<p><img src="../images/3D/fang.png" style="zoom:40%;"></p>
+<p>将三维空间中的点，通过这种映射关系映射到二维平面上。</p>
+<h4 id="factorization-method-因式分解方法"><a href="#factorization-method-因式分解方法" class="headerlink" title="factorization  method(因式分解方法)"></a>factorization  method(因式分解方法)</h4><p><strong>centering the data:</strong></p>
+<p>提出去图像点之间的质心：<br>$$<br>\hat{\mathbf{x}}_{i j}=\mathbf{x}_{i j}-\frac{1}{n} \sum_{k=1}^{n} \mathbf{x}_{i k}<br>$$<br>将仿射变换代人上式，得到三维空间中的质心位置：</p>
+<p><img src="../images/3D/sfm2.png" style="zoom:37%;"></p>
+<p>经过数据的centering之后，每张图片的质心都将会映射到3D点云的质心上，将这个质心视为世界坐标系原点，进一步简化公式：</p>
+<p><img src="../images/3D/sfm3.png" style="zoom:40%;"></p>
+<p>构造一个m x n的矩阵，表示不同视点拍摄的n个点的位置信息，如下：</p>
+<p><img src="../images/3D/sfm4.png" style="zoom:43%;"></p>
+<p>对D矩阵进行SVD分解，选取前三大的奇异值构成一个新的矩阵（当rank=3时能够最小化F模使得其更加接近D矩阵）。</p>
+<p><img src="../images/3D/sfm5.png" style="zoom:40%;"></p>
+<p>利用MS恢复出三维像素点云信息。</p>
+<p>该方法的确定是难以解决视觉上的歧义、结构的相似性问题。</p>
+<h2 id="slide-6-Stereo-立体-Systems-Multi-view-geometry"><a href="#slide-6-Stereo-立体-Systems-Multi-view-geometry" class="headerlink" title="slide 6: Stereo(立体) Systems Multi-view geometry"></a>slide 6: Stereo(立体) Systems Multi-view geometry</h2><p>接上一章，使用多视角的几何方法需要找到两个图像之间的关联点，得出他们的焦点即物体实际的位置，即得到了物体的三维点云表达。</p>
+<p>通常的做法是将图像内物体的位置调整成水平平行的方式，关键点匹配效果好。</p>
+<p><img src="../images/3D/para.png" style="zoom:50%;"></p>
+<p>当特征点在同一个水平位置时更容易计算深度：</p>
+<p><img src="../images/3D/depth.png" style="zoom:40%;"></p>
+<h4 id="method"><a href="#method" class="headerlink" title="method"></a>method</h4><p><strong>window base correlation: </strong></p>
+<p><img src="../images/3D/win1.png" style="zoom:40%;"></p>
+<p>上诉方法对图片光线不敏感，匹配效果不好，改进方案如下：</p>
+<p><img src="../images/3D/win2.png" style="zoom:40%;"></p>
+<p>匹配问题存在很多难点，常常导致匹配错误：</p>
+<p><img src="../images/3D/win3.png" style="zoom:40%;"></p>
+<p>使用下述方法可以提升精度：</p>
+<p><img src="../images/3D/win4.png" style="zoom:40%;"></p>
+<h3 id="SFM-structure-from-motion-problem"><a href="#SFM-structure-from-motion-problem" class="headerlink" title="SFM: structure from motion problem"></a>SFM: structure from motion problem</h3><p>SFM方法通过相机的移动来确定目标和几何关系，是三维重建的一种常见方法，使用RGB图像即可对图像进行恢复。</p>
+<p><img src="../images/3D/sfm.png" style="zoom:40%;"></p>
+<p>SFM算法流程：</p>
+<ul>
+<li>特征点提取(SIFT) 特征点匹配</li>
+<li>基础矩阵估计F（5/8点法）</li>
+<li>本质矩阵估计E</li>
+<li>本质矩阵分解为R和T（SVD分解）</li>
+<li>三维点云计算（三角形法）</li>
+<li>重投影（将三维点云重新投影到平面的方法，用于计算误差）</li>
+<li>重构的细化与优化</li>
+</ul>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture6_stereo_systems.pdf" target="_blank" rel="noopener">slide</a></p>
+<p>2019/9/24</p>
+<h2 id="slide-5-Epipolar-Geometry-对极几何"><a href="#slide-5-Epipolar-Geometry-对极几何" class="headerlink" title="slide 5: Epipolar Geometry (对极几何)"></a>slide 5: Epipolar Geometry (对极几何)</h2><p>  从单张图片中重建出物体的三维结构，存在着巨大的困难。需要对物体的位置，姿态进行定位，需要从场景中的线、无穷远点判断场景的结构以及相机内参K。此外还需要一些其他先验，例如点、平面等的对应关系。由于视点的空间感很弱，因此画面存在歧义，重建难度大。</p>
+<p><img src="../images/3D/difficult.png" style="zoom:80%;"></p>
+<h4 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h4><p>通过两个视点来观察整个场景：</p>
+<p><img src="../images/3D/triangle.png" style="zoom:80%;"></p>
+<p>使用上诉的三角测距方法，其中两个相机的内参K已知：</p>
+<p><img src="../images/3D/minu.png" style="zoom:80%;"></p>
+<p>通过找到两个图片的关联点，最小化距离。</p>
+<h4 id="Multi-stereo-view-geometry-多视角几何"><a href="#Multi-stereo-view-geometry-多视角几何" class="headerlink" title="Multi(stereo)-view geometry (多视角几何)"></a>Multi(stereo)-view geometry (多视角几何)</h4><p><strong>camera geometry：</strong>找到两张图像中的对应点，找出相机的内参矩阵，位置，以及位姿。</p>
+<p><strong>scene geometry：</strong> 从二维图像中恢复出三维场景的结果。</p>
+<p><img src="../images/3D/example.png" style="zoom:80%;"></p>
+<p><strong>给出A图片中的一个点，如何从另一张图片中找出其对应点？</strong></p>
+<p>计算两张图像中，关联点的关联关系：</p>
+<p><img src="../images/3D/epi1.png" style="zoom:70%;"></p>
+<p>对于相机来说，我们通过调节相机参数使得两个视角的K均为单位矩阵简化函数的运算。</p>
+<p><img src="../images/3D/epi2.png" style="zoom:80%;"></p>
+<p>如上图，找到一个向量垂直于对极几何平面，得到上诉等式。</p>
+<p>对上式进行变换：</p>
+<p><img src="../images/3D/epi3.png" style="zoom:67%;"></p>
+<p>进一步对上式进行分析，得到F变量：</p>
+<p><img src="../images/3D/epi4.png" style="zoom:80%;"></p>
+<p>已知F变量可以从一张图片中得到另一张图片的对应点,F变换包含了对极几何的两个视点以及相机内参的信息。此外F还反映了在视点下场景的变换关系：</p>
+<p><img src="../images/3D/epi5.png" style="zoom:80%;"></p>
+<h4 id="F变换的估计"><a href="#F变换的估计" class="headerlink" title="F变换的估计"></a>F变换的估计</h4><p>得到两张图片的F变换矩阵可以得到两张图像的关联点，于是有很多算法为估计F而提出：<strong>the eight-point algorithm</strong>八点法，通过选择图上的8个关联点，联立方程$P^{T}Fp’ = 0$,得到最终的结果。此外可以选择过完备的关联点对，联立方程通过SVD分解最小化误差的方式估计F。以及<strong>正则化八点法</strong>等等。</p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture5_epipolar_geometry.pdf" target="_blank" rel="noopener">silde</a></p>
+<p>2019/9/23</p>
+<h2 id="slide-4-Single-View-Metrology"><a href="#slide-4-Single-View-Metrology" class="headerlink" title="slide 4: Single View Metrology"></a>slide 4: Single View Metrology</h2><h4 id="2D环境下的变换"><a href="#2D环境下的变换" class="headerlink" title="2D环境下的变换"></a>2D环境下的变换</h4><p><strong>等距变换：</strong><br>$$<br>\left[\begin{array}{c}{\mathrm{x}^{\prime}} \ {\mathrm{y}^{\prime}} \ {1}\end{array}\right]=\left[\begin{array}{ll}{\mathrm{R}} &amp; {\mathrm{t}} \ {0} &amp; {1}\end{array}\right]\left[\begin{array}{l}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]=\mathrm{H}_{\mathrm{e}}\left[\begin{array}{l}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]<br>$$<br>该变换对原始图片进行旋转和平移，不改变物体的相对位置和大小。</p>
+<p><strong>相似变换：</strong><br>$$<br>\left[\begin{array}{l}{x^{\prime}} \ {y^{\prime}} \ {1}\end{array}\right]=\left[\begin{array}{cc}{S R} &amp; {t} \ {0} &amp; {1}\end{array}\right]\left[\begin{array}{l}{x} \ {y} \ {1}\end{array}\right]=H_{s}\left[\begin{array}{l}{x} \ {y} \ {1}\end{array}\right]<br>$$<br>对原始物体进行旋转、平移、缩放等操作，改变了物体的大小。</p>
+<p><strong>仿射变换：</strong><br>$$<br>\left[\begin{array}{c}{\mathrm{x}^{\prime}} \ {\mathrm{y}^{\prime}} \ {1}\end{array}\right]=\left[\begin{array}{cc}{\mathrm{A}} &amp; {\mathrm{t}} \ {0} &amp; {1}\end{array}\right]\left[\begin{array}{l}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]=\mathrm{H}_{\mathrm{a}}\left[\begin{array}{l}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]<br>$$<br>该变换在一个方向上对图像进行拉伸。</p>
+<p><strong>投影变换：</strong><br>$$<br>\left[\begin{array}{c}{\mathrm{x}^{\prime}} \ {\mathrm{y}^{\prime}} \ {1}\end{array}\right]=\left[\begin{array}{cc}{\mathrm{A}} &amp; {\mathrm{t}} \ {\mathrm{V}} &amp; {\mathrm{b}}\end{array}\right]\left[\begin{array}{c}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]=\mathrm{H}_{\mathrm{p}}\left[\begin{array}{l}{\mathrm{x}} \ {\mathrm{y}} \ {1}\end{array}\right]<br>$$<br><strong>交叉比例：</strong></p>
+<p><img src="../images/3D/ratio.png" style="zoom:40%;"></p>
+<h4 id="灭点和线"><a href="#灭点和线" class="headerlink" title="灭点和线"></a>灭点和线</h4><p>平面中的直线方程可以用矩阵来表示，两条直线叉乘得到垂直于该平面的垂线。</p>
+<p><img src="../images/3D/intersect.png" style="zoom:80%;"></p>
+<p>对于两条平行线，在齐次空间中，他们存在一个焦点（灭点）。该灭点位于垂直于两条线的一个方向向量上。</p>
+<p><img src="../images/3D/ideal.png" style="zoom:80%;"></p>
+<p>空间中的点或线都会在一个无限远的平面上汇聚于一个灭点：</p>
+<p><img src="../images/3D/point.png" style="zoom:80%;"></p>
+<p>图像中两条线相交于一个灭点，直线与夹角间存在下面的计算关系：</p>
+<p><img src="../images/3D/vanish.png" style="zoom:80%;"></p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture4_single_view_metrology.pdf" target="_blank" rel="noopener">silde</a></p>
+<p>2019/9/23</p>
+<h4 id="从单张图片中估计物体的几何结构"><a href="#从单张图片中估计物体的几何结构" class="headerlink" title="从单张图片中估计物体的几何结构"></a>从单张图片中估计物体的几何结构</h4><p> 根据上一页的ppt可以看出来，当夹脚为0的时候，K变量中有5个自由度，需要通过三个角度来计算相机的内参k：</p>
+<p><img src="../images/3D/inside.png" style="zoom:80%;"></p>
+<h4 id="extension"><a href="#extension" class="headerlink" title="extension"></a>extension</h4><p>计算出k之后，可以根据k去恢复相机坐标系中的场景朝向：</p>
+<p><img src="../images/3D/recover.png" style="zoom:80%;"></p>
+<p><img src="../images/3D/result.png" style="zoom:80%;"></p>
+<h2 id="slide-3-camera-calibertion"><a href="#slide-3-camera-calibertion" class="headerlink" title="slide 3: camera calibertion"></a>slide 3: camera calibertion</h2><p>相机的标定是十分重要的一个步骤，从图片中预测出相机的位姿和焦距等。</p>
+<p>下面是坐标映射方程：<br>$$<br>\mathrm{P}^{\prime}=\mathrm{M} \mathrm{P}_{\mathrm{w}}=\mathrm{K}[\mathrm{R} \quad \mathrm{T}] \mathrm{P}_{\mathrm{w}}<br>$$<br>相机标定的目的是从图像中估计出相机的内参和外参。</p>
+<p><strong>相机标定的目标为：</strong>已知物体在实际环境中的坐标，物体在图像中的坐标，预测映射矩阵M。映射矩阵M由相机的外参，内参矩阵，共有11个未知量。因此需要11个方程，6个correspondences可以解决这个问题。实际场景中，我们可以加入更多的约束，使得结果更加的robots。<br>$$<br>p_{i}=\left[\begin{array}{c}{u_{i}} \ {v_{i}}\end{array}\right]=\left[\begin{array}{c}{\frac{\mathbf{m}_{1} \mathrm{P}_{\mathrm{i}}}{\mathbf{m}_{3} \mathrm{P}_{\mathrm{i}}}} \ {\frac{\mathbf{m}_{2} \mathrm{P}_{\mathrm{i}}}{\mathbf{m}_{3} \mathrm{P}_{\mathrm{i}}}}\end{array}\right]=M P_{i}<br>$$<br>常用标定板进行相机的标定，用相机各个角度多次拍摄同一块标定板，然后将图片以及标定板间距输入程序中，即可算出相机的内参K（焦距，物距，倾斜度等等）。</p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture3_camera_calibration.pdf" target="_blank" rel="noopener">slide</a></p>
+<p>2019/09/20</p>
+<h2 id="slide-2-camera-models"><a href="#slide-2-camera-models" class="headerlink" title="slide 2: camera models"></a>slide 2: camera models</h2><p>这一课主要对相机的历史，成像原理进行介绍。</p>
+<p>1452年leonardo发现了暗箱开始，一直到1822年第一张相片问世，1908年出现彩色的相机，直到现在相机的性能有了巨大的提升。</p>
+<h4 id="小孔成像-pinhole-camera"><a href="#小孔成像-pinhole-camera" class="headerlink" title="小孔成像 pinhole camera"></a>小孔成像 pinhole camera</h4><p><img src="../images/3D/pinhole.png" style="zoom:80%;"></p>
+<p>小孔成像原理如上，利用光线直线传播性质，通过相似三角形的比例关系得到成像的尺寸位置。成像的比例关系为物距和焦距的比例。</p>
+<p><strong>小孔的大小越大成像越模糊，因为光线存在部分的重叠。当小孔变小之后光线之间分离，得到清晰的成效效果。</strong></p>
+<p>使用凹透镜来实现光线的聚焦，在成像位置实现模糊和聚焦的区域。凹透镜同样使得相机拍摄的场景发生扭曲。</p>
+<h4 id="坐标系统"><a href="#坐标系统" class="headerlink" title="坐标系统"></a>坐标系统</h4><p>将场景转换到坐标系统上，在视网膜上，设置一个坐标原点添加坐标偏移，其中k，l表示一个缩放单位，即焦距长度转换为焦距需要一个变换：</p>
+<p><img src="../images/3D/converting.png" style="zoom:80%;"></p>
+<p>三维到二维的转换如下：<br>$$<br>P=(x, y, z) \rightarrow P^{\prime}=\left(\alpha \frac{x}{z}+c_{x}, \beta \frac{y}{z}+c_{y}\right)<br>$$</p>
+<h4 id="齐次坐标系（homogeneous-coordinates）"><a href="#齐次坐标系（homogeneous-coordinates）" class="headerlink" title="齐次坐标系（homogeneous coordinates）"></a>齐次坐标系（homogeneous coordinates）</h4><p>在传统的笛卡尔坐标系统中，两条平行线是永远不会相交的，但是在透视坐标系中，在无穷远处所有的平行线都会汇聚到一个点，这个点常常被称为灭点。</p>
+<p>齐次坐标系常常用N+1个数字来表示N维坐标。用w表示与透视距离有关的系数，两个系统相互转换的关系如下：</p>
+<p><img src="../images/3D/coordinate-transfer.png" style="zoom:80%;"></p>
+<p>进一步提取出一个相机内部参数矩阵，完成这种转变。</p>
+<p><img src="../images/3D/matrix.png" style="zoom:80%;"></p>
+<p>相机位置发生偏移时，通过调节camera matrix可以得到精确的坐标位置：<br>$$<br>P^{\prime}=\left[\begin{array}{cccc}{\alpha} &amp; {-\alpha \cot \theta} &amp; {c_{x}} &amp; {0} \ {0} &amp; {\frac{\beta}{\sin \theta}} &amp; {c_{y}} &amp; {0} \ {0} &amp; {0} &amp; {1} &amp; {0}\end{array}\right]\left[\begin{array}{c}{x} \ {y} \ {z} \ {1}\end{array}\right]<br>$$<br>将一个眼前的物体拍摄到相机中，然后构建他的世界坐标系坐标，步骤如下：</p>
+<ul>
+<li>首先通过小孔成像的映射关系将实际物体的坐标映射到相机坐标中，需要提前获取的位置信息有物体的实际坐标，相机的内参即焦距、物距、倾斜角度。</li>
+<li>得到物体的相机坐标之后将这个坐标转换到世界坐标系中，即进行旋转、平移变换。</li>
+</ul>
+<p><img src="../images/3D/world.png"></p>
+<p><strong>图像坐标—投射变换—&gt;摄像机坐标—刚体变换—&gt; 世界坐标</strong></p>
+<p>对于整个变换矩阵M，他还有着一些性质，可以直接判断相机是否有歪斜、单元横纵比等。</p>
+<p><img src="../images/3D/theo.png"></p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture2_camera_models.pdf" target="_blank" rel="noopener">Slide</a></p>
+<p>2019/9/20</p>
 <h2 id="slide-1-introduction"><a href="#slide-1-introduction" class="headerlink" title="slide 1: introduction"></a>slide 1: introduction</h2><p>第一节课对计算机视觉两个关键技术进行一个的简要的回顾，这也是这门课之后的大纲内容。</p>
 <h4 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h4><p>物体的几何学，需要从2D的图像中抽取出3D的信息，重点内容包含相机的标定，相机参数的估计（姿态和焦距）。单图片视角的重建，多图片视角的重建。对极几何等数学映射，结构光以及volumetric stereo（3D物体的体积估计）。</p>
-<h3 id="Semantics"><a href="#Semantics" class="headerlink" title="Semantics"></a>Semantics</h3><p>语义分割对图像的理解，包括目标的分类、标定。这里头也面临很多困难，例如视角的不同，尺度的差异，关照的不同，形变，遮挡等等。</p>
+<h4 id="Semantics"><a href="#Semantics" class="headerlink" title="Semantics"></a>Semantics</h4><p>语义分割对图像的理解，包括目标的分类、标定。这里头也面临很多困难，例如视角的不同，尺度的差异，关照的不同，形变，遮挡等等。</p>
+<p><a href="http://web.stanford.edu/class/cs231a/lectures/lecture1_intro.pdf" target="_blank" rel="noopener">slide</a></p>
 <p>2019/9/19</p>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/09/19/Stanford-cs231A/">https://wenhui-zhou.github.io/2019/09/19/Stanford-cs231A/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/object-Object/">[object Object]</a></div><div class="post-nav"><a class="next" href="/2019/09/18/some-tip-about-resume/">some tip about resume</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
