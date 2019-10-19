@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-10-16T07:44:13.155Z</updated>
+  <updated>2019-10-18T10:38:10.706Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>文献阅读：基于RealSense和模型库的人体建模方法</title>
+    <link href="https://wenhui-zhou.github.io/2019/10/18/%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%EF%BC%9A%E5%9F%BA%E4%BA%8ERealSense%E5%92%8C%E6%A8%A1%E5%9E%8B%E5%BA%93%E7%9A%84%E4%BA%BA%E4%BD%93%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95/"/>
+    <id>https://wenhui-zhou.github.io/2019/10/18/文献阅读：基于RealSense和模型库的人体建模方法/</id>
+    <published>2019-10-18T08:55:32.000Z</published>
+    <updated>2019-10-18T10:38:10.706Z</updated>
+    
+    <content type="html"><![CDATA[<p>这篇论文是张远师兄的毕业论文，主要的思路是通过深度模型预测类别，进而补全模型深度信息，然后通过学习模型参数，最终实现对人体的建模以及测量。</p><a id="more"></a><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>人体建模经历了 1. 基于回归分析的人体建模 2. 基于三维扫描人体建模 3. 基于数据库人体建模。人体建模的精度越来越高，对场景的约束越来越低。</p><p>本文通过基于RGBD信息与模型数据库的人体建模技术，提升人体建模的精度。主要的工作有：</p><ol><li><p>提出一种基于RGB数据的<strong>人体深度类别</strong>预测方法</p></li><li><p>提出一种基于深度类别信息的人体<strong>深度数据补全</strong>与优化方法</p></li><li>提出一种<strong>基于RGBD数据</strong>和<strong>模型参数</strong>的人体建模方法</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这篇论文是张远师兄的毕业论文，主要的思路是通过深度模型预测类别，进而补全模型深度信息，然后通过学习模型参数，最终实现对人体的建模以及测量。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="3D重建" scheme="https://wenhui-zhou.github.io/tags/3D%E9%87%8D%E5%BB%BA/"/>
+    
+  </entry>
   
   <entry>
     <title>如何读论文</title>
@@ -41,9 +61,9 @@
     <link href="https://wenhui-zhou.github.io/2019/10/15/resume-detail/"/>
     <id>https://wenhui-zhou.github.io/2019/10/15/resume-detail/</id>
     <published>2019-10-15T06:29:43.000Z</published>
-    <updated>2019-10-16T05:59:55.417Z</updated>
+    <updated>2019-10-19T10:53:28.821Z</updated>
     
-    <content type="html"><![CDATA[<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script><div id="hbe-security">  <div class="hbe-input-container">  <input type="password" class="hbe-form-control" id="pass" placeholder="welcome to my blog,enter password to read." />    <label for="pass">welcome to my blog,enter password to read.</label>    <div class="bottom-line"></div>  </div></div><div id="decryptionError" style="display: none;">Incorrect Password!</div><div id="noContentError" style="display: none;">No content to display!</div><div id="encrypt-blog" style="display:none">U2FsdGVkX19ZdXvzzL7/HetZMd7W+3b5zq6TxPIfZICFtmemVpxUD8+2zyFGlxwAcxh+22F2Mki2c9gaHZmOsRMYt8FY0rkyU2EQzQiMP321LLCkGALEcc9wyN3m6Hi8AYaXNFnkGp3FxmT9f8ohoNMkyoY2BB78AFC5GUEPVhU=</div><script src="/lib/crypto-js.js"></script><script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">]]></content>
+    <content type="html"><![CDATA[<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script><div id="hbe-security">  <div class="hbe-input-container">  <input type="password" class="hbe-form-control" id="pass" placeholder="welcome to my blog,enter password to read." />    <label for="pass">welcome to my blog,enter password to read.</label>    <div class="bottom-line"></div>  </div></div><div id="decryptionError" style="display: none;">Incorrect Password!</div><div id="noContentError" style="display: none;">No content to display!</div><div id="encrypt-blog" style="display:none">U2FsdGVkX19Qn9mjlW9TU4X6GmNlSHpDfX7KUlXZb4ghTaGRQZbYV+UVb9SipsJrtyGgYbXoHqedns9jBlHVdOQyca2PdNiMFxT7gIRz1B8HhdLWSc1+RUwXzOaxZWcrGjwt0t0ccrJ5gjyKyUC42b6Ug69IRPAAK9oGYd99iQM=</div><script src="/lib/crypto-js.js"></script><script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">]]></content>
     
     <summary type="html">
     
@@ -61,7 +81,7 @@
     <link href="https://wenhui-zhou.github.io/2019/10/14/DeepMVS-Learning-Multi-view-Stereopsis/"/>
     <id>https://wenhui-zhou.github.io/2019/10/14/DeepMVS-Learning-Multi-view-Stereopsis/</id>
     <published>2019-10-14T06:48:27.000Z</published>
-    <updated>2019-10-14T08:40:17.192Z</updated>
+    <updated>2019-10-18T15:49:56.593Z</updated>
     
     <content type="html"><![CDATA[<p>该篇论文通过一系列的图像，生成这些图像所对应的深度信息。</p>]]></content>
     
@@ -98,26 +118,6 @@
       <category term="论文阅读" scheme="https://wenhui-zhou.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
     
       <category term="3D重建" scheme="https://wenhui-zhou.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/3D%E9%87%8D%E5%BB%BA/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>3D重建论文阅读</title>
-    <link href="https://wenhui-zhou.github.io/2019/10/08/3D%E9%87%8D%E5%BB%BA%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
-    <id>https://wenhui-zhou.github.io/2019/10/08/3D重建论文阅读/</id>
-    <published>2019-10-08T02:38:39.000Z</published>
-    <updated>2019-10-14T06:47:21.195Z</updated>
-    
-    <content type="html"><![CDATA[<p>本篇博客的主要目的是为了记录所读的有关于三维重建的文章，对每篇文章的insight进行简要的总结。</p><a id="more"></a><h3 id="State-of-Art-on-3D-Reconstruction-with-RGB-D-Cameras"><a href="#State-of-Art-on-3D-Reconstruction-with-RGB-D-Cameras" class="headerlink" title="State of Art on 3D Reconstruction with RGB-D Cameras"></a>State of Art on 3D Reconstruction with RGB-D Cameras</h3><p>该论文是发表在eurographics 欧洲计算机图形学协会2018上，对当前的RGB-D图像三维重建进行了一个综述整理。</p><p>这是明天的任务。</p><hr><h3 id="Underwater-3-D-Scene-Reconstruction-Using-Kinect-v2-Based-on-Physical-Models-for-Refraction-and-Time-of-Flight-Correction"><a href="#Underwater-3-D-Scene-Reconstruction-Using-Kinect-v2-Based-on-Physical-Models-for-Refraction-and-Time-of-Flight-Correction" class="headerlink" title="Underwater 3-D Scene Reconstruction Using Kinect v2 Based on Physical Models for Refraction and Time of Flight Correction"></a>Underwater 3-D Scene Reconstruction Using Kinect v2 Based on Physical Models for Refraction and Time of Flight Correction</h3><p>该论文被2017年IEEE access收录，论文主要的思路是搭建一个防水装置，将kinect v2放入水中，利用kinect v2来采集RGB图像以及深度图像。然后通过<strong>水下数据采集，相机矫正，噪声过滤，TOF矫正，反射矫正</strong>等步骤恢复深度数据，最后通过kinect Fusion等到三维重建后的效果。</p><ul><li><p>数据获取采集部分采用加入防水外壳的kinect v2。</p></li><li><p>水下滤波部分，在kinect fusion算法中，针对空气中的滤波采用bilinear filter，水下环境复杂，作者采用5 x 5的median中值滤波。</p></li><li>kinect TOF矫正，由于在水下红外线的传播速度与空气中传播的速度不同，因此需要对检测到的深度信息进行矫正。水中传播的距离需要根据水中的红外线传播的速度进行修正。</li><li>水下折射矫正，kinect v2捕捉到的图像、深度信息在水下存在一定程度上的偏移，因此需要进行水下的折射矫正。</li></ul><p>在三维恢复性能比较方面，作者采用物体的三维模型或者激光采集到的三维数据作为ground truth进行对比，得出性能的优劣。</p><p>2019/10/8</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本篇博客的主要目的是为了记录所读的有关于三维重建的文章，对每篇文章的insight进行简要的总结。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="3D重建" scheme="https://wenhui-zhou.github.io/categories/3D%E9%87%8D%E5%BB%BA/"/>
     
     
   </entry>
