@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-10-18T10:38:10.706Z</updated>
+  <updated>2019-10-21T12:41:54.490Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://wenhui-zhou.github.io/2019/10/18/%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%EF%BC%9A%E5%9F%BA%E4%BA%8ERealSense%E5%92%8C%E6%A8%A1%E5%9E%8B%E5%BA%93%E7%9A%84%E4%BA%BA%E4%BD%93%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95/"/>
     <id>https://wenhui-zhou.github.io/2019/10/18/文献阅读：基于RealSense和模型库的人体建模方法/</id>
     <published>2019-10-18T08:55:32.000Z</published>
-    <updated>2019-10-18T10:38:10.706Z</updated>
+    <updated>2019-10-21T12:41:54.490Z</updated>
     
-    <content type="html"><![CDATA[<p>这篇论文是张远师兄的毕业论文，主要的思路是通过深度模型预测类别，进而补全模型深度信息，然后通过学习模型参数，最终实现对人体的建模以及测量。</p><a id="more"></a><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>人体建模经历了 1. 基于回归分析的人体建模 2. 基于三维扫描人体建模 3. 基于数据库人体建模。人体建模的精度越来越高，对场景的约束越来越低。</p><p>本文通过基于RGBD信息与模型数据库的人体建模技术，提升人体建模的精度。主要的工作有：</p><ol><li><p>提出一种基于RGB数据的<strong>人体深度类别</strong>预测方法</p></li><li><p>提出一种基于深度类别信息的人体<strong>深度数据补全</strong>与优化方法</p></li><li>提出一种<strong>基于RGBD数据</strong>和<strong>模型参数</strong>的人体建模方法</li></ol>]]></content>
+    <content type="html"><![CDATA[<p>这篇论文是张远师兄的毕业论文，主要的思路是通过深度模型预测类别，进而补全模型深度信息，然后通过学习模型参数，最终实现对人体的建模以及测量。</p><a id="more"></a><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>人体建模经历了 1. 基于回归分析的人体建模 2. 基于三维扫描人体建模 3. 基于数据库人体建模。人体建模的精度越来越高，对场景的约束越来越低。</p><p>本文通过基于RGBD信息与模型数据库的人体建模技术，提升人体建模的精度。主要的工作有：</p><ol><li><p>提出一种基于RGB数据的<strong>人体深度类别</strong>预测方法</p></li><li><p>提出一种基于深度类别信息的人体<strong>深度数据补全</strong>与优化方法</p></li><li>提出一种<strong>基于RGBD数据</strong>和<strong>模型参数</strong>的人体建模方法</li></ol><h3 id="基于RGB预测人体深度类别"><a href="#基于RGB预测人体深度类别" class="headerlink" title="基于RGB预测人体深度类别"></a>基于RGB预测人体深度类别</h3>]]></content>
     
     <summary type="html">
     
