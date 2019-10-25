@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-10-22T02:15:54.210Z</updated>
+  <updated>2019-10-24T17:19:56.354Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cpp语法快速回顾</title>
+    <link href="https://wenhui-zhou.github.io/2019/10/25/cpp%E8%AF%AD%E6%B3%95%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/"/>
+    <id>https://wenhui-zhou.github.io/2019/10/25/cpp语法快速回顾/</id>
+    <published>2019-10-24T16:57:12.000Z</published>
+    <updated>2019-10-24T17:19:56.354Z</updated>
+    
+    <content type="html"><![CDATA[<p>cpp的一些基本的语法的回顾，主要是一些比较小规模的语法特性的记录。</p><p>​    <a id="more"></a></p><p><strong>第一个可执行的cpp代码</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"hello world"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>typedef申明</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">short</span> <span class="keyword">int</span> <span class="keyword">wchar_t</span>;</span><br></pre></td></tr></table></figure><p>使用wchar_t来表示short int 这种类型，起了一个新名字。</p><p><strong>enum枚举类</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> color&#123;red,blue,black&#125; c; <span class="comment">//值为0，1，2</span></span><br><span class="line">c = blue; <span class="comment">//等于为c赋值为1</span></span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; c; <span class="comment">// 1</span></span><br></pre></td></tr></table></figure><p><strong>声明与定义</strong></p><p>cpp语言支持分离时编译，允许将程序分割成多个模块，声明与定义分离（.h / .cpp）,静态库(lib)包含声明以及方法，动态库(.lib,dll)仅包含声明，dll中为方法。</p><p>声明的作用是在编译器链接代码的阶段，告诉程序该变量的存在。可以在多个文件中，多次声明，使用关键字<code>extern int a;</code>声明了一个变量a。定义的过程只能有一次。</p><p><strong>变量的初始值</strong></p><p>当一个变量是全局变量，系统会默认初始值为0。当变量是局部变量，系统不会赋初始值。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;cpp的一些基本的语法的回顾，主要是一些比较小规模的语法特性的记录。&lt;/p&gt;
+&lt;p&gt;​
+    
+    </summary>
+    
+    
+      <category term="learning cpp" scheme="https://wenhui-zhou.github.io/tags/learning-cpp/"/>
+    
+  </entry>
   
   <entry>
     <title>DeepLab 总结</title>
@@ -37,9 +58,9 @@
     <link href="https://wenhui-zhou.github.io/2019/10/21/cpp%E5%B7%A5%E7%A8%8B%E6%96%87%E4%BB%B6%E7%9A%84%E6%80%BB%E7%BB%93/"/>
     <id>https://wenhui-zhou.github.io/2019/10/21/cpp工程文件的总结/</id>
     <published>2019-10-21T15:52:15.000Z</published>
-    <updated>2019-10-22T02:14:52.445Z</updated>
+    <updated>2019-10-24T17:20:33.391Z</updated>
     
-    <content type="html"><![CDATA[<p>cpp学习的第一轮，首先从以前的盲区开始杀进去，解决的第一个问题是</p><blockquote><p>人们说cpp工程文件，说的都是什么。</p></blockquote><a id="more"></a><p>打开vs，穿件一个控制台的应用。（CLion用cmakeList链接文件，感觉可以学习一下）这时候会产生很多中间系统文件以及文件夹。</p>]]></content>
+    <content type="html"><![CDATA[<p>cpp学习的第一轮，首先从以前的盲区开始杀进去，解决的第一个问题是</p><blockquote><p>人们说cpp工程文件，说的都是什么。</p></blockquote><a id="more"></a><p>打开vs，创建一个控制台的应用。（CLion用cmakeList链接文件，感觉可以学习一下）这时候会产生很多中间系统文件以及文件夹。</p>]]></content>
     
     <summary type="html">
     
@@ -60,7 +81,7 @@
     <link href="https://wenhui-zhou.github.io/2019/10/18/%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%EF%BC%9A%E5%9F%BA%E4%BA%8ERealSense%E5%92%8C%E6%A8%A1%E5%9E%8B%E5%BA%93%E7%9A%84%E4%BA%BA%E4%BD%93%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95/"/>
     <id>https://wenhui-zhou.github.io/2019/10/18/文献阅读：基于RealSense和模型库的人体建模方法/</id>
     <published>2019-10-18T08:55:32.000Z</published>
-    <updated>2019-10-24T07:25:55.807Z</updated>
+    <updated>2019-10-25T09:24:10.613Z</updated>
     
     <content type="html"><![CDATA[<p>这篇论文是张远师兄的毕业论文，主要的思路是通过深度模型预测类别，进而补全模型深度信息，然后通过学习模型参数，最终实现对人体的建模以及测量。</p><a id="more"></a><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>人体建模经历了 1. 基于回归分析的人体建模 2. 基于三维扫描人体建模 3. 基于数据库人体建模。人体建模的精度越来越高，对场景的约束越来越低。</p><p>本文通过基于RGBD信息与模型数据库的人体建模技术，提升人体建模的精度。主要的工作有：</p><ol><li><p>提出一种基于RGB数据的<strong>人体深度类别</strong>预测方法</p></li><li><p>提出一种基于深度类别信息的人体<strong>深度数据补全</strong>与优化方法</p></li><li>提出一种<strong>基于RGBD数据</strong>和<strong>模型参数</strong>的人体建模方法</li></ol><h3 id="基于RGB预测人体深度类别"><a href="#基于RGB预测人体深度类别" class="headerlink" title="基于RGB预测人体深度类别"></a>基于RGB预测人体深度类别</h3><p>基于RGB数据来预测人体的深度信息，本文提出了两阶段的网络结构，用于RGB图像中的人体深度类别预测。该部分主要分为两部分：</p><ul><li>预测图像中的人体分割</li><li><p>预测人体分割对应的深度信息</p><p>针对人体不变的局部特征和多变的全局特征，作者采用多尺度信息融合的方式提取特征，采用跳跃层结构，使用Stacked hourglass network作为基本网络，使用交叉熵作为损失函数，分别应用与人体部件分割以及深度类别的预测上。</p></li></ul><p>针对这两个问题，作者使用Varol et al.(CVPR 2017) 提到的方法对人体进行分割以及预测人体的深度类别信息。该网络深度信息预测结果不好，作者通过扩充网络，将网络修改成二阶段的网络，获取原始数据多尺度的结果之后得到一个较好的恢复结果。</p><p><img src="../images/3D/deep_predict.png" style="zoom:50%;"></p><p>左图第二行是分割信息，有图中间一列是Varol的结果，最后一列是本文结果。</p><h3 id="基于深度类别信息的人体深度数据补全与优化"><a href="#基于深度类别信息的人体深度数据补全与优化" class="headerlink" title="基于深度类别信息的人体深度数据补全与优化"></a>基于深度类别信息的人体深度数据补全与优化</h3><p>对RGB图像进行标定，作者使用realsense内部的标定算法实现标定。接下来对深度数据进行恢复，主要有两种方案，一种是基于滤波器的方法，另一种则是基于图像修复重建的方案。第一种方案难以修复比较大的空洞，第二种方案引入图像修复技术，通常会假设人体深度数据与RGB数据呈现局部线性关系，作者认为由于人的衣服颜色相同，因此不适用于这两种方案。</p><p>作者使用快速行进法（Telea 2004）(FMM)进行空洞的补全，该方法的思路是从已知的像素点和位置的像素点的边界开始计算，逐渐扩展到所有位置的像素点，求解出深度图。作者首先对其RGBD图像之后，对目标图像I上的任意一点深度，采用对周边点的一阶泰勒展开来得到。使用RGB图像上的梯度来替换深度图对应位置上的梯度，最终得到目标图像上的深度计算公式：</p>]]></content>
     
@@ -92,26 +113,6 @@
     
     
       <category term="tool" scheme="https://wenhui-zhou.github.io/tags/tool/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>resume detail 2019/10/15</title>
-    <link href="https://wenhui-zhou.github.io/2019/10/15/resume-detail/"/>
-    <id>https://wenhui-zhou.github.io/2019/10/15/resume-detail/</id>
-    <published>2019-10-15T06:29:43.000Z</published>
-    <updated>2019-10-23T01:22:52.618Z</updated>
-    
-    <content type="html"><![CDATA[<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script><div id="hbe-security">  <div class="hbe-input-container">  <input type="password" class="hbe-form-control" id="pass" placeholder="welcome to my blog,enter password to read." />    <label for="pass">welcome to my blog,enter password to read.</label>    <div class="bottom-line"></div>  </div></div><div id="decryptionError" style="display: none;">Incorrect Password!</div><div id="noContentError" style="display: none;">No content to display!</div><div id="encrypt-blog" style="display:none">U2FsdGVkX1/HOMnwPKjPQ6goAz28i7/i/sO99p1BxxKL7rly+5Gs1dwM93qH/Zgd2OWzXy4FTC5ol59uNNsuWGCBvcstlfZyhCZFF9doPb95EElNRlwcFW+R/VaHWG3EJA/3SUYxa/p7iqbj8V+t1oKSBwSNm9TnaxswPXHjUuw=</div><script src="/lib/crypto-js.js"></script><script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">]]></content>
-    
-    <summary type="html">
-    
-      welcome to my blog,enter password to read.
-    
-    </summary>
-    
-    
-      <category term="项目总结" scheme="https://wenhui-zhou.github.io/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
