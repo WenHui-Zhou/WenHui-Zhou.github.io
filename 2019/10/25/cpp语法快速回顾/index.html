@@ -163,7 +163,7 @@
 </ol>
 </blockquote>
 <p>这种优先的顺序排序保证当 <code>dir2/foo2.h</code> 遗漏某些必要的库时， <code>dir/foo.cc</code> 或 <code>dir/foo_test.cc</code> 的构建会立刻中止。因此这一条规则保证维护这些文件的人们首先看到构建中止的消息而不是维护其他包的人们。</p>
-<p>.cpp中不必要包含include自己的h文件，程序链接的时候会自动找到他们的对应关系。</p>
+<p>.cpp中要包含include自己的h文件，在程序编译阶段include尽量都写在头文件中，源文件就可以很少的引用头文件。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>重新回顾了一下cpp的一些语法重点，发现这本语言相比较于其他语言来说，有很大的自由度，自由发挥的地方非常的多。同时有为写一些大工程而设计上的思路。总体来说，比较感兴趣，由于使用CLion来作为编辑器，通过一种更加原生的方式写代码，编译代码，感觉要比直接用VS studio要有深刻的理解。</p>
 <p>这一页博客要常常回来回顾回顾！</p>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/10/25/cpp语法快速回顾/">https://wenhui-zhou.github.io/2019/10/25/cpp语法快速回顾/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"><a href="/tags/learning-cpp/">learning cpp</a></div><div class="post-nav"><a class="pre" href="/2019/10/27/cpp-STL方法介绍/">cpp STL方法介绍</a><a class="next" href="/2019/10/22/DeepLab-总结/">DeepLab 总结</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
