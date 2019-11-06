@@ -27,6 +27,66 @@
 <li>防止资源浪费，使用RAII对象，在他们的构造函数中获得资源，在析构函数中释放资源。</li>
 <li>使用RAII中的tr1::shared_ptr，auto_ptr是两个比较好的选择，shared_ptr具有比较正常的copy。</li>
 </ul>
+<h3 id="14-条款：在资源管理类中小心copying行为"><a href="#14-条款：在资源管理类中小心copying行为" class="headerlink" title="14 条款：在资源管理类中小心copying行为"></a>14 条款：在资源管理类中小心copying行为</h3><p>通常使用auto_ptr,shared_ptr作为资源管理类，但是有些资源并非在heap-based，不实用使用上述的两种资源管理类，因此需要建立自己的资源管理类。</p>
+<p>自己定义的资源管理类通常在构造函数的部分申请得到资源，在析构函数中释放资源，这种类型的资源包括了互斥锁。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>&#123;</span></span><br><span class="line">  <span class="keyword">public</span>：</span><br><span class="line">    explicit Lock(Mutex* pm):mutexPtr(pm)&#123;  // 在初始化资源类的时候，初始化资源</span><br><span class="line">      lock(mutexPtr);</span><br><span class="line">  &#125;</span><br><span class="line">  ~Lock()&#123;unlock(mutexPtr);&#125;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">   Mutex* mutexPtr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样的，对于资源管理类来说，如果对象被复制，我们需要处理对象的复制问题。可以让它继承UnCopyable对象，禁止对象的复制。或者使用shared_ptr的方法，<strong>使用引用计数法</strong>，使用shared_ptr来定义指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Mutex&gt; mutexPtr;</span><br></pre></td></tr></table></figure>
+<p>这时候就可以不用定义虚析构函数了，当指针被回收的时候，资源就会被回收。</p>
+<p><strong>转移底层的资源拥有权</strong></p>
+<p>使用类似于auto_ptr的做法，copy的时候，保证资源的唯一性。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>复制RAII对象（资源管理对象）需要一并复制它所管理的资源，资源的copying行为决定了RAII对象的copying行为。</li>
+<li>普遍常见的RAII copying行为通常为：抑制copying，使用引用计数法，转移底层资源的拥有权。</li>
+</ul>
+<h3 id="15-条款：在资源管理类中提供对原始资源的访问"><a href="#15-条款：在资源管理类中提供对原始资源的访问" class="headerlink" title="15 条款：在资源管理类中提供对原始资源的访问"></a>15 条款：在资源管理类中提供对原始资源的访问</h3><p>资源管理类通常是我们设计来保证资源的正常申请和销毁的，但是有些情况是，我们调用一些函数的时候需要直接访问内部的资源（例如一些指针类）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str1::<span class="built_in">shared_ptr</span>&lt;Invest&gt; pInt(create()); <span class="comment">// pInt是一个资源类对象</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">daysHeld</span><span class="params">(<span class="keyword">const</span> Invest* pi)</span></span>; <span class="comment">// pi是一个invest* 对象</span></span><br></pre></td></tr></table></figure>
+<p>当我们要调用daysHeld()函数的时候，传入的参数如果为pInt的话会发生错误，因为pInt是一个资源类对象，因此我们需要从这个资源类对象中取出其中的指针资源。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">daysHeld(pInt.get());</span><br></pre></td></tr></table></figure>
+<p>shared_ptr,auto_ptr继承了原是指针中的<code>-&gt;,*</code>操作，并且可以通过get函数得到资源的直接访问。</p>
+<p>当我们选择自己实现资源管理类的时候，我们也需要实现一个get函数，实现显示的函数变换。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    explicit Font(Fhandle fh):f(fh)&#123;&#125;</span><br><span class="line">    ~Font()&#123;release(fh);&#125;</span><br><span class="line">    <span class="function">FHandle <span class="title">get</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;<span class="keyword">return</span> fh;&#125; <span class="comment">// 实现直接获取资源的函数</span></span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    FHandle fh;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过实现<code>operator FHandle() const {return fh;}</code>函数可以实现隐式的变换，但是这样容易造成错误的发生，因此建议使用显式的变换（get的方式）。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>API中往往要求访问原始资源，所以每一个RAII类中应该要实现一个直接获取志愿的方法（get方法）。</li>
+<li>对原始资源的访问可能是显式变换或者隐式的变换，一般而言显式变换比较安全。</li>
+</ul>
+<h3 id="16-条款：成对使用new和delete时要采取相同形式"><a href="#16-条款：成对使用new和delete时要采取相同形式" class="headerlink" title="16 条款：成对使用new和delete时要采取相同形式"></a>16 条款：成对使用new和delete时要采取相同形式</h3><p>new在被使用的时候，可以申请单个内存（<code>new int</code>）或多个内存（<code>new int[10]</code>），delete再回收内存的时候，也有回收单一内存和连续内存的区别，需要注意的是，new和delete行为必须一致（单一内存和多内存的一致。）</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>new中使用[]必须在delete中也使用[]（连续内存），new中不使用[]，delete中也不能使用[]（单一）。</li>
+</ul>
+<p>下面补充一下CPP中new和delete的用法：</p>
+<p><strong>new的使用</strong></p>
+<p>new负责C++中的动态内存分配，动态内存位于heap上。在不使用这段内存的时候，程序需要负责将这段内存回收掉。</p>
+<p>new指令初始化内存，返回内存分配的初始地址：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pointer-variable = <span class="keyword">new</span> data-type;</span><br><span class="line"><span class="keyword">int</span>* p = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br></pre></td></tr></table></figure>
+<p>可以<strong>使用括号的方式初始化对象</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* p = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>使用中括号[]的方式分配一整块内存空间：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* p = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+<p>传统的申请内存的方式为<code>int a[10];</code> 这个空间由编译器申请，在使用结束之后也由编译器进行回收。但是自己申请的内存会一直存在，直到自己delete处理掉。</p>
+<p><strong>delete的使用</strong></p>
+<p>使用delete对new申请的数组进行清空：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> p; <span class="comment">// 删除单个元素</span></span><br><span class="line"><span class="keyword">delete</span>[] p; <span class="comment">// 删除整段空间</span></span><br></pre></td></tr></table></figure>
+<h3 id="17-条款：以独立语句将newed对象置入智能指针"><a href="#17-条款：以独立语句将newed对象置入智能指针" class="headerlink" title="17 条款：以独立语句将newed对象置入智能指针"></a>17 条款：以独立语句将newed对象置入智能指针</h3><p>可以使用智能指针的方式来管理new申请的内存：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">str1::<span class="built_in">shared_ptr</span>&lt;Widget&gt; pw(<span class="keyword">new</span> Widget);</span><br></pre></td></tr></table></figure>
+<p>存在一种情况，当我们使用资源管理类来管理内存的时候，可能会出现内存泄漏。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">process(str1::<span class="built_in">shared_ptr</span>&lt;Wdiget&gt;(<span class="keyword">new</span> Widget),priority());</span><br></pre></td></tr></table></figure>
+<p>上面代码可能的执行顺序是(顺序不一定)：</p>
+<ol>
+<li>new widget</li>
+<li>priority</li>
+<li>Shared_ptr构造函数</li>
+</ol>
+<p>如果第二步抛出异常，那么造成内存泄漏，因此：<strong>newed对象应当写一个单独的语句</strong>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str1::<span class="built_in">shared_ptr</span>&lt;Widget&gt; pw(<span class="keyword">new</span> Widget);</span><br><span class="line">process(pw,priority());</span><br></pre></td></tr></table></figure>
+<p><strong>总结</strong></p>
+<ul>
+<li>以单独的语句将newed对象存储在智能指针内，确保资源不会泄露。</li>
+</ul>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/11/05/effective-cpp-三-资源管理/">https://wenhui-zhou.github.io/2019/11/05/effective-cpp-三-资源管理/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/11/06/推荐系统之评分预测（三）/">推荐系统之评分预测（三）</a><a class="next" href="/2019/11/02/effective-cpp-二-构造、析构、赋值运算/">effective cpp (二) 构造、析构、赋值运算</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
 var GUEST_INFO = ['nick','mail','link'];
