@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-11-10T11:23:32.252Z</updated>
+  <updated>2019-11-10T11:27:50.300Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>effective cpp(五) 实现</title>
+    <link href="https://wenhui-zhou.github.io/2019/11/10/effective-cpp-%E4%BA%94-%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://wenhui-zhou.github.io/2019/11/10/effective-cpp-五-实现/</id>
+    <published>2019-11-10T11:26:50.000Z</published>
+    <updated>2019-11-10T11:27:50.300Z</updated>
+    
+    <content type="html"><![CDATA[<p>2019/11/10，effective cpp第五章 实现</p><a id="more"></a>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;2019/11/10，effective cpp第五章 实现&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="effective cpp" scheme="https://wenhui-zhou.github.io/categories/effective-cpp/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>effective cpp(四) 设计与声明</title>
@@ -106,32 +126,6 @@
     </summary>
     
       <category term="effective cpp" scheme="https://wenhui-zhou.github.io/categories/effective-cpp/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>推荐系统之用户标签数据(二)</title>
-    <link href="https://wenhui-zhou.github.io/2019/11/05/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E4%B9%8B%E7%94%A8%E6%88%B7%E6%A0%87%E7%AD%BE%E6%95%B0%E6%8D%AE-%E4%BA%8C/"/>
-    <id>https://wenhui-zhou.github.io/2019/11/05/推荐系统之用户标签数据-二/</id>
-    <published>2019-11-05T02:16:10.000Z</published>
-    <updated>2019-11-06T16:30:16.199Z</updated>
-    
-    <content type="html"><![CDATA[<p>推荐系统的目的是链接用户的兴趣和物品，通常的连接方式可以通过：</p><ol><li>推荐与用户喜欢的物品相似的物品</li><li>推荐与用户兴趣相似的人所喜欢的物品</li><li>给用户推荐那些他喜欢的特征，例如利用用户标签</li></ol><p><strong>标签是一种无层次化结构的，用来描述信息的关键词，它可以用来描述物体的语义。</strong></p><a id="more"></a><h3 id="标签系统中推荐问题"><a href="#标签系统中推荐问题" class="headerlink" title="标签系统中推荐问题"></a>标签系统中推荐问题</h3><p><strong>用户为什么进行标注</strong></p><p>用户通常会给予社会维度、功能维度、传达信息的维度上对物品进行标注。</p><p><strong>用户如何打标签</strong></p><p>用户打标注的标签同样符合一个长尾分布，一些不流行的标签呈现一个长尾。</p><p><strong>用户打什么样的标签</strong></p><ul><li>表明物品是什么</li><li>物品的种类</li><li>用户的观点</li><li>谁拥有用户</li><li>用户相关的标签</li><li>用户的任务</li><li>类型</li><li>时间，人物，地点，语言，奖项</li></ul><h3 id="基于标签的推荐系统"><a href="#基于标签的推荐系统" class="headerlink" title="基于标签的推荐系统"></a>基于标签的推荐系统</h3><p><strong>数据的设计</strong></p><p>一个用户标签的行为的数据集一般由一个三元组的集合表示：(u,i,b)表示用户u给物品i打上了标签b。将数据随机分成10份，分割的键值是用户和物品，其中9份作为训练集，1份作为测试集。</p><p><strong>实验指标</strong></p><p>准确率、召回率、覆盖率、余弦相似度、新颖性（平均热门度）</p><p><strong>一个简单的算法</strong></p><p>利用用户标签进行个性化的推荐，一个直接的想法：</p><ol><li>统计每个用户最常用的标签</li><li>对每个标签，统计被打过这个标签次数最多的物品</li><li>对每个用户找到他最常用的标签，然后给他推荐具有这些标签的最热门的物品</li></ol><p>因此可以归纳出兴趣公式：<br>$$<br>p(u, i)=\sum_{b} n_{u, b} n_{b, i}<br>$$<br>$n_{u,b}$表示用户u打过标签b的次数，$n_{b,i}$ 表示物品i被打过b标签的次数。</p><p><strong>算法的改进：TF-IDF</strong></p><p>对于热门标签，它在许多物品上都有出现过，因此上述的公式对热门标签对应的热门物品给了过大的权重，系统将会倾向于推荐热门的物品，因此将降低推荐结果的新颖性，因此对<strong>热门标签</strong>进行惩罚：<br>$$<br>p(u, i)=\sum_{b} \frac{n_{u, b}}{\log \left(1+n_{b}^{(u)}\right)} n_{b, i}<br>$$<br>此外对<strong>热门物品</strong>进行惩罚：<br>$$<br>p(u, i)=\sum_{b} \frac{n_{u, b}}{\log \left(1+n_{b}^{(u)}\right)} \frac{n_{b, i}}{\log \left(1+n_{i}^{(u)}\right)}<br>$$<br><strong>数据稀疏性</strong></p><p>对于一些新用户或新物品，用户集合中的标签数量很小，可以我们可以将与已有标签相似的标签加入到用户标签中。</p><p>可以利用基于领域的方法，当两个标签同时出现在许多物品的标签集合中时，我们就可以认为这两个标签具有较大的相似度，可以使用余弦相似性进行计算，计算的方式时两个标签的交集除以他们的各自的平方开根号。<br>$$<br>\operatorname{sim}\left(b, b^{\prime}\right)=\frac{\sum_{i \in N(b) \cap V(b)} n_{b i} n_{b ; i}}{\sqrt{\sum_{i \in N(b)} n_{b, i}^{2} \sum_{i \in N(b)} n_{b^{\prime}, i}^{2}}}<br>$$<br><strong>标签清理</strong></p><p>有许多标签仅仅反应了用户的心情（例如不好笑），不能作为用户的兴趣，我们需要对这类标签进行过滤。去除一些停止词，同义词，等等方式去除不良标签。</p><h3 id="给用户推荐标签"><a href="#给用户推荐标签" class="headerlink" title="给用户推荐标签"></a>给用户推荐标签</h3><p>给用户推荐标签指给出一些选项供用户选择，这样的好处有：</p><ul><li>方便用户输入标签</li><li>提高标签的质量</li></ul><p><strong>如何给用户推荐标签</strong></p><ul><li>给用户推荐系统中推荐最热门的标签</li><li>给用户推荐物品i上最热门的标签</li><li>给用户推荐他常用的标签</li><li><strong>结合上述两种方法的加权结果</strong>（用得最多）</li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;推荐系统的目的是链接用户的兴趣和物品，通常的连接方式可以通过：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;推荐与用户喜欢的物品相似的物品&lt;/li&gt;
-&lt;li&gt;推荐与用户兴趣相似的人所喜欢的物品&lt;/li&gt;
-&lt;li&gt;给用户推荐那些他喜欢的特征，例如利用用户标签&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;标签是一种无层次化结构的，用来描述信息的关键词，它可以用来描述物体的语义。&lt;/strong&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="推荐系统" scheme="https://wenhui-zhou.github.io/categories/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
     
     
   </entry>
