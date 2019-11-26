@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>effective cpp(七)定制new和delete | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">effective cpp(七)定制new和delete</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">effective cpp(七)定制new和delete</h1><div class="post-meta">Nov 25, 2019<span> | </span><span class="category"><a href="/categories/effective-cpp/">effective cpp</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/11/25/effective-cpp-七-定制new和delete/#vcomment"><span class="valine-comment-count" data-xid="/2019/11/25/effective-cpp-七-定制new和delete/"></span><span> 条评论</span></a><div class="post-content"><p>2019/11/25 effective cpp 第8章 定制new和delete</p>
+<p>C++在内存管理，垃圾回收机制上常常受到人们的讨论。下面这一章将讨论C++的内存管理例程。</p>
+<ul>
+<li>49 条款：了解new-handler的行为</li>
+<li>50 条款：了解new和delete的合理替换时机</li>
+<li>51 条款：编写new和delete时需固守常规</li>
+<li>52 条款：写了placement new也要写placement delete</li>
+</ul>
+<a id="more"></a>
+<h3 id="49-条款：了解new-handler的行为"><a href="#49-条款：了解new-handler的行为" class="headerlink" title="49 条款：了解new-handler的行为"></a>49 条款：了解new-handler的行为</h3><p>当operator new无法满足某一内存分配的需求时，它将会抛出异常。当operator new发生异常，它会先调用一个客户指定的错误处理函数，即new-handler函数。为了指定这个用以处理内存不足的函数，客户必须调用set_new_handler，那是声明与<code>&lt;new&gt;</code>的一个标准程序库函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*new_handler)</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function">new_handler <span class="title">set_new_handler</span><span class="params">(new_handler p)</span> <span class="title">throw</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面可以看出来new_handler是一个typedef。定义出一个指向函数的指针，该函数没有返回任何东西，set_new_handler则是接受一个指针，返回一个指针，并且不允许抛出任何的异常。</p>
+<p>Set_new_handler的使用方式如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outOfMem</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"unable doing something"</span>;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">abort</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::set_new_handler(outOfMem);</span><br><span class="line">  <span class="keyword">int</span>* pBig = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">12323232333333</span>];</span><br><span class="line">  <span class="comment">// 当new无法分配这么多空间的时候，将会去调用outOfMem报错。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在实现new-handler的时候，有几点注意：</p>
+<ul>
+<li><strong>让更多的内存可被使用</strong>，一个做法是程序开始执行的时候就分配了一大块内存，当调用handler的时候，释放给程序使用</li>
+<li><strong>安装另一个new-handler</strong>，如果目前这个new-handler无法处理这个异常，它可以通过调用其他的handler来分配内存。</li>
+<li><p><strong>卸除new-handler</strong>，就是讲null指针传给set_new_handler，一旦没有安装任何new-handler，operator new会在内存分配不成功时抛出异常。</p>
+</li>
+<li><p><strong>跑出bad_alloc异常，</strong>这样的异常不会被operator new捕获，因此会被传播到内存索求处。</p>
+</li>
+<li><strong>不返回</strong>，通常调用abort，exit来中断程序。</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li>set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调用</li>
+<li>Nothrow new是一个颇为局限的工具，因为它只适用于内存分配，后续的构造函数调用还是可能抛出异常。</li>
+</ul>
+<h3 id="50-条款：了解new和delete的合理替换时机"><a href="#50-条款：了解new和delete的合理替换时机" class="headerlink" title="50 条款：了解new和delete的合理替换时机"></a>50 条款：了解new和delete的合理替换时机</h3><p>通常我们选择替换new和delete会出于几个原因：</p>
+<ul>
+<li>用于检测运用上的错误</li>
+<li>为了强化效能</li>
+<li>为了收集使用上的统计数据</li>
+</ul>
+<p>此外，在了解何时可在 <strong>全局性</strong>或 <strong>class专属的</strong>基础上合理替换缺省的new和delete：</p>
+<ul>
+<li>为了检测运用上的错误</li>
+<li>为了手机动态分配内存之使用统计信息</li>
+<li>为了增加分配和归还的速度</li>
+<li>为了降低缺省内存管理器带来的空间额外开销</li>
+<li>为了弥补缺省分配器中的非最佳齐位</li>
+<li>为了将相关对象成簇集中</li>
+<li>为了获得非传统的行为</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>有许多理由需要写个自定义的new和delete，包括改善效能，对heap运用错误进行调试，收集heap使用信息。</p>
+<h3 id="51-条款：编写new和delete时需固守常规"><a href="#51-条款：编写new和delete时需固守常规" class="headerlink" title="51 条款：编写new和delete时需固守常规"></a>51 条款：编写new和delete时需固守常规</h3><p>让我们从实现operator new开始，实现一致性operator new必须返回正确的值，内存不足的时候必须调用new-handling函数，必须有对付零内存需求的准备，还需避免不慎掩盖正常形式的new。</p>
+<p>operator new其实比较单纯，如果能够申请到空间，就返回正确的值，如果申请不到空间就返回一个bad-alloc。但是他也有不单纯的一面，因为operator不止一次的申请内存，如果new-handling有能力做一些操作释放内存出来，因此只有在new-handling返回null的时候才会抛出错误。</p>
+<p>如果你打算控制operator new[]的行为，你唯一要做的事情就是分配一块未加工的内存。因为你无法知道array中将会保存什么东西。</p>
+<p>对于operator delete来说，我们要确保的是 <strong>删除null指针永远安全</strong>。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>operator new应该内含一个无穷循环，并在其中尝试分配内存，如果它无法满足内存的需求，就调用new-handler。它应该也有能力处理0byte申请。class 专属版本则应该处理 <strong>比正确大小更大的错误。</strong></li>
+<li>operator delete应该受到null指针时不做任何事，class专属版本则还应该处理 <strong>比正确大小更大的申请。</strong></li>
+</ul>
+<h3 id="52-条款：写了placement-new也要写placement-delete"><a href="#52-条款：写了placement-new也要写placement-delete" class="headerlink" title="52 条款：写了placement new也要写placement delete"></a>52 条款：写了placement new也要写placement delete</h3><p>placement new和placement delete应当也成对的出现。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">widget* pw = <span class="keyword">new</span> widget;</span><br></pre></td></tr></table></figure>
+<p>当我们通过上面的代码的时候，实际上做了两件事情，第一件是new，第二件是调用了widget的default构造函数。如果在第二种情况下发生了异常，new成功执行。这种情况下我们要去释放new所申请的空间，但是我们手上并没有申请得到的指针，因此释放内存的重任就交给了C++。</p>
+<p>如果当前面对的是拥有正常签名的new和delete函数，那么系统在运行期间就会主动去调用相应的delete函数。</p>
+<p>但是如果我们使用的new是我们修改过的，带有附加参数的new，这时候我们需要制定一个与之对应的delete函数。</p>
+<p>此外，由于成员函数名称将会覆盖其外围作用域的相同名称，你必须小心避免掉这种覆盖。一个简单的做法就是建立一个base class，内含所有正常形式的new和delete，凡是想以自定形式扩充标准形式的客户，可利用继承机制及using声明式来取得标准形式。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>当你写一个placement operator new。请确定也写出对应了placement operator delete函数，如果没有这样做的话，你的程序可能会发生隐微而断续的内存泄漏。</li>
+<li>当你声明placement new和placement delete，请确定不要无意识地掩盖了他们的正常版本。</li>
+</ul>
+<p>一知半解。。。</p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/11/25/effective-cpp-七-定制new和delete/">https://wenhui-zhou.github.io/2019/11/25/effective-cpp-七-定制new和delete/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2019/11/19/effective-cpp-七-模板与范型编程/">effective cpp(七) 模板与范型编程</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/effective-cpp-七-定制new和delete/">effective cpp(七)定制new和delete</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/19/effective-cpp-七-模板与范型编程/">effective cpp(七) 模板与范型编程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/16/effective-cpp-六-继承与面向对象设计/">effective cpp(六) 继承与面向对象设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/10/effective-cpp-五-实现/">effective cpp(五) 实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/09/effective-cpp-四-设计与声明/">effective cpp(四) 设计与声明</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/06/EncNet结合上下文的语义分割/">EncNet结合上下文的语义分割</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/06/推荐系统之评分预测（三）/">推荐系统之评分预测（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/effective-cpp-三-资源管理/">effective cpp(三) 资源管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/05/推荐系统之用户标签数据-二/">推荐系统之用户标签数据(二)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/02/effective-cpp-二-构造、析构、赋值运算/">effective cpp (二) 构造、析构、赋值运算</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
