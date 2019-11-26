@@ -1,38 +1,40 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>推荐系统之协同过滤（一） | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">推荐系统之协同过滤（一）</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">推荐系统之协同过滤（一）</h1><div class="post-meta">Nov 2, 2019<span> | </span><span class="category"><a href="/categories/推荐系统/">推荐系统</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/11/02/推荐系统之协同过滤（一）/#vcomment"><span class="valine-comment-count" data-xid="/2019/11/02/推荐系统之协同过滤（一）/"></span><span> 条评论</span></a><div class="post-content"><p>基于领域的算法是推荐系统中最为基本的算法，这篇post主要针对其中重要的两类算法：基于用户的协同过滤，基于产品的协同过滤进行介绍。</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>effective cpp(九)杂项讨论 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">effective cpp(九)杂项讨论</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">effective cpp(九)杂项讨论</h1><div class="post-meta">Nov 26, 2019<span> | </span><span class="category"><a href="/categories/effective-cpp/">effective cpp</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/11/26/effective-cpp-九-杂项讨论/#vcomment"><span class="valine-comment-count" data-xid="/2019/11/26/effective-cpp-九-杂项讨论/"></span><span> 条评论</span></a><div class="post-content"><p>2019/11/26 effective cpp 第九章 杂项讨论</p>
+<p>这是这本书的最后一章，今晚应该就能够阅读完！在开始阅读之前，我想感慨一下，最后的几章难度太大，一知半解的看下来，我想原因是相关张章节的实践不多导致的，因此日后有需要要回来重新阅读它们，时间很快大概花了一个月的空闲时间来阅读这本书，收获满满！</p>
+<p>这一章主要说了三个问题：编译器的警告要重视；C++标准库的一个总览；boost一个泛用性C++库的总览。</p>
+<ul>
+<li>53 条款：不要轻视编译器的警告</li>
+</ul>
 <a id="more"></a>
-<h3 id="长尾效应"><a href="#长尾效应" class="headerlink" title="长尾效应"></a>长尾效应</h3><p>在需求曲线中，少量的需求会形成一条长长的尾巴，将所有非流行的需要累加起来，将会形成一个比流行市场还要庞大的市场。</p>
-<p>长尾效应最直接的原因就是强调用户的个性化，将市场需求细分，这些小的需求市场的累积效应将形成巨大的理论。</p>
-<p>推荐系统的一个迫切需求在于，存在信息过载以及用户需求不明显的问题，因此需要将用户感兴趣，或有潜在兴趣的商品推荐给用户。</p>
-<h3 id="实验设计"><a href="#实验设计" class="headerlink" title="实验设计"></a>实验设计</h3><p>在介绍协同过滤之前，我们粗略设计一下算法的流程。</p>
+<h3 id="53-条款：不要轻视编译器的警告"><a href="#53-条款：不要轻视编译器的警告" class="headerlink" title="53 条款：不要轻视编译器的警告"></a>53 条款：不要轻视编译器的警告</h3><p>编译器作者在触发一个warning的时候，他比你更加明白将来会发生什么严重的错误，因此我们需要在对待编译器警告的时候更加的小心。</p>
+<p>当出现一个编译器warning的时候，我们应该需要知道它的意图以及真正的意义。</p>
+<p><strong>总结</strong></p>
 <ul>
-<li>将用户数据均匀成M（m = 8）份，挑选其中一份作为测试集。重复进行M次实验。（交叉验证，防止过拟合）</li>
-<li>在训练集上训练用户兴趣模型，在测试集上进行预测，统计评测指标。</li>
-<li>将M次实验结果的平均值作为最后的测评指标。</li>
+<li>严肃对待编译器发出的警告，争取无警告荣誉</li>
+<li>不要过度依赖编译器的报警功能，因为不同的编译器对待事情的反应是不同的</li>
 </ul>
-<h3 id="测评指标"><a href="#测评指标" class="headerlink" title="测评指标"></a>测评指标</h3><ul>
-<li>召回率：recall = (用户感兴趣 与 推荐商品交集) / （推荐商品的总数）</li>
-<li>准确率：precision = (用户感兴趣 与 推荐商品交集) / （用户感兴趣物品集合）</li>
-<li>覆盖率：coverage = （推荐商品） / （总商品）</li>
-<li>平均流行度：每个物品流行度的对数值（流行度满足长尾，取对数更加的稳定）</li>
-<li>新颖度：新颖度可由流行度度量，负相关。</li>
-</ul>
-<h3 id="基于用户的协同过滤算法"><a href="#基于用户的协同过滤算法" class="headerlink" title="基于用户的协同过滤算法"></a>基于用户的协同过滤算法</h3><p>基于用户的协同过滤算法是推荐算法中最古老的算法，在1992年被提出（很年轻的领域）。主要包括两个部分：</p>
+<h3 id="54-条款：让自己熟悉包括TR1在内的标准程序库"><a href="#54-条款：让自己熟悉包括TR1在内的标准程序库" class="headerlink" title="54 条款：让自己熟悉包括TR1在内的标准程序库"></a>54 条款：让自己熟悉包括TR1在内的标准程序库</h3><p>C++standard定义了C++语言及其标准程序库的规范，里头包含以下：</p>
 <ul>
-<li>找到和目标用户兴趣相似的用户集合</li>
-<li>找到这个集合中用户喜欢的，但目标用户中没有产生过行为的，推荐给目标用户</li>
+<li>STL 标准模板库</li>
+<li>Iostream</li>
+<li>国际化支持</li>
+<li>数值处理</li>
+<li>C89标准程序库</li>
+<li>异常阶层体系</li>
 </ul>
-<p><strong>找出目标用户兴趣群</strong></p>
-<p>如何判断两个用户的相似性，可以使用用户感兴趣物体N(u)的相似性来代替用户的相似性，使用Jaccard相似度，计算u，v用户的相似度：<br>$$<br>w_{u v}=\frac{|N(u) \cap N(v)|}{|N(u) \cup N(v)|}<br>$$<br>或者使用余弦相似度计算：<br>$$<br>w_{u v}=\frac{|N(u) \cap N(v)|}{\sqrt{|N(u)||N(v)|}}<br>$$<br>在具体的计算时，我们只关注两个用户之间存在交集的那部分商品：</p>
+<p>此外C++的新特性被记录在TR1的文档内，在下一次更新将会加入到标准库中。</p>
+<p><strong>总结</strong></p>
 <ul>
-<li><p>首先建立一个<strong>商品为表头的链表，链表上的节点是对该商品发生过行为的用户。</strong></p>
-</li>
-<li><p>随后建立一个<strong>用户与用户之间的相似矩阵</strong>，如果这两个用户出现在同一个链表中k次，则用户之间的数组值为k。相似矩阵作为余弦相似度的分子，总数作为分母，计算得到用户之间的相似度。</p>
-</li>
-<li>给目标用户提供与他相似度topK用户喜欢的产品。</li>
+<li>C++标准库的主要机能由STL，iostreams，locates组成。并包含C99标准程序库。</li>
+<li>TR1添加了智能指针，一般化函数指针，hash-based容器，正则表达式以及另外10个组件的支持</li>
+<li>TR1自身只是一份规范。</li>
 </ul>
-<p><strong>用户相似性的改进：</strong></p>
-<p>对于一些热门的产品，大家可能都会去购买，比如面包大家都会买，但是购买用户之间的相似性就天差地别了，换句话说，<strong>冷门商品更能说明用户兴趣</strong>，因此需要对热门商品进行惩罚：<br>$$<br>w_{u v}=\frac{\sum_{i \in N(u) \cap N(v)} \frac{1}{\log (1+|N(i)|)}}{\sqrt{|N(u)||N(v)|}}<br>$$<br>分子是u，v用户共同感兴趣的物品i，N(i)表示对i发生过行为的所有人的集合，i越热门惩罚越大。</p>
-</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/11/02/推荐系统之协同过滤（一）/">https://wenhui-zhou.github.io/2019/11/02/推荐系统之协同过滤（一）/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/11/02/effective-cpp-二-构造、析构、赋值运算/">effective cpp (二) 构造、析构、赋值运算</a><a class="next" href="/2019/10/31/effective-cpp-（一）-让自己习惯cpp/">effective cpp(一) 让自己习惯cpp</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+<h3 id="55-条款：让自己熟悉Boost"><a href="#55-条款：让自己熟悉Boost" class="headerlink" title="55 条款：让自己熟悉Boost"></a>55 条款：让自己熟悉Boost</h3><p>如果你在找一个高质量，源码开放，平台独立，编译器独立的程序库，那么Boost是一个很好地选择。他的网址是：<a href="">http://boost.org</a>。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li>Boost是一个社群，也是一个网站，致力于免费，源码开放，同僚复审的C++程序库开发。Boost在C++标准化过程中扮演深居影响力的角色。</li>
+<li>Boost提供许多TR1组件实现品，以及其他许多程序库。</li>
+</ul>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/11/26/effective-cpp-九-杂项讨论/">https://wenhui-zhou.github.io/2019/11/26/effective-cpp-九-杂项讨论/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2019/11/25/effective-cpp-八-定制new和delete/">effective cpp(八)定制new和delete</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
 var GUEST_INFO = ['nick','mail','link'];
 var guest_info = 'nick,mail'.split(',').filter(function(item){
