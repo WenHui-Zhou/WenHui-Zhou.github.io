@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-11-26T14:18:34.220Z</updated>
+  <updated>2019-11-26T14:21:37.864Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://wenhui-zhou.github.io/2019/11/26/effective-cpp-%E4%B9%9D-%E6%9D%82%E9%A1%B9%E8%AE%A8%E8%AE%BA/"/>
     <id>https://wenhui-zhou.github.io/2019/11/26/effective-cpp-九-杂项讨论/</id>
     <published>2019-11-26T13:34:29.000Z</published>
-    <updated>2019-11-26T14:18:34.220Z</updated>
+    <updated>2019-11-26T14:21:37.864Z</updated>
     
-    <content type="html"><![CDATA[<p>2019/11/26 effective cpp 第九章 杂项讨论</p><p>这是这本书的最后一章，今晚应该就能够阅读完！在开始阅读之前，我想感慨一下，最后的几章难度太大，一知半解的看下来，我想原因是相关张章节的实践不多导致的，因此日后有需要要回来重新阅读它们，时间很快大概花了一个月的空闲时间来阅读这本书，收获满满！</p><p>这一章主要说了三个问题：编译器的警告要重视；C++标准库的一个总览；boost一个泛用性C++库的总览。</p><ul><li>53 条款：不要轻视编译器的警告</li></ul><a id="more"></a><h3 id="53-条款：不要轻视编译器的警告"><a href="#53-条款：不要轻视编译器的警告" class="headerlink" title="53 条款：不要轻视编译器的警告"></a>53 条款：不要轻视编译器的警告</h3><p>编译器作者在触发一个warning的时候，他比你更加明白将来会发生什么严重的错误，因此我们需要在对待编译器警告的时候更加的小心。</p><p>当出现一个编译器warning的时候，我们应该需要知道它的意图以及真正的意义。</p><p><strong>总结</strong></p><ul><li>严肃对待编译器发出的警告，争取无警告荣誉</li><li>不要过度依赖编译器的报警功能，因为不同的编译器对待事情的反应是不同的</li></ul><h3 id="54-条款：让自己熟悉包括TR1在内的标准程序库"><a href="#54-条款：让自己熟悉包括TR1在内的标准程序库" class="headerlink" title="54 条款：让自己熟悉包括TR1在内的标准程序库"></a>54 条款：让自己熟悉包括TR1在内的标准程序库</h3><p>C++standard定义了C++语言及其标准程序库的规范，里头包含以下：</p><ul><li>STL 标准模板库</li><li>Iostream</li><li>国际化支持</li><li>数值处理</li><li>C89标准程序库</li><li>异常阶层体系</li></ul><p>此外C++的新特性被记录在TR1的文档内，在下一次更新将会加入到标准库中。</p><p><strong>总结</strong></p><ul><li>C++标准库的主要机能由STL，iostreams，locates组成。并包含C99标准程序库。</li><li>TR1添加了智能指针，一般化函数指针，hash-based容器，正则表达式以及另外10个组件的支持</li><li>TR1自身只是一份规范。</li></ul><h3 id="55-条款：让自己熟悉Boost"><a href="#55-条款：让自己熟悉Boost" class="headerlink" title="55 条款：让自己熟悉Boost"></a>55 条款：让自己熟悉Boost</h3><p>如果你在找一个高质量，源码开放，平台独立，编译器独立的程序库，那么Boost是一个很好地选择。他的网址是：<a href="">http://boost.org</a>。</p><p><strong>总结</strong></p><ul><li>Boost是一个社群，也是一个网站，致力于免费，源码开放，同僚复审的C++程序库开发。Boost在C++标准化过程中扮演深居影响力的角色。</li><li>Boost提供许多TR1组件实现品，以及其他许多程序库。</li></ul>]]></content>
+    <content type="html"><![CDATA[<p>2019/11/26 effective cpp 第九章 杂项讨论</p><p>这是这本书的最后一章，今晚应该就能够阅读完！在开始阅读之前，我想感慨一下，最后的几章难度太大，一知半解的看下来，我想原因是相关张章节的实践不多导致的，因此日后有需要要回来重新阅读它们，时间很快大概花了一个月的空闲时间来阅读这本书，收获满满！</p><p>这一章主要说了三个问题：编译器的警告要重视；C++标准库的一个总览；boost一个泛用性C++库的总览。</p><ul><li>53 条款：不要轻视编译器的警告</li><li>54 条款：让自己熟悉包括TR1在内的标准程序库</li><li>55 条款：让自己熟悉Boost</li></ul><a id="more"></a><h3 id="53-条款：不要轻视编译器的警告"><a href="#53-条款：不要轻视编译器的警告" class="headerlink" title="53 条款：不要轻视编译器的警告"></a>53 条款：不要轻视编译器的警告</h3><p>编译器作者在触发一个warning的时候，他比你更加明白将来会发生什么严重的错误，因此我们需要在对待编译器警告的时候更加的小心。</p><p>当出现一个编译器warning的时候，我们应该需要知道它的意图以及真正的意义。</p><p><strong>总结</strong></p><ul><li>严肃对待编译器发出的警告，争取无警告荣誉</li><li>不要过度依赖编译器的报警功能，因为不同的编译器对待事情的反应是不同的</li></ul><h3 id="54-条款：让自己熟悉包括TR1在内的标准程序库"><a href="#54-条款：让自己熟悉包括TR1在内的标准程序库" class="headerlink" title="54 条款：让自己熟悉包括TR1在内的标准程序库"></a>54 条款：让自己熟悉包括TR1在内的标准程序库</h3><p>C++standard定义了C++语言及其标准程序库的规范，里头包含以下：</p><ul><li>STL 标准模板库</li><li>Iostream</li><li>国际化支持</li><li>数值处理</li><li>C89标准程序库</li><li>异常阶层体系</li></ul><p>此外C++的新特性被记录在TR1的文档内，在下一次更新将会加入到标准库中。</p><p><strong>总结</strong></p><ul><li>C++标准库的主要机能由STL，iostreams，locates组成。并包含C99标准程序库。</li><li>TR1添加了智能指针，一般化函数指针，hash-based容器，正则表达式以及另外10个组件的支持</li><li>TR1自身只是一份规范。</li></ul><h3 id="55-条款：让自己熟悉Boost"><a href="#55-条款：让自己熟悉Boost" class="headerlink" title="55 条款：让自己熟悉Boost"></a>55 条款：让自己熟悉Boost</h3><p>如果你在找一个高质量，源码开放，平台独立，编译器独立的程序库，那么Boost是一个很好地选择。他的网址是：<a href="">http://boost.org</a>。</p><p><strong>总结</strong></p><ul><li>Boost是一个社群，也是一个网站，致力于免费，源码开放，同僚复审的C++程序库开发。Boost在C++标准化过程中扮演深居影响力的角色。</li><li>Boost提供许多TR1组件实现品，以及其他许多程序库。</li></ul><p>最后告诫一下自己，熟悉STL，在开始用C++写一个东西之前，应当要过一遍这9篇博客！</p>]]></content>
     
     <summary type="html">
     
@@ -32,6 +32,8 @@
 &lt;p&gt;这一章主要说了三个问题：编译器的警告要重视；C++标准库的一个总览；boost一个泛用性C++库的总览。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;53 条款：不要轻视编译器的警告&lt;/li&gt;
+&lt;li&gt;54 条款：让自己熟悉包括TR1在内的标准程序库&lt;/li&gt;
+&lt;li&gt;55 条款：让自己熟悉Boost&lt;/li&gt;
 &lt;/ul&gt;
     
     </summary>
