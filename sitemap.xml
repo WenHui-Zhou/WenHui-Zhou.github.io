@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wenhui-zhou.github.io/2019/11/29/NLP%E4%B9%8BWord2Vec%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    
+    <lastmod>2019-12-02T02:41:21.121Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wenhui-zhou.github.io/2019/12/01/NLP%E6%A8%A1%E5%9E%8Bfinetune-GPT%E5%88%B0Bert%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
     
     <lastmod>2019-12-01T16:17:27.648Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>https://wenhui-zhou.github.io/2019/11/29/NLP%E4%B9%8Btransformer%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
     
     <lastmod>2019-11-30T19:44:59.724Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wenhui-zhou.github.io/2019/11/29/NLP%E4%B9%8BWord2Vec%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
-    
-    <lastmod>2019-11-29T12:52:45.793Z</lastmod>
     
   </url>
   
