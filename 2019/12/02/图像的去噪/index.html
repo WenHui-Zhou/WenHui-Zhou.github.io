@@ -19,7 +19,28 @@
 <p><img src="../images/3D/noise3.jpeg" style="zoom:60%;"></p>
 <p><img src="../images/3D/noise4.jpeg" style="zoom:60%;"></p>
 <p><img src="../images/3D/noise5.jpeg" style="zoom:60%;"></p>
-<h3 id="传统去噪方法"><a href="#传统去噪方法" class="headerlink" title="传统去噪方法"></a>传统去噪方法</h3></div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/12/02/图像的去噪/">https://wenhui-zhou.github.io/2019/12/02/图像的去噪/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/12/02/NLP实践-文本分类任务/">NLP实践 文本分类任务</a><a class="next" href="/2019/12/01/NLP模型finetune-GPT到Bert（三）/">NLP模型finetune:GPT到Bert（三）</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+<h3 id="传统去噪方法"><a href="#传统去噪方法" class="headerlink" title="传统去噪方法"></a>传统去噪方法</h3><p>传统的去噪算法分为<strong>空间域法</strong>和<strong>变换域法</strong>：</p>
+<ul>
+<li><p><strong>空间域去噪方法的思想就是在原图像上对图像灰度值进行处理</strong>，通常采取“平均”或“平滑”的方法，将突变的噪声分量分散到周围像素中去，使图像变得较为平滑，降低噪声的影响。常用的空间域去噪方法有：均值去噪法，中值去噪法，高斯去噪法、维纳滤波去噪法等。</p>
+</li>
+<li><p><strong>变换域去噪方法的思想是将原图像进行相关的变换</strong>，将图像信息变换到变换域中,再通过一定的方法来对图像信息进行处理，之后再通过反变换恢复图像信息，以达到图像去噪的目的。常用的变换域去噪方法有：傅里叶变换去噪方法，小波变换去噪方法等。</p>
+</li>
+</ul>
+<p><strong>常用去噪算法</strong></p>
+<ul>
+<li>均值滤波去噪</li>
+<li>中值滤波去噪</li>
+<li>高斯滤波去噪</li>
+<li>傅里叶变换去噪</li>
+</ul>
+<p>下面介绍深度学习在图像去噪上的一篇最新的论文：Noise2Noise: Learning Image Restoration without Clean Data ICML 2018</p>
+<h3 id="Noise2Noise-Learning-Image-Restoration-without-Clean-Data"><a href="#Noise2Noise-Learning-Image-Restoration-without-Clean-Data" class="headerlink" title="Noise2Noise: Learning Image Restoration without Clean Data"></a>Noise2Noise: Learning Image Restoration without Clean Data</h3><p><strong>概述</strong></p>
+<p>这篇文章的主要亮点在于训练网络的时候不需要提供清晰的图像，。作者将另一个不清晰的图像作为GT进行网络的训练，最终也能够得到较好的结果。</p>
+<h3 id="inference"><a href="#inference" class="headerlink" title="inference"></a>inference</h3><ul>
+<li>传统去噪算法： <a href="https://www.voidking.com/dev-gp-image-denoise/" target="_blank" rel="noopener">https://www.voidking.com/dev-gp-image-denoise/</a></li>
+<li></li>
+</ul>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/12/02/图像的去噪/">https://wenhui-zhou.github.io/2019/12/02/图像的去噪/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/12/02/NLP实践-文本分类任务/">NLP实践 文本分类任务</a><a class="next" href="/2019/12/01/NLP模型finetune-GPT到Bert（三）/">NLP模型finetune:GPT到Bert（三）</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
 var GUEST_INFO = ['nick','mail','link'];
 var guest_info = 'nick,mail'.split(',').filter(function(item){
