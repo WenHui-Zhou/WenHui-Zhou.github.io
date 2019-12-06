@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>NLP实践 基于注意力机制的文本匹配 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">NLP实践 基于注意力机制的文本匹配</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">NLP实践 基于注意力机制的文本匹配</h1><div class="post-meta">Dec 5, 2019<span> | </span><span class="category"><a href="/categories/NLP/">NLP</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2019/12/05/NLP实践-基于注意力机制的文本匹配/#vcomment"><span class="valine-comment-count" data-xid="/2019/12/05/NLP实践-基于注意力机制的文本匹配/"></span><span> 条评论</span></a><div class="post-content"><p>文本匹配是一个宽泛的任务，只要是研究两端样本之间的关系，都可以将这个问题看成文本匹配的问题。常见的任务场景有：</p>
+<ul>
+<li>相似度计算，复述识别</li>
+<li>问答系统</li>
+<li>对话系统</li>
+<li>自然语言推理、文本蕴含识别</li>
+<li>信息检索中的匹配</li>
+<li>机器阅读理解</li>
+</ul>
+<a id="more"></a>
+<h3 id="通用baseline"><a href="#通用baseline" class="headerlink" title="通用baseline"></a>通用baseline</h3><p>对于这种匹配问题，直接上一个SiameseCNN模型，即孪生模型将textA，textB输入两个模型中，如果是计算两个文本的相似性，可以直接采用cosine，L1距离，欧式距离等得到两个文本之间的相似性。</p>
+<p><img src="../images/nlp/text11.png" style="zoom:53%;"></p>
+<p>匹配问题可能还会涉及到问答关系，文本蕴含关系等等，因此我们可以通过两个子模型生成了textA，textB的向量来构造出更加适合的feature，如A-B，A*B等等。然后用额外的模型（如MLP）来学习文本之间的映射关系。</p>
+<p><strong>孪生模型</strong></p>
+<p>孪生模型的含义指的是神经网络连体，通过权值共享的方式，组成一个完整的网络：</p>
+<p><img src="../images/nlp/text12.jpg" style="zoom:50%;"></p>
+<p>Network1与Network2有着相同的网络和相同的权重。他的作用是衡量两个输入的相似性。具体的应用有QA问答系统，手写体识别等等。</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ul>
+<li>相似度计算<ul>
+<li>判断两个文本是否表达相同的含义，构成复述关系</li>
+<li>有些数据集给出相似度等级，有些数据集则给出0/1标签</li>
+</ul>
+</li>
+<li>问答匹配<ul>
+<li>问答问题可以视为是一个分类问题，但是通常情况下，但是实际场景是从若干候选中找出正确的答案，相关数据集是通过一个匹配正例和若干负例组成的，往往建模成rank问题</li>
+<li>学习方法上，不仅可以使用分类方法来做（pointwise-learning），还可以使用pairwise-learning（同问题的一对正负样本作为一对正负样本），listwise-learning（同问题的全部样本序列作为一个样本）。</li>
+</ul>
+</li>
+<li>对话匹配<ul>
+<li>对话系统是问答系统的升级，主要的不同有：对话匹配引入了历史轮，因此回答需要参考历史</li>
+<li>对话匹配的回复空间比问答系统要大很多，甚至存在一些万能回复。</li>
+</ul>
+</li>
+<li>自然语言推理、文本蕴含识别<ul>
+<li>如果一直句子A，能够推导出句子B为正，则A蕴含B，若推导出B为假，则说明，A与B相互矛盾，如无法推导出B为真为假那么A与B独立。</li>
+<li>可以将这个问题看成是一个3-way classification的问题</li>
+</ul>
+</li>
+<li>信息检索匹配<ul>
+<li>query-title匹配、query-document匹配等信息检索场景下的文本匹配问题。不过，信息检索场景下，一般先通过检索方法召回相关项，再对相关项进行rerank。对这类问题来说，<strong>更重要的是ranking</strong>，而不是非黑即白或单纯的selection</li>
+</ul>
+</li>
+<li>机器阅读理解<ul>
+<li>在文本中找到答案片段</li>
+</ul>
+</li>
+</ul>
+<h3 id="学习方法"><a href="#学习方法" class="headerlink" title="学习方法"></a>学习方法</h3><p>基于表示的文本匹配方法（simaese结构）与基于交互的匹配方法（花式attention交互）纷争数年，最终文本匹配问题还是被BERT方法给终结了。</p>
+<p><strong>基于表示的孪生结构</strong></p>
+<p>这种结构有两个改进方向，一种是使用更加强大的encoder，第二种为使用更加花哨的相似度计算函数。基于这两个方向的工作也很多</p>
+<p><strong>基于交互attention结构</strong></p>
+<p>首先通过attention为代表的结构来对两段文本进行不同粒度（词，短语级别）的交互，然后将各个粒度的匹配结果通过一种结构聚合起来，作为一个超级特征向量得到最终的匹配关系。</p>
+<p>然后这种结构往往在某个场景中有很好的性能，换一个场景性能可能就会变差（因为设计出来的结构迎合了某个特定数据集的数据分布）。</p>
+<h3 id="attention机制"><a href="#attention机制" class="headerlink" title="attention机制"></a>attention机制</h3><p>attention是一个用于提升RNN在encoder-decoder中性能的机制，在机器翻译，语音识别，图像标注中得到广泛的应用。attention为句子中的每个词赋予了不同权重，使得神经网络学习变得更加的灵活（soft），同时可以反应在翻译，识别过程中的一种对齐关系。</p>
+<p><strong>attention帮助模型对输入的x的每个部分赋予不同的权重，抽取出更加关键的信息，使得模型做出更加准确的判断，同时不会产生过大的计算和存储的开销。</strong></p>
+<p>attention模型以经典的Bahdanau attention 为例：</p>
+<p><img src="../images/nlp/attention1.jpg" style="zoom:87%;"></p>
+<p>经典的attention结构主要由三个部分：</p>
+<ul>
+<li>source function：度量环境向量与当前输入向量的相似性，找到当前环境下应该focus那些信息</li>
+</ul>
+<p>$$<br>\begin{equation}<br>e_{i j}=a\left(c, y_{i}\right)=v_{a}^{T} \tanh \left(W_{a} <em> c+U_{a} </em> y_{i}\right)<br>\end{equation}<br>$$</p>
+<ul>
+<li>alignment function：计算attention weight，通常使用softmax进行归一化</li>
+</ul>
+<p>$$<br>\begin{equation}<br>\alpha_{i j}=\frac{\exp \left(e_{i j}\right)}{\sum_{k=1}^{T_{x}} \exp \left(e_{i k}\right)}<br>\end{equation}<br>$$</p>
+<ul>
+<li>generate context vector function: 利用attention weight对输出赋予新的权重。</li>
+</ul>
+<p>$$<br>\begin{equation}<br>z_{i}=\sum_{i} \alpha_{i j} * y_{i}<br>\end{equation}<br>$$</p>
+<h3 id="inference"><a href="#inference" class="headerlink" title="inference"></a>inference</h3><p><a href="https://www.jiqizhixin.com/articles/2019-10-18-14" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2019-10-18-14</a></p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/12/05/NLP实践-基于注意力机制的文本匹配/">https://wenhui-zhou.github.io/2019/12/05/NLP实践-基于注意力机制的文本匹配/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2019/12/02/NLP实践-文本分类任务/">NLP实践 文本分类任务</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/12/05/NLP实践-基于注意力机制的文本匹配/">NLP实践 基于注意力机制的文本匹配</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/02/NLP实践-文本分类任务/">NLP实践 文本分类任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/02/图像的去噪/">图像的去噪</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/01/NLP模型finetune-GPT到Bert（三）/">NLP模型finetune:GPT到Bert（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/NLP之transformer（二）/">NLP之transformer（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/29/NLP之Word2Vec（一）/">NLP之Word2Vec（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/26/effective-cpp-九-杂项讨论/">effective cpp(九)杂项讨论</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/25/effective-cpp-八-定制new和delete/">effective cpp(八)定制new和delete</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/19/effective-cpp-七-模板与范型编程/">effective cpp(七) 模板与范型编程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/16/effective-cpp-六-继承与面向对象设计/">effective cpp(六) 继承与面向对象设计</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
