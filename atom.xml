@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-12-18T02:17:08.305Z</updated>
+  <updated>2019-12-24T08:37:40.791Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>bert的一些思考</title>
+    <link href="https://wenhui-zhou.github.io/2019/12/19/bert%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"/>
+    <id>https://wenhui-zhou.github.io/2019/12/19/bert的一些思考/</id>
+    <published>2019-12-19T07:00:31.000Z</published>
+    <updated>2019-12-24T08:37:40.791Z</updated>
+    
+    <content type="html"><![CDATA[<p>观其大致，能够比较好的融会贯通，理解整个任务。这是这篇post的主要目的。</p><a id="more"></a><p>Bert的应用模式</p><p>bert在应用到具体的任务上时，通常采用两阶段策略：</p><ul><li>第一阶段利用通用语言模型任务，采用自监督的学习方法，选择某个具体的特征抽取器，来学习预训练模型</li><li>第二个阶段，根据手头具体的监督学习任务，采取特征集成或finetune的应用模型，</li></ul><p>总之，加载预训练模型，然后为不同的任务定制第二阶段的定制网络</p><p><strong>特征集成任务</strong></p><p>ELMO方法是典型的特征集成方式，把当前要判断的输入句子，走一遍ELMO预训练好的的双层双向LSTM网络，然后把每个输入单词对应位置的高层LSTM激活embedding（或者输入单词对应位置的若干层embedding进行加权求和），作为下游任务单词对应的输入。</p><p>这是一种典型的应用预训练模型的方法，更侧重于单词的上下文特征表达方面。</p><p><strong>finetune模式</strong></p><p>GPT和bert采用finetune应用模式，在获得了预训练模型以及对应的网络结构（Transformer）后，第二个阶段仍然采用与预训练过程相同的网络结构，拿出手头任务的部分训练数据，直接在这个网络上进行模型训练，以针对性地修正预训练阶段获得的网络参数，一般这个阶段被称为Fine-tuning。</p><p><strong>搜索引擎的未来就是QA和阅读理解</strong>：搜索引擎通过理解文本，对于用户提出的问题直接给出答案。</p><p><strong>Bert生成式任务</strong></p><p>例如将bert用在生成式摘要任务中。从技术角度上来讲，生成式任务符合典型的encoder-decoder框架。encoder部分好解决，只需要用预训练好的Bert模型初始化encoder部分的transformer即可。另一方面是decoder端。大量的实验证明直接将bert的预训练参数用来初始化decoder的部分效果都不好。主要原因是bert预训练的时候使用的是双向的语言模型，而一般的decoder任务是从左到右依次生成的，无法利用bert在预训练阶段学到的上下文信息。这也是bert在做生成类任务时遇到的最大问题。</p><p><strong>如何用bert</strong></p><p>简而言之，使用bert的核心在于使用transformer作为特征提取器，用bert预训练模型初始化transformer参数，然后再用当前的任务去finetune。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;观其大致，能够比较好的融会贯通，理解整个任务。这是这篇post的主要目的。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="NLP" scheme="https://wenhui-zhou.github.io/tags/NLP/"/>
+    
+  </entry>
   
   <entry>
     <title>pytorch 重点回顾</title>
@@ -100,27 +120,6 @@
     </summary>
     
       <category term="3D重建" scheme="https://wenhui-zhou.github.io/categories/3D%E9%87%8D%E5%BB%BA/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>NLP模型finetune:GPT到Bert（三）</title>
-    <link href="https://wenhui-zhou.github.io/2019/12/01/NLP%E6%A8%A1%E5%9E%8Bfinetune-GPT%E5%88%B0Bert%EF%BC%88%E4%B8%89%EF%BC%89/"/>
-    <id>https://wenhui-zhou.github.io/2019/12/01/NLP模型finetune-GPT到Bert（三）/</id>
-    <published>2019-12-01T06:24:31.000Z</published>
-    <updated>2019-12-01T16:17:27.648Z</updated>
-    
-    <content type="html"><![CDATA[<p>NLP模型的预训练方式有ELMO的方式，基于特征的融合，通过学习句子的上下文语境来判断句子中多义词的含义，解决多义词歧义的问题，从而提升模型的性能。</p><p>另一种更类似于图像领域的预训练方式为fine tuning模式，该模式有一个代表，即GPT网络。</p><a id="more"></a><h3 id="word-embedding-to-GPT"><a href="#word-embedding-to-GPT" class="headerlink" title="word embedding to GPT"></a>word embedding to GPT</h3><p>GPT的网络结果如下：</p><p><img src="/images/nlp/gpt1.jpg" style="zoom:80%;"></p><p>GPT是Generative Pre-Training的简称，模型分为两个部分，第一个阶段利用语言模型进行预训练，第二个阶段利用fine tune解决下游的任务。上图的预训练过程与ELMO类似，也是分为两个阶段，下面回顾一下ELMO：</p><p><img src="/images/nlp/gpt2.jpg" style="zoom:80%;"></p><p>ELMO利用语言模型得到一个不可区分多义词的word embedding，然后通过下游任务来微调这个word embedding使得其适应具体的语境。</p><p>GPT与ELMO的区别有两个：</p><ul><li>GPT使用transformer结果替代ELMO中的LSTM</li><li>GPT采用单向的语言模型，GPT仅利用到语言的上文信息，而ELMO则是双向模型（可以算一个 缺点）</li></ul><h3 id="使用GPT预训练参数"><a href="#使用GPT预训练参数" class="headerlink" title="使用GPT预训练参数"></a>使用GPT预训练参数</h3><p>GPT利用语言模型就是预训练之后，对不同的下游任务，设计网络结构，这个结构朝GPT看齐。这样在下游任务中，利用GPT的参数去初始化下游模型，然后根据具体数据来对网络 进行 fine tune，这个过程和cv领域的预训练模型一模一样。</p><p>接下来的 问题就转变为，如果将一个下有任务改造成类似GPT的 结构。</p><p>对于常见的任务，GPT的改造 如下：</p><p><img src="/images/nlp/gpt4.jpg" style="zoom:87%;"></p><p>对于GPT来说，一个值得改进的地方是他使用的单向的语言模型，因此在这之后，Bert就填补了这个遗憾。</p><h3 id="Bert"><a href="#Bert" class="headerlink" title="Bert"></a>Bert</h3><p><img src="/images/nlp/bert1.jpg" style="zoom:80%;"></p><p>bert借鉴了GPT中使用的transformer以及ELMO中使用的双向语言模型。使用过程同样分为两步，第一步训练双向语言模型进行参数的预训练。第二步根据具体的下游任务，改造为bert结构。</p><p>Bert的演化过程如下：</p><p><img src="/images/nlp/bert2.jpg" style="zoom:80%;"></p><p>transformer在做双向的时候，采用的是CBOW的方法，即将当前要预测的词扣掉，利用这个词的上下文来预测，具体做法 如下：</p><p>Masked双向语言模型：随机选择语料中15%的单词，把它抠掉，也就是用[Mask]掩码代替原始单词，然后要求模型去正确预测被抠掉的单词。但是这里有个问题：训练过程大量看到[mask]标记，但是真正后面用的时候是不会有这个标记的，这会引导模型认为输出是针对[mask]这个标记的，但是实际使用又见不到这个标记，这自然会有问题。为了避免这个问题，Bert改造了一下，15%的被上天选中要执行[mask]替身这项光荣任务的单词中，只有80%真正被替换成[mask]标记，10%被狸猫换太子随机替换成另外一个单词，10%情况这个单词还待在原地不做改动。这就是Masked双向语音模型的具体做法。</p><p>Bert在NLP的各大任务中均大方异彩，出现了一统江湖的趋势，成为NLP领域内的一个标杆工作。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;NLP模型的预训练方式有ELMO的方式，基于特征的融合，通过学习句子的上下文语境来判断句子中多义词的含义，解决多义词歧义的问题，从而提升模型的性能。&lt;/p&gt;
-&lt;p&gt;另一种更类似于图像领域的预训练方式为fine tuning模式，该模式有一个代表，即GPT网络。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="NLP" scheme="https://wenhui-zhou.github.io/categories/NLP/"/>
     
     
   </entry>

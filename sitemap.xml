@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wenhui-zhou.github.io/about/index.html</loc>
+    
+    <lastmod>2019-12-26T07:36:29.796Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wenhui-zhou.github.io/2019/12/19/bert%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</loc>
+    
+    <lastmod>2019-12-24T08:37:40.791Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wenhui-zhou.github.io/2019/12/05/NLP%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E4%BA%8E%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84%E6%96%87%E6%9C%AC%E5%8C%B9%E9%85%8D/</loc>
     
     <lastmod>2019-12-19T02:05:30.545Z</lastmod>
@@ -264,13 +278,6 @@
     <loc>https://wenhui-zhou.github.io/2019/09/26/3D%E9%87%8D%E5%BB%BA%E7%BB%BC%E8%BF%B0/</loc>
     
     <lastmod>2019-10-14T02:08:43.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wenhui-zhou.github.io/about/index.html</loc>
-    
-    <lastmod>2019-10-09T12:18:12.379Z</lastmod>
     
   </url>
   
