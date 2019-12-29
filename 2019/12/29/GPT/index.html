@@ -44,10 +44,10 @@
 <p><img src="/images/nlp/640-1577377765194.webp" alt=""></p>
 <p>随后序列进入transformer中，transformer中的自注意力机制将每个词与序列中的相关性学习到，体现了transformer超强的特征提取能力。</p>
 <p>对于自注意力机制来说，存在三个矩阵，Key，Query，Value，首先将这三个矩阵与输入相乘，然后得到K，Q，V，可以认为接下来就是找到相互匹配的K，Q（query和key的匹配对），即softmax的值最高，然后乘以V，得到当前词对序列中其他词的相关性的大小：</p>
-<p><img src="/images/nlp/640-1577378601211.webp" alt=""></p>
+<p><img src="/images/nlp/640-1577378601211.webp" alt="img"></p>
 <p><strong>模型输出</strong></p>
 <p>当最后一个transformer输出向量之后，这个向量本质上就会预测词的词向量。我们将这个词向量乘上词嵌入矩阵，得到一个长度为词汇表长度的向量。这个向量每一个位置就表示当前预测位置上的词对词汇表中该位置词的相似概率。</p>
-<p><img src="/images/nlp/640-1577378813143.webp" alt=""></p>
+<p><img src="/images/nlp/640-1577378813143.webp" alt="img"></p>
 <p>然后我们现在top-k（40）个概率，然后从topk中，按照概率大小，选择出一个单词作为当前预测的单词。</p>
 <p><img src="/images/nlp/640-1577378918869.webp" alt="img"></p>
 <p>重复上述的过程，直到生成1024个词，遇到终止符。</p>
