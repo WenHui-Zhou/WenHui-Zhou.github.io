@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2019-12-24T08:37:40.791Z</updated>
+  <updated>2019-12-29T13:42:42.141Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>finetune-诗句生成</title>
+    <link href="https://wenhui-zhou.github.io/2019/12/29/finetune-%E8%AF%97%E5%8F%A5%E7%94%9F%E6%88%90/"/>
+    <id>https://wenhui-zhou.github.io/2019/12/29/finetune-诗句生成/</id>
+    <published>2019-12-29T13:35:47.000Z</published>
+    <updated>2019-12-29T13:42:42.141Z</updated>
+    
+    <content type="html"><![CDATA[<p>原先的诗句生成模型仅仅利用了bert language model，而没有去利用诗句语料进行finetune，尽管language model生成的结果已经令人比较满意了。但是我们想知道在特定的数据集上进行finetune的话，结果是否能得到提升，于是这篇post主要完成这个工作：continue training。</p><a id="more"></a><h3 id="pytorch-多卡分布式训练"><a href="#pytorch-多卡分布式训练" class="headerlink" title="pytorch 多卡分布式训练"></a>pytorch 多卡分布式训练</h3><p>关于分布式训练，通常可以使用<strong>DataLoader</strong>，这个wrapper可以方便使用多张卡，而进程只有一个，唯一的问题是这个方法只能满足一台计算机上GPU的通信，对需要使用多个机器，多个GPU的任务无能为力。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net = nn.DataParallel(net)</span><br></pre></td></tr></table></figure><p>以上代码将整个网络分布到多个GPU上。pytorch定义的网络模型参数默认放在GPU 0上，所以dataparallel的时候，实质上是把训练参数从gpu靠背到其他的gpu上同时训练。此时dataloader加载数据的时候，batch_size需要设置成原来batch的n倍，n为gpu的数量。</p><p>如果我们要使用多个机器上的GPU，pytorch依然提供了办法：</p><ul><li><code>torch.utils.parallel.DistributedDataParallel</code>方法：与dataloader类似，用来实现多机多卡分布训练，他可实现在不同机器的多个模型拷贝之间的平均梯度</li><li><code>torch.utils.data.distributed.DistributedSampler</code> 方法：在多机多卡的情况下，每个卡读取的数据显然是不同的，dataparallel的做法是直接将batch切分到不同的卡上。对于多机来说，直接进行数据传输将会耗费很多时间，于是使用distributedSampler，确保每一个dataloader只会load到整个数据集的一个特定子集，避免不同进程之间数据重复</li></ul><p><strong>使用方法</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataloader,Dataset</span><br><span class="line"><span class="keyword">from</span> torch.utils.data.distributed <span class="keyword">import</span> DistributedSampler</span><br><span class="line"><span class="keyword">from</span> torch.nn.parallel <span class="keyword">import</span> DistributedDataParallel</span><br><span class="line"></span><br><span class="line">dataset = your_dataset()</span><br><span class="line">datasample =DistributedSampler(dataset,num_replicas=world_size,rank = rank)</span><br><span class="line">dataloader = Dataloader(dataset,batch_size=batch_size_per_gpu,sampler = datasampler)</span><br><span class="line">model = your_model()</span><br><span class="line">model = DistributedDataParallel(model,device_ids = [local_rank],output_device=local_rank)</span><br></pre></td></tr></table></figure><p>在设置dataloader的batch-size的时候，只需要设置单卡的batch-size即可。world_size指进程总数，就是卡的数量，rank是进程编号，local_rank指本地序号。要想使用DistributedDataParallel就需要先完成多进程的初始化。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">torch.distributed.init_process_group()</span><br></pre></td></tr></table></figure><p><img src="/images/nlp/image-20191224122842203.png" alt=""></p><p><img src="/images/nlp/image-20191224122817322.png" alt="image-20191224122817322"></p><p><img src="/images/nlp/image-20191224123807016.png" alt="image-20191224123807016"></p><p><img src="/images/nlp/image-20191224123750444.png" alt="image-20191224123750444"></p><p><img src="/images/nlp/image-20191224124839172.png" alt="image-20191224124839172"></p><p><strong>梯度积累</strong></p><p>梯度累加的步骤如下：</p><ol><li>获取loss，输入图像和标签，通过infer计算得到预测值，计算损失函数</li><li><code>loss.backward()</code> 反向传播，计算当前梯度</li><li>多次循环1-2，不清空梯度，使梯度累加在已有的梯度上</li><li>梯度累加了一定的次数以后，先<code>optimizer.step()</code>根据累计的梯度更新网络参数，然后通过<code>optimizer.zero_grad()</code> 清空过往的梯度，为下一波梯度累加做准备</li></ol><p>梯度累加总结来说就是每次获取一个batch吼不清空梯度，而是累加到一定程度的时候去清空梯度，变相的相当于扩大了batchsize，同时可以避免计算多个损失函数时，存储多个计算图。</p><p><strong>pytorch采样器（dataloader）</strong></p><p>pytorch在加载数据的时候提供了一个sampler模块，这个模块用来对数据进行采样，常用的采样器有<code>RandomSampler</code>，当dataloader中shuffle的参数为true的时候，系统会自动调用这个采样器。dataloader默认使用的采样器为sequentialSampler，即按顺序来进行采样。sampler组织好数据的下标后，在dataloader中将数据取出来。</p><p><strong>pytorch and apex</strong></p><p>pytorch在分布式训练上存在着一些问题：</p><ul><li>混合精度训练难以收敛：pytorch可以方面得将模型转换成fp16，但是训练batchnorm层的时候，又需要转成f32，导致了混合精度，难以优化的问题。</li><li>bn同步的问题，bn同步能够极大的加快模型的收敛，精度也会有所提升，原生的方法一直未能较好地解决</li></ul><p>apex是NVIDIA维护的一个支持</p><p><strong>bert优化器</strong></p><p>bert常使用的优化器有BertAdam，AdamW，FusedAdam（和BertAdam类似，当用到apex时配套当做优化器使用）。Bert的优化器和传统的Adam优化器有什么不同呢，主要的不同有以下两点：</p><ul><li>bertAdam/AdamW 能够固定权重衰减，可用于微调模型</li><li>bertAdam/AdamW 不会对偏差bias进行补偿</li></ul><p><strong>bert loss function</strong></p><p>bert损失函数主要由两部分组成，第一部分来自Mask-LM的单词级别分类任务，另一部分是句子级别的分类任务。通过联合学习，使bert学习到语言中token级别，以及句子级别的语义信息，具体的损失函数如下：</p><p>第一部分的损失函数是mask部分的词的一个多分类问题，词典的大小为分类的大小。第二部分的损失函数是是否是下一句的二分类问题，两个分类函数结合作为最后的loss.</p><p><strong>bert激活函数：gelu</strong></p><p>gelu：高斯误差线性单元，是一种高性能的神经网络激活函数，GELU的非线性变换是一种符合预期的随机正则变换方式：</p><p><img src="/images/nlp/image-20191224220030781.png" alt="image-20191224220030781"></p><p><strong>总结</strong></p><p>总结一下上面的工作，我基本上了解了生成诗句的一套流程，对bert的结构也有了比较多的了解。总体来说，代码比较容易看懂，这比起C++的代码，简直轻松很多。</p><p>还可以梳理一下bert的脉络，研究一下whole word marking的实现方法。明后两天把这个事情做完。其他在按计划慢慢推进！</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;原先的诗句生成模型仅仅利用了bert language model，而没有去利用诗句语料进行finetune，尽管language model生成的结果已经令人比较满意了。但是我们想知道在特定的数据集上进行finetune的话，结果是否能得到提升，于是这篇post主要完成这个工作：continue training。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="NLP" scheme="https://wenhui-zhou.github.io/categories/NLP/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>bert的一些思考</title>
@@ -100,26 +120,6 @@
     </summary>
     
       <category term="NLP" scheme="https://wenhui-zhou.github.io/categories/NLP/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>图像的去噪</title>
-    <link href="https://wenhui-zhou.github.io/2019/12/02/%E5%9B%BE%E5%83%8F%E7%9A%84%E5%8E%BB%E5%99%AA/"/>
-    <id>https://wenhui-zhou.github.io/2019/12/02/图像的去噪/</id>
-    <published>2019-12-02T02:42:52.000Z</published>
-    <updated>2019-12-05T02:35:43.739Z</updated>
-    
-    <content type="html"><![CDATA[<p>噪声在图像上通常表现为引起较强视觉效果的孤立像素点或像素块。通常噪声信号与要研究的对象不相关，以无用的信息的形式出现，下面的任务就是将噪声部分消去，使其对图像的影响最小。</p><a id="more"></a><h3 id="噪声概述"><a href="#噪声概述" class="headerlink" title="噪声概述"></a>噪声概述</h3><p><strong>噪声的来源</strong></p><p>（1）图像获取过程中</p><p>两种常用类型的图像传感器CCD和CMOS采集图像过程中，由于<strong>受传感器材料属性、工作环境、电子元器件和电路结构</strong>等影响，会引入各种噪声，如<strong>电阻引起的热噪声</strong>、场效应管的<strong>沟道热噪声、光子噪声、暗电流噪声、光响应非均匀性噪声</strong>。</p><p>（2）图像信号传输过程中</p><p>由于传输介质和记录设备等的不完善，<strong>数字图像在其传输记录过程中往往会受到多种噪声的污染</strong>。另外，在图像处理的某些环节当输入的对象并不如预想时也会在结果图像中引入噪声。</p><p><strong>噪声类型</strong></p><p>图像中常见的噪声基本上有四种：</p><ul><li>高斯噪声</li><li>泊松噪声</li><li>乘性噪声</li><li>椒盐噪声（真没写错）</li></ul><p>噪声的图像由原图，一直到椒盐噪声，从上到下：</p><p><img src="../images/3D/noise1.jpeg" style="zoom:60%;"></p><p><img src="../images/3D/noise2.jpeg" style="zoom:60%;"></p><p><img src="../images/3D/noise3.jpeg" style="zoom:60%;"></p><p><img src="../images/3D/noise4.jpeg" style="zoom:60%;"></p><p><img src="../images/3D/noise5.jpeg" style="zoom:60%;"></p><h3 id="传统去噪方法"><a href="#传统去噪方法" class="headerlink" title="传统去噪方法"></a>传统去噪方法</h3><p>传统的去噪算法分为<strong>空间域法</strong>和<strong>变换域法</strong>：</p><ul><li><p><strong>空间域去噪方法的思想就是在原图像上对图像灰度值进行处理</strong>，通常采取“平均”或“平滑”的方法，将突变的噪声分量分散到周围像素中去，使图像变得较为平滑，降低噪声的影响。常用的空间域去噪方法有：均值去噪法，中值去噪法，高斯去噪法、维纳滤波去噪法等。</p></li><li><p><strong>变换域去噪方法的思想是将原图像进行相关的变换</strong>，将图像信息变换到变换域中,再通过一定的方法来对图像信息进行处理，之后再通过反变换恢复图像信息，以达到图像去噪的目的。常用的变换域去噪方法有：傅里叶变换去噪方法，小波变换去噪方法等。</p></li></ul><p><strong>常用去噪算法</strong></p><ul><li>均值滤波去噪</li><li>中值滤波去噪</li><li>高斯滤波去噪</li><li>傅里叶变换去噪</li></ul><p>下面介绍深度学习在图像去噪上的一篇最新的论文：Noise2Noise: Learning Image Restoration without Clean Data ICML 2018</p><h3 id="Noise2Noise-Learning-Image-Restoration-without-Clean-Data"><a href="#Noise2Noise-Learning-Image-Restoration-without-Clean-Data" class="headerlink" title="Noise2Noise: Learning Image Restoration without Clean Data"></a>Noise2Noise: Learning Image Restoration without Clean Data</h3><p><strong>概述</strong></p><p>这篇文章的主要亮点在于训练网络的时候不需要提供清晰的图像，。作者将另一个不清晰的图像作为GT进行网络的训练，最终也能够得到较好的结果。</p><p><strong>理论依据</strong></p><p>先看一种简单的情况，假设我们对某个物理量（如房间的温度）多次测量，得到一系列不可靠的测量值（y1,y2,…)一种估计真实值的通用方法是找到一个数z，使其与这些测量值有最小的平均偏差，即优化下面损失函数：<br>$$<br>argminz𝔼y{L(z,y)}\arg\min_z \mathbb{E}_y{L(z,y)}<br>$$<br>对于L2 损失$L(z,y)=(z-y)^2$ ，该损失函数的最优解在测量值的算数平均值(期望)处取到：<br>$$<br>z=\mathbb{E}_y{y}<br>$$<br>对于L1,损失$L(z,y)=|z-y|$，该损失函数的最优解在测量值的中值处取到：<br>$$<br>z=median{y}<br>$$<br>对于L0损失 ,$L(z,y)=|z-y|_0$ ，该损失函数的最优解近似在测量值的众数处取到：<br>$$<br>z=mode{y}<br>$$<br>从统计学角度，这些通用的损失函数都可以解释为似然函数的负对数，而对这些损失函数的优化过程可以看做为最大似然估计。<br>训练神经网络回归器是这种点估计过程的推广。已知一系列输入-目标对$(x_i,y_i)$，典型的网络训练形式是优化下列目标函数：<br>$$<br>\arg\min_\theta\mathbb{E}_{(x,y)}{L(f_θ(x),y)}<br>$$<br>通过调节参数theta，使得x与y之间的误差最小。事实上，使用上面的Loss，结果和GT不是一一对应的关系，而是一个多值映射的关系，网络学习到所有的输出结果的平均值。</p><p>这意味着对于L2 loss来说，我们在目标图像上加上一个均值为0的随机噪声，例如高斯噪声，泊松噪声等，根据上面的方程，在目标上加上一个均值为0的噪声对方程的结果没有影响（均值为0的噪声期望为0），因此：<strong>可以通过含有噪声的图像最为训练数据，GT为在目标上加上均值为0而生成的噪声数据，这样训练的结果和直接使用干净的GT的结果理论上来说是相同的，实验结果表情，精度仅仅相差了一点点</strong>。</p><p><strong>应用场景</strong></p><p>看这个文章的时候我一直很疑惑，实验假定了存在一个含有随机噪声的图像，以及一张和它对应的，在干净的图像上加上均值为0的某个噪声分布的图像作为label，在这个基础上进行训练，得到的训练结果和clear图像的训练结果十分相似。疑惑的点在于，我认为这种假设现实生活中是难以满足的，事实上，作者在做实验的时候，也是在GT上加了均值为0的噪声来做实验的。</p><p>但是也有一些人说这个方法可能可以用在一些特定的领域，例如医疗MRT图像，难以获得清晰的图像版本，但是可以通过多次观测得到多个含噪声的医疗MRT图像，利用这些成对的含噪声的图像进行去噪处理。但是从实验角度出发，噪声的分布并不满足均值为0，因为效果可能还是不好。</p><p><strong>实验</strong></p><p>作者分别做了Guassian Noise，possion noise，monte Carlo rendering，MRT图像上的实验。实验结果表明，在加上均值为0的噪声后，同样能够得到去噪后的结果。</p><h3 id="inference"><a href="#inference" class="headerlink" title="inference"></a>inference</h3><ul><li>传统去噪算法： <a href="https://www.voidking.com/dev-gp-image-denoise/" target="_blank" rel="noopener">https://www.voidking.com/dev-gp-image-denoise/</a></li><li></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;噪声在图像上通常表现为引起较强视觉效果的孤立像素点或像素块。通常噪声信号与要研究的对象不相关，以无用的信息的形式出现，下面的任务就是将噪声部分消去，使其对图像的影响最小。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="3D重建" scheme="https://wenhui-zhou.github.io/categories/3D%E9%87%8D%E5%BB%BA/"/>
     
     
   </entry>
