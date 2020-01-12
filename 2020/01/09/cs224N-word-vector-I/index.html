@@ -9,7 +9,7 @@
 <li><strong>one-hot方式：</strong>采用onehot方式，奖励一个大小为vocab size的向量，在该词的位置为1，其他为0。这种方式的缺点是，需要维护一个巨大的矩阵，同时每个 词之间都是独立的，无法表示不同词的相似性。</li>
 <li><strong>一个词的含义由它周围的词决定：</strong>即一个词的含义应该与他的上下文（fix-window）所决定的。这种利用周围的词来表示当前的词的方式称为词嵌入word-embedding，它实际上是一种分布。</li>
 </ul>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112210153920.png" alt="image-20200112210153920" style="zoom:40%;"></p>
+<p><img src="/images/nlp//image-20200112210153920.png" alt="image-20200112210153920" style="zoom:40%;"></p>
 <h3 id="word-vector-1"><a href="#word-vector-1" class="headerlink" title="word vector"></a>word vector</h3><p>2013年由Mikolov提出，提出利用周围周围的词来预测当前的词：</p>
 <ul>
 <li>一个很大的语料库</li>
@@ -18,24 +18,24 @@
 <li>利用每一个c周围的词（fix-window），来计算c的相似性</li>
 <li>通过迭代，最大化预测c的概率</li>
 </ul>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112214809724.png" alt="image-20200112214809724" style="zoom:50%;"></p>
+<p><img src="/images/nlp//image-20200112214809724.png" alt="image-20200112214809724" style="zoom:50%;"></p>
 <p>构造损失函数如下：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112215013622.png" alt="image-20200112215013622" style="zoom:40%;"></p>
+<p><img src="/images/nlp//image-20200112215013622.png" alt="image-20200112215013622" style="zoom:40%;"></p>
 <p>利用贝叶斯公式，利用前后m个位置的词来预测当前位置词的概率。构造一个负log似然函数，即交叉熵函数，通过最小化交叉熵损失，预测正确的概率最大。</p>
 <p>其中每个词概率的计算p：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112215844822.png" alt="image-20200112215844822" style="zoom:40%;"></p>
+<p><img src="/images/nlp//image-20200112215844822.png" alt="image-20200112215844822" style="zoom:40%;"></p>
 <p>因此对于每一个词来说，同时有两个向量来表示：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112224851890.png" alt="image-20200112224851890" style="zoom:40%;"></p>
+<p><img src="/images/nlp//image-20200112224851890.png" alt="image-20200112224851890" style="zoom:40%;"></p>
 <p>在词的含义由周围词决定的思想下，有着两种模型的变种，一种是CBOW，另一种是skip-gram。</p>
 <h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>Continuous Bag of Words Model,连续的词包模型，将句子挖空，利用其它词来预测当前的词。每个词学习两个向量：</p>
 <ul>
 <li>v：when the word is in the context</li>
 <li>u：when the word is in the center</li>
 </ul>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112230514347.png" alt="image-20200112230514347" style="zoom:50%;"></p>
+<p><img src="/images/nlp//image-20200112230514347.png" alt="image-20200112230514347" style="zoom:50%;"></p>
 <p>如上，我们输入一个长度为字典词数长度的词（可以使onehot形式），然后学习一个从输入到隐变量的一个映射，然后在学一个隐变量到输出的映射。输入时句子中出了挖空的那个单词。最后通过softmax变成概率之后，最优化交叉熵损失，得到最优的结果。</p>
 <h3 id="skip-gram-model"><a href="#skip-gram-model" class="headerlink" title="skip gram model"></a>skip gram model</h3><p>这个模型的思路和CBOW相反，利用一个单词去预测其他周围位置的单词，网路结构如下：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112231300222.png" alt="image-20200112231300222" style="zoom:50%;"></p>
+<p><img src="/images/nlp//image-20200112231300222.png" alt="image-20200112231300222" style="zoom:50%;"></p>
 <p>输入为一个词的onehot，学习两个映射过程，最终得到其周围fix-window内的其他词的预测结果，其过程与CBOW类似。</p>
 <p>上述的两个模型中，均是三层结构，隐藏层维度为我们希望的词向量的长度，从输入到隐藏层之间的映射参数即为词典长度x词向量长度的一个矩阵，即我们所要的wordvec。</p>
 <h3 id="negative-sampling"><a href="#negative-sampling" class="headerlink" title="negative sampling"></a>negative sampling</h3><p>在训练神经网络时，每当接受一个训练样本，然后调整所有神经单元权重参数，来使神经网络预测更加准确。换句话说，每个训练样本都将会调整所有神经网络中的参数。<br> 我们词汇表的大小决定了我们skip-gram 神经网络将会有一个非常大的权重参数，并且所有的权重参数会随着数十亿训练样本不断调整。</p>
@@ -44,10 +44,10 @@
 <p>如果使用了 negative sampling 仅仅去更新positive word- “quick” 和选择的其他 10 个negative words 的结点对应的权重，共计 11 个输出神经元，相当于每次只更新 300 x 11 = 3300 个权重参数。对于 3百万 的权重来说，相当于只计算了千分之一的权重，这样计算效率就大幅度提高。</p>
 <p><strong>如何选择负样本</strong></p>
 <p>一个词是否会被选择为负样本与其出现的频率有关，出现的频次越高，越容易被当成负样本：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200112233855262.png" alt="image-20200112233855262" style="zoom:50%;"></p>
+<p><img src="/images/nlp//image-20200112233855262.png" alt="image-20200112233855262" style="zoom:50%;"></p>
 <p>经过实验，当这个数为3/4的时候，模型表现最好。</p>
 <h3 id="hierarchical-softmax"><a href="#hierarchical-softmax" class="headerlink" title="hierarchical softmax"></a>hierarchical softmax</h3><p>层次softmax是另一种优化模型计算的方法，他的思路借鉴了huffman树的思想，出现越是频繁的树，他出现的位置越浅。哈夫曼树每一个叶子节点表示一个类别，每个非叶子节点需要做一次二分类，走左边后走右边的概率用逻辑回归来表示：</p>
-<p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200113002246268.png" alt="image-20200113002246268" style="zoom:50%;"></p>
+<p><img src="/images/nlp//image-20200113002246268.png" alt="image-20200113002246268" style="zoom:50%;"></p>
 <p>如何降低复杂度呢，当k为词个数时,h为维度，可以将复杂度降到 $O(hlog_2(k))$。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以上便是wordvec的表示方法，即解决了NLP的一个最基本，最重要的问题，词的表示。我们利用CBOW，skip-gram等模型，在优化模型的过程中，得到了词到向量的一个映射关系，这个关系就是wordvec的一个映射矩阵，有了这个矩阵我们就可以将词转化成向量。此时向量是根据其前后的单词而产生的，因此此位置的单词是根据前后的词而产生。下面一篇post将介绍wordvec更深层的东西，wordsence。</p>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2020/01/09/cs224N-word-vector-I/">https://wenhui-zhou.github.io/2020/01/09/cs224N-word-vector-I/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2020/01/01/2019！2020！/">2019！2020！</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
