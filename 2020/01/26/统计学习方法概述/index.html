@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>统计学习方法概述 | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">统计学习方法概述</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">统计学习方法概述</h1><div class="post-meta">Jan 26, 2020<span> | </span><span class="category"><a href="/categories/统计学习方法/">统计学习方法</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2020/01/26/统计学习方法概述/#vcomment"><span class="valine-comment-count" data-xid="/2020/01/26/统计学习方法概述/"></span><span> 条评论</span></a><div class="post-content"><p>第一章 《统计学习方法概论》</p>
+<p>这一部分介绍了统计学习的一些基本概念，基本问题，基本方法等，作为统计学习的一个引入。</p>
+<p>写《统计学习方法》这个系列博客的目的在于在找工作前，对机器学习方法重新温顾一下，在肺炎国难当前，争分夺秒，把这本书看完！</p>
+<p>这本书在网上有着广泛的讨论，笔记，代码一应俱全，因此这个系列将会参考这些资料：</p>
+<ul>
+<li><a href="https://github.com/SmirkCao/Lihang" target="_blank" rel="noopener">https://github.com/SmirkCao/Lihang</a> （笔记）</li>
+<li><a href="https://www.jiqizhixin.com/articles/2019-11-11-15" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2019-11-11-15</a> （课件）</li>
+<li><a href="https://github.com/fengdu78/lihang-code" target="_blank" rel="noopener">https://github.com/fengdu78/lihang-code</a> （代码）</li>
+</ul>
+<a id="more"></a>
+<h3 id="部分符号"><a href="#部分符号" class="headerlink" title="部分符号"></a>部分符号</h3><p>$H$: 希尔伯特空间</p>
+<ul>
+<li>希尔伯特空间 = 无限维+度量+线性+范数+内积 = 无限维 + 欧几里得空间</li>
+</ul>
+<h3 id="统计学习"><a href="#统计学习" class="headerlink" title="统计学习"></a>统计学习</h3><p><strong>特点</strong></p>
+<p>基于数据构建概率统计模型，并运用该模型进行预测与分析的一门学科。是基于数据驱动的。</p>
+<p><strong>对象</strong></p>
+<p>对象是数据，提取数据特征，抽象出数据模型；</p>
+<p>统计学习的一条基本假设是：同类数据具有一定的统计规律性</p>
+<p><strong>目的</strong></p>
+<p>通过构建模型对已知数据的概率建模，使得模型对未知数据进行准确的预测与分析。</p>
+<p><strong>方法</strong></p>
+<p>统计学习方法包含三要素：模型，策略，算法</p>
+<h3 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h3><p><strong>基本概念</strong></p>
+<p><strong>输入空间、特征空间、输出空间</strong></p>
+<p>输入空间指输入的数据的集合；特征空间指所有特征向量所存在的空间；输出空间指输出的集合所在的空间。</p>
+<p><strong>联合概率分布</strong></p>
+<p>监督学习假设输入与输出遵循联合概率分布$P(X,Y)$函数。</p>
+<p><strong>假设空间</strong></p>
+<p>监督学习的目的在于学习一个由输入到输出的一个映射。映射就是有模型来表示的。假设空间就是所有的映射的集合，我们的目的就是找到最好的一个映射。</p>
+<p><strong>问题的形式化</strong></p>
+<p>通过成对的数据样本，学习一个函数映射，即条件概率分布（决策函数）$P(Y|X)$，该函数描述了输入与输出随机变量之间的映射关系。</p>
+<h3 id="统计学习三要素"><a href="#统计学习三要素" class="headerlink" title="统计学习三要素"></a>统计学习三要素</h3><p>方法 = 模型 + 策略 + 算法</p>
+<p><strong>模型</strong></p>
+<p>在监督学习中，<strong>模型就是所要学习的条件概率分布或决策函数</strong>，模型的假设空间包含所有可能的条件概率函数。</p>
+<p><strong>策略</strong></p>
+<p>引入损失函数来度量模型的性能好坏，预测效果越好的模型损失函数的值越小。</p>
+<p>损失函数的期望：<br>$$<br>R_{\mathrm{exp}}(f)=E_{P}[L(Y, f(X))]=\int_{x \times y} L(y, f(x)) P(x, y) \mathrm{d} x \mathrm{d} y<br>$$<br>上式是模型$f(x)$关于联合分布$P(X,Y)$的平均意义下的损失，称为风险函数或期望损失。</p>
+<p><strong>经验风险最小化与结构风险最小化</strong></p>
+<p>经验风险指在训练集上的损失的平均值，经验风险最小化模型：<br>$$<br>\min _{f \in \mathcal{F}} \frac{1}{N} \sum_{i=1}^{N} L\left(y_{i}, f\left(x_{i}\right)\right)<br>$$<br>当样本容量很小的时候，模型优化经验风险最小化会导致模型的<strong>过拟合</strong>发生。</p>
+<p><strong>结构风险最小化</strong> structure risk minimization，为防止过拟合提出的策略，等价于正则化（regularization），加入正则化项regularizer，或罚项 penalty term：<br>$$<br>R_{\operatorname{srm}}(f)=\frac{1}{N} \sum_{i=1}^{N} L\left(y_{i}, f\left(x_{i}\right)\right)+\lambda J(f)<br>$$<br><strong>算法</strong></p>
+<p>算法指模型训练过程中的优化策略。如果最优化问题有显式的解析式，那么这个最优化问题就比较简单，但是通常解析解不存在，这就需要用数值计算的方法去求解。统计学习方法可以利用已有的最优化算法进行模型的优化。</p>
+<h3 id="模型评估与模型选择"><a href="#模型评估与模型选择" class="headerlink" title="模型评估与模型选择"></a>模型评估与模型选择</h3><p>当我们一味追求训练数据上的拟合能力的时候，往往将导致模型发生过拟合。<img src="../images/nlp/image-20200126191036412.png" alt="image-20200126191036412" style="zoom:50%;"></p>
+<p>因此在选择模型的时候，需要在模型的复杂度与预测的误差上做出最优的选择。</p>
+<h3 id="正则化与交叉验证"><a href="#正则化与交叉验证" class="headerlink" title="正则化与交叉验证"></a>正则化与交叉验证</h3><p>模型选择的典型方法是正则化，正则化是结构化方向最小化策略的实现，模型越复杂正则化值就会越大：<br>$$<br>L(w)=\frac{1}{N} \sum_{i=1}^{N}\left(f\left(x_{i} ; w\right)-y_{i}\right)^{2}+\frac{\lambda}{2}|w|^{2}<br>$$<br><strong>交叉验证</strong></p>
+<p>交叉验证的思想是将数据进行切分，分成训练集，测试集以及验证集等，例如留一验证法等。</p>
+<h3 id="泛化能力"><a href="#泛化能力" class="headerlink" title="泛化能力"></a>泛化能力</h3><p>泛化能力指模型对未知数据的预测结果，可以通过比较两个函数的泛化误差的上界来比较两种方法的好坏。</p>
+<h3 id="生成模型与判别模型"><a href="#生成模型与判别模型" class="headerlink" title="生成模型与判别模型"></a>生成模型与判别模型</h3><p>生成模型表示了给定输入X产生Y的生成关系，判别模型给定X，输出X的类别。</p>
+<h3 id="分类问题"><a href="#分类问题" class="headerlink" title="分类问题"></a>分类问题</h3><p>分类问题即对输入进行分类，分类的评价指标是准确率和召回率。</p>
+<ul>
+<li>TP  true positive</li>
+<li>FN  false negative</li>
+<li>FP  false positive</li>
+<li>TN  true negative</li>
+</ul>
+<p>$$<br>P = \frac{TP}{TP+FP}<br>$$</p>
+<p>$$<br>R = \frac{TP}{TP + FN}<br>$$</p>
+<p>F1 值：<br>$$<br>F_1 = \frac{2TP}{2TP + FP + FN}<br>$$</p>
+<h3 id="标注问题"><a href="#标注问题" class="headerlink" title="标注问题"></a>标注问题</h3><p>输入：观测序列</p>
+<p>输出：标记序列或状态序列</p>
+<p>如对一个长句子的标注。</p>
+<h3 id="回归问题"><a href="#回归问题" class="headerlink" title="回归问题"></a>回归问题</h3><p>回归问题数据是连续的，同时常常使用著名的最小二乘法来求解。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本章概要的介绍了一下统计学习的各个方法，如果深入到深入学习来说，可以看出来有很多东西没有涉及到，但是对于机器学习基础来说，足够了。</p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2020/01/26/统计学习方法概述/">https://wenhui-zhou.github.io/2020/01/26/统计学习方法概述/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2020/01/09/cs224N-word-vector-I/">cs224N word vector I</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/统计学习方法/">统计学习方法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/NLP/" style="font-size: 15px;">NLP</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/01/26/统计学习方法概述/">统计学习方法概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/09/cs224N-word-vector-I/">cs224N word vector I</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/2019！2020！/">2019！2020！</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/29/GPT/">GPT</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/29/finetune-诗句生成/">finetune-诗句生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/19/bert的一些思考/">bert的一些思考</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/09/pytorch-重点回顾/">pytorch 重点回顾</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/05/NLP实践-基于注意力机制的文本匹配/">NLP实践 基于注意力机制的文本匹配</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/02/NLP实践-文本分类任务/">NLP实践 文本分类任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/02/图像的去噪/">图像的去噪</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
