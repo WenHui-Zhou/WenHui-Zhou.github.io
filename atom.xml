@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-01-29T16:29:18.333Z</updated>
+  <updated>2020-02-02T07:34:23.207Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>朴素贝叶斯法(4)</title>
+    <link href="https://wenhui-zhou.github.io/2020/01/30/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95-4/"/>
+    <id>https://wenhui-zhou.github.io/2020/01/30/朴素贝叶斯法-4/</id>
+    <published>2020-01-30T05:24:41.000Z</published>
+    <updated>2020-02-02T07:34:23.207Z</updated>
+    
+    <content type="html"><![CDATA[<p>《统计学习方法》第4章 朴素贝叶斯法</p><p>朴素贝叶斯法是基于贝叶斯定理与特征条件独立假设的分类方法，对于给定的数据集，首先基于特征条件独立假设学习输入、输出的联合概率分布。对于给定的输入x，利用贝叶斯定理求出后验概率最大的输出y。<br>$$<br>P\left(\omega_{i} | \mathbf{x}\right)=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{p(\mathbf{x})}=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{\sum_{i=1}^{c} p\left(\mathbf{x} | \omega_{j}\right) P\left(\omega_{j}\right)}<br>$$<br>将后验问题转化为先验的形式。</p><a id="more"></a><h3 id="贝叶斯用于模式分类"><a href="#贝叶斯用于模式分类" class="headerlink" title="贝叶斯用于模式分类"></a>贝叶斯用于模式分类</h3><p><img src="/images/nlp/image-20200130155020167.png" alt="image-20200130155020167" style="zoom:50%;"></p><p><strong>通过上述分类器设计的方法，拼凑出贝叶斯公式的右半部分，贝叶斯决策的关键在于得到一个准确的类先验概率</strong>。</p><h3 id="类先验的概率密度估计"><a href="#类先验的概率密度估计" class="headerlink" title="类先验的概率密度估计"></a>类先验的概率密度估计</h3><p>概率密度估计也是一个非常重要的研究方向，通常有三种方法：</p><ul><li>参数法：假定类先验的概率密度已知，如高斯分布</li><li>非参数法：parzen窗，k-nn等</li><li>半参数法：混合高斯分布（GM），期望最大化（EM）</li></ul><p><strong>高斯分布的一些知识点</strong></p><p>一维高斯分布：<br>$$<br>p(x)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}\right]<br>$$<br>混合高斯分布如下：</p><p><img src="/images/nlp/image-20200130161716499.png" alt="image-20200130161716499" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200130162547374.png" alt="image-20200130162547374" style="zoom:50%;"></p><p>当数据分布符合高斯分布的时候，可以认为概率密度函数符合高斯分布：</p><p><img src="/images/nlp/image-20200130163925001.png" alt="image-20200130163925001" style="zoom:50%;"></p><p>从而得到类的后验概率的估计。</p><h3 id="离散变量贝叶斯决策"><a href="#离散变量贝叶斯决策" class="headerlink" title="离散变量贝叶斯决策"></a>离散变量贝叶斯决策</h3><p>此类问题例如问卷调查，医疗诊断等问题。</p><p><strong>独立二值特征</strong></p><p><img src="/images/nlp/image-20200131200632117.png" alt="image-20200131200632117" style="zoom:50%;"></p><p>二值特征的特点是两个特征之间相互独立，因此概率值为相乘：<br>$$<br>p^{x_i}_i(1-q_i)^{1-x_i}<br>$$<br><strong>复合模式分类</strong></p><p><img src="/images/nlp/image-20200131203920471.png" alt="image-20200131203920471" style="zoom:50%;"></p><h3 id="最大似然和贝叶斯参数估计"><a href="#最大似然和贝叶斯参数估计" class="headerlink" title="最大似然和贝叶斯参数估计"></a>最大似然和贝叶斯参数估计</h3><p><strong>参数估计</strong></p><p>给定分类器结构和函数形式，从而训练样本估计参数。使用最大似然（maximum likehood），贝叶斯估计（bayesian estimation）来估计模型的参数。</p><p><strong>最大似然估计</strong></p><p>最大似然估计的前提是默认知道了模型的形式。</p><p><img src="/images/nlp/image-20200131205146516.png" alt="image-20200131205146516" style="zoom:50%;"></p><p>最大似然估计的原理如上，样本间分布相互独立，概率密度的格式为：$p(x|w_i,\theta_i)$，通过估计参数$\theta$得出最后的结果，原理如下：</p><p><img src="/images/nlp/image-20200131212844576.png" alt="image-20200131212844576" style="zoom:50%;"></p><p>最大似然公式，通过最大求导令导数为零的方式来计算模型参数如下。</p><p><img src="/images/nlp/image-20200131215730451.png" alt="image-20200131215730451" style="zoom:50%;"></p><p>举个例子，概率密度函数形式为高斯混合函数：</p><p><img src="/images/nlp/image-20200131220410254.png" alt="image-20200131220410254" style="zoom:50%;"></p><p>通过求导数为0的方式，计算出模型的关键参数为 $\mu$ 以及 $\sum$ ，计算过程如下：</p><p><img src="/images/nlp/image-20200131222132022.png" alt="image-20200131222132022" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200131222144463.png" alt="image-20200131222144463" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200201151054278.png" alt="image-20200201151054278" style="zoom:60%;"></p><p><strong>贝叶斯参数估计</strong></p><p><img src="/images/nlp/image-20200131234433018.png" alt="image-20200131234433018" style="zoom:50%;"></p><p>主要原理是假设已经知道先验，用贝叶斯公式去估计模型的参数的后验分布，通常对于一些服从高斯分布的数据适用。</p><p><img src="/images/nlp/image-20200131234727931.png" alt="image-20200131234727931" style="zoom:50%;"></p><p>贝叶斯估计的步骤以及需要的条件。</p><p><img src="/images/nlp/image-20200201151321933.png" alt="image-20200201151321933" style="zoom:60%;"></p><p><strong>最大似然估计和贝叶斯估计的区别</strong></p><blockquote><p>最大似然估计和贝叶斯估计最大区别便在于估计的参数不同，最大似然估计要估计的参数θ被当作是固定形式的一个未知变量，然后我们结合真实数据通过最大化似然函数来求解这个固定形式的未知变量！</p></blockquote><blockquote><p>贝叶斯估计则是将参数视为是有某种已知先验分布的随机变量，意思便是这个参数他不是一个固定的未知数，而是符合一定先验分布如：随机变量θ符合正态分布等！那么在贝叶斯估计中除了类条件概率密度p(x|w)符合一定的先验分布，参数θ也符合一定的先验分布。我们通过贝叶斯规则将参数的先验分布转化成后验分布进行求解！</p></blockquote><h3 id="期望最大法EM"><a href="#期望最大法EM" class="headerlink" title="期望最大法EM"></a>期望最大法EM</h3><p><img src="/images/nlp/image-20200201153104416.png" alt="image-20200201153104416" style="zoom:50%;"></p><p>数据存在好数据以及bad数据，通过以及的参数，以及好的数据，共同来对缺失数据求期望。</p><p><img src="/images/nlp/image-20200201153235737.png" alt="image-20200201153235737" style="zoom:50%;"></p><p>步骤如上，首先计算预测函数的期望E。M步计算期望函数的最大化结果，直到模型性能提升程度小于阈值。</p><p>EM算法在高斯模型上的使用步骤：</p><p><img src="/images/nlp/image-20200201154032629.png" alt="image-20200201154032629" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200201154122745.png" alt="image-20200201154122745" style="zoom:50%;"></p><h3 id="隐形马尔科夫模型"><a href="#隐形马尔科夫模型" class="headerlink" title="隐形马尔科夫模型"></a>隐形马尔科夫模型</h3><p>硬性马尔科夫模型是统计模型，用来描述一个含有未知参数的马尔科夫过程，其难点是从观测到的结果或参数中获得该过程的隐含参数，下面举个例子来说明：</p><p><img src="/images/nlp/image-20200201163743843.png" alt="image-20200201163743843" style="zoom:50%;"></p><p>我们有以上三种骰子，假设我们开始掷骰子，随机挑选骰子后记录得到的数字，最后得到的结果为一串3数字序列：1 6 3 5 2 7 3 5 2 4</p><p>这串数字叫做<strong>可见状态链</strong>，此外还有一个<strong>隐含的状态链</strong>，即选择骰子的序号：D6 D8 D8 D6 D4 D8 D6 D6 D4 D8。</p><p>马尔科夫链其实指的是这个隐含状态链，每个状态之间存在一个<strong>转换概率</strong>，例如D6后面下一个状态的概率都是1/3，其实我们也可以人为的设置骰子之间的转换概率。此外还有一个<strong>输出概率</strong>的概念，即在隐含状态和可见状态之间的输出概率。即D6骰子输出一个数字的概率是1/6，这个输出概率我们也是可以设置的。</p><p><img src="/images/nlp/image-20200201164743562.png" alt="image-20200201164743562" style="zoom:50%;"></p><p>通常我们在应用hhm的时候，这些状态信息是存在缺失的，因此hhm模型相关的算法主要分为三类：</p><ul><li><strong>知道骰子有几种（隐含状态数量），每种骰子是什么（转换概率），根据掷骰子掷出的结果（可见状态链），我想知道每次掷出来的都是哪种骰子（隐含状态链）</strong><ul><li>这个问题在语音识别领域称为解码问题，一种解法是求最大似然状态路径，即求一串骰子序列，该序列输出该观测结果的概率最大</li><li>第二种解法是求每次掷骰子是哪种骰子的概率。</li></ul></li><li><strong>知道骰子有几种（隐含状态数量），每种骰子是什么 （转换概率），根据掷骰子掷出的结果（可见状态链），我想知道掷出这个结果的概率。</strong> <ul><li>即根据模型去求解当前输出结果的概率大小，判断模型是否和数据相互匹配</li></ul></li><li><strong>知道骰子有几种（隐含状态数量），不知道每种骰子是什么（转换概率），观测到很多次掷骰子的结果 （可见状态链 ），我想反推出每种骰子是什么（转换概率）</strong><ul><li>这是个很常见的问题，根据可观测到的大量的可见状态链，去反推hhm模型中的参数，极可能是骰子的转换概率等</li></ul></li></ul><p><strong>破解骰子序列问题</strong></p><p><strong>求解最大似然路径问题：</strong>已知到骰子的结果序列，但是不知道用了哪种骰子，最简单的方法就是穷举从中选择最大概率序列。另一种选择方法为：<strong>viterbi algorithm</strong></p><p><strong>viterbi algorithm</strong></p><p>每次计算产生结果的骰子的序号时，选择最大概率的骰子作为当前位置上的骰子。我们发现，我们要求最大概率骰子序列时要做这么几件事情。首先，不管序列多长，要从序列长度为1算起，算序列长度为1时取到每个骰子的最大概率。然后，逐渐增加长度，每增加一次长度，重新算一遍在这个长度下最后一个位置取到每个骰子的最大概率。因为上一个长度下的取到每个骰子的最大概率都算过了，重新计算的话其实不难。当我们算到最后一位时，就知道最后一位是哪个骰子的概率最大了。然后，我们要把对应这个最大概率的序列从后往前推出来。<strong>只有算到最后，计算出最大的序列概率之后，才能确定序列上骰子是哪个。</strong></p><p><strong>谁动了骰子的问题</strong></p><p>当出现一段序列，你怀疑骰子被别人动过手脚，因此我们需要计算一下有问题骰子出现这段序列的概率是多少，正常的骰子出现这段序列的概率是多少。计算这段序列的概率就是所有结果的加和。计算这个问题的方法叫做<strong>forward algorithm</strong></p><p><strong>forward algorithm</strong></p><p>前向算法的计算方法为计算可能产生这个序列的所有的骰子的概率之和。例如这个三个骰子的情况，所有的概率之和计算如下：</p><p><img src="/images/nlp/image-20200202144838271.png" alt="image-20200202144838271" style="zoom:50%;"></p><p><strong>hhm总结</strong></p><p>以上两种方法，viterbi 以及forward算法一种计算序列上的最短路径，一种是计算产生所有的结果可能的骰子序列概率的加和算法。</p><h3 id="非参数方法"><a href="#非参数方法" class="headerlink" title="非参数方法"></a>非参数方法</h3><p><img src="/images/nlp/image-20200202150246277.png" alt="image-20200202150246277" style="zoom:50%;"></p><p>常用的密度估计算法如下：</p><p><img src="/images/nlp/image-20200202150336756.png" alt="image-20200202150336756" style="zoom:50%;"></p><p><strong>parzen window</strong></p><p><img src="/images/nlp/image-20200202151729629.png" alt="image-20200202151729629" style="zoom:50%;"></p><p>如上式，利用parzen window计算样本的概率密度分布，其中$h_n$为超参数。</p><p><img src="/images/nlp/image-20200202152404784.png" alt="image-20200202152404784" style="zoom:50%;"></p><p><strong>k近邻估计</strong></p><p><img src="/images/nlp/image-20200202152640531.png" alt="image-20200202152640531" style="zoom:50%;"></p><p>当收敛条件满足时，趋近于贝叶斯错误率。当k的个数为1时：</p><p><img src="/images/nlp//image-20200202152902374.png" alt="image-20200202152902374" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200202153225602.png" alt="image-20200202153225602" style="zoom:50%;"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《统计学习方法》第4章 朴素贝叶斯法&lt;/p&gt;
+&lt;p&gt;朴素贝叶斯法是基于贝叶斯定理与特征条件独立假设的分类方法，对于给定的数据集，首先基于特征条件独立假设学习输入、输出的联合概率分布。对于给定的输入x，利用贝叶斯定理求出后验概率最大的输出y。&lt;br&gt;$$&lt;br&gt;P\left(\omega_{i} | \mathbf{x}\right)=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{p(\mathbf{x})}=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{\sum_{i=1}^{c} p\left(\mathbf{x} | \omega_{j}\right) P\left(\omega_{j}\right)}&lt;br&gt;$$&lt;br&gt;将后验问题转化为先验的形式。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="统计学习方法" scheme="https://wenhui-zhou.github.io/categories/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>k近邻法(3)</title>
@@ -100,28 +121,6 @@
     </summary>
     
       <category term="NLP" scheme="https://wenhui-zhou.github.io/categories/NLP/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>2019！2020！</title>
-    <link href="https://wenhui-zhou.github.io/2020/01/01/2019%EF%BC%812020%EF%BC%81/"/>
-    <id>https://wenhui-zhou.github.io/2020/01/01/2019！2020！/</id>
-    <published>2020-01-01T03:34:18.000Z</published>
-    <updated>2020-01-01T03:35:58.848Z</updated>
-    
-    <content type="html"><![CDATA[<p>2019年的最后几天，我在想给这一年打上一个什么样的标签，让我十几二十年后还能想起来这一年。确实是，我记不清过去的二十几年，唯一的感触剩下时间匆匆。</p><p>2019年1月份，和xu在北大三教的咖啡厅搭了这个网站，与此同时进行的还有刷算法题，准备着一些东西。再往前推几天，我匆匆完成了研一上最后的考试，连夜收拾行李进城。和yingying在雁栖湖有很多美好的回忆，可惜那些事情发生在2018年了，2018年对我来说是煎熬的一年，有一种引力阻止我思考里头究竟发生了什么事情。不过最令我开心的是在2018年结束的时候，我收获了很多宝贵的友谊。</p><p>所以我想，我不能在失去2019年了。</p><p>让我努力回忆几件事情，把一年的生活串起来。</p><p><strong>第一件事情</strong>，2019年新年在2月5号，过完春节我提前了两周时间回到雁栖湖。北京大雪后不久，校园里寂静的景象让我震惊，整个雁栖湖被雪裹住，我拖着行李箱，踏出一条雪路。接下来一个月我把时间安排的满满当当，这段时间，自我怀疑、喝鸡汤、再次怀疑循环往复。这段经历给我的启发很多，我愿意把它写出来：</p><ul><li>制定一个目标每时每刻努力着，这个过程是非常充实且令人满足的。结果反而是其次</li><li>目标明确的好处是知道自己要干什么，坏处是焦虑越来越严重</li></ul><p><strong>第二件事，</strong>我开始慢慢窥探自己的性格。事情讲起来很琐碎，我意识到自己在很多不确定的事情面前，显得唯唯诺诺，不敢承担责任。和老板聊到这件事情让我感触颇深，也对老板充满了感激。我在此总结一下导师给我的帮助：一个人自信与否在于他看待问题的角度，林彪认为一场战役七层胜算则可以打，粟裕有四层胜算便胸有成竹，侃侃而谈。</p><p>所以我大可不必这样的担心，也由此我摆脱了大部分的焦虑。后来才意识到，突破自己是困难的，很大一部分原因是无法找到问题的关键。此刻我很需要这样的信心，我也感到自己有了长足的进步。给人以正能量，给人以信心！</p><p>另一方面是自我意识的觉醒，顺从应当是我从小到大的习惯，当我发现我讨厌这样的自己，我会刻意去做一些改变，我会愿意决定一些事情，事先想好事情的应对方案。在这件事情上我还不够好。</p><p><strong>第三件事，</strong>生活需要理想，信仰。如果物质追求成为生活的目标时，生活是沉重且乏味的。而后读了《乔布斯传》，发现在物质之上，有着一群人，在追逐着梦想，渴望改变世界，追求着精神上更美好的东西。这对我的冲击是巨大的，我被这些浅显的道理击中，在回头看时，发现这些东西对我是多么的重要。想起来一次去参观腾讯，晚上8点和朋友坐班车回来，看到眼前拥堵的公路，熙熙攘攘的车子仿佛看到了日后无数个上下班的日日夜夜 ，备受打击。但是回头一想，你每天为着心中的理想奋斗，这是多么振奋人心的事情啊！</p><p>嗯，人生是伟大的理想，是诗和远方。</p><p><strong>最后</strong>，以上三件事情能够大致的勾勒出2019的轮廓，也许到我人生快结束的时候，也会有三件事情，勾勒我的一生。毕竟和时间比起来我们都太渺小。2019年很多时候在忙碌，但是真正对我有推动作用的事情却很少，最后还希望记录一些感悟：</p><ul><li>没有一个夜晚允许我们有一点软弱</li><li>永远不要掉队</li><li>人生应当有更高的追求和理想</li><li>相信积累的力量</li><li>阅读能够拯救我的内心，让我体会到真正的快乐</li><li>清醒的认识自己</li><li>展现积极的一面，永远是自己给别人信心</li></ul><p><strong>最后的最后，2020，happy new year!</strong></p><p><strong>2019/12/31</strong></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;2019年的最后几天，我在想给这一年打上一个什么样的标签，让我十几二十年后还能想起来这一年。确实是，我记不清过去的二十几年，唯一的感触剩下时间匆匆。&lt;/p&gt;
-&lt;p&gt;2019年1月份，和xu在北大三教的咖啡厅搭了这个网站，与此同时进行的还有刷算法题，准备着一些东西。再往前推几
-      
-    
-    </summary>
     
     
   </entry>

@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="cheer up"><meta name="baidu-site-verification" content="9pSIuwCbvi"><meta name="google-site-verification" content="YzcCTjF6VoVlNAtL37_S4vFjzFwYTAFZzD51Il2IGKY"><title>朴素贝叶斯法(4) | WenHuiZhou</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">朴素贝叶斯法(4)</h1><a id="logo" href="/.">WenHuiZhou</a><p class="description">perper（打起精神！）</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">朴素贝叶斯法(4)</h1><div class="post-meta">Jan 30, 2020<span> | </span><span class="category"><a href="/categories/统计学习方法/">统计学习方法</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2020/01/30/朴素贝叶斯法-4/#vcomment"><span class="valine-comment-count" data-xid="/2020/01/30/朴素贝叶斯法-4/"></span><span> 条评论</span></a><div class="post-content"><p>《统计学习方法》第4章 朴素贝叶斯法</p>
+<p>朴素贝叶斯法是基于贝叶斯定理与特征条件独立假设的分类方法，对于给定的数据集，首先基于特征条件独立假设学习输入、输出的联合概率分布。对于给定的输入x，利用贝叶斯定理求出后验概率最大的输出y。<br>$$<br>P\left(\omega_{i} | \mathbf{x}\right)=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{p(\mathbf{x})}=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{\sum_{i=1}^{c} p\left(\mathbf{x} | \omega_{j}\right) P\left(\omega_{j}\right)}<br>$$<br>将后验问题转化为先验的形式。</p>
+<a id="more"></a>
+<h3 id="贝叶斯用于模式分类"><a href="#贝叶斯用于模式分类" class="headerlink" title="贝叶斯用于模式分类"></a>贝叶斯用于模式分类</h3><p><img src="/images/nlp/image-20200130155020167.png" alt="image-20200130155020167" style="zoom:50%;"></p>
+<p><strong>通过上述分类器设计的方法，拼凑出贝叶斯公式的右半部分，贝叶斯决策的关键在于得到一个准确的类先验概率</strong>。</p>
+<h3 id="类先验的概率密度估计"><a href="#类先验的概率密度估计" class="headerlink" title="类先验的概率密度估计"></a>类先验的概率密度估计</h3><p>概率密度估计也是一个非常重要的研究方向，通常有三种方法：</p>
+<ul>
+<li>参数法：假定类先验的概率密度已知，如高斯分布</li>
+<li>非参数法：parzen窗，k-nn等</li>
+<li>半参数法：混合高斯分布（GM），期望最大化（EM）</li>
+</ul>
+<p><strong>高斯分布的一些知识点</strong></p>
+<p>一维高斯分布：<br>$$<br>p(x)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}\right]<br>$$<br>混合高斯分布如下：</p>
+<p><img src="/images/nlp/image-20200130161716499.png" alt="image-20200130161716499" style="zoom:50%;"></p>
+<p><img src="/images/nlp/image-20200130162547374.png" alt="image-20200130162547374" style="zoom:50%;"></p>
+<p>当数据分布符合高斯分布的时候，可以认为概率密度函数符合高斯分布：</p>
+<p><img src="/images/nlp/image-20200130163925001.png" alt="image-20200130163925001" style="zoom:50%;"></p>
+<p>从而得到类的后验概率的估计。</p>
+<h3 id="离散变量贝叶斯决策"><a href="#离散变量贝叶斯决策" class="headerlink" title="离散变量贝叶斯决策"></a>离散变量贝叶斯决策</h3><p>此类问题例如问卷调查，医疗诊断等问题。</p>
+<p><strong>独立二值特征</strong></p>
+<p><img src="/images/nlp/image-20200131200632117.png" alt="image-20200131200632117" style="zoom:50%;"></p>
+<p>二值特征的特点是两个特征之间相互独立，因此概率值为相乘：<br>$$<br>p^{x_i}_i(1-q_i)^{1-x_i}<br>$$<br><strong>复合模式分类</strong></p>
+<p><img src="/images/nlp/image-20200131203920471.png" alt="image-20200131203920471" style="zoom:50%;"></p>
+<h3 id="最大似然和贝叶斯参数估计"><a href="#最大似然和贝叶斯参数估计" class="headerlink" title="最大似然和贝叶斯参数估计"></a>最大似然和贝叶斯参数估计</h3><p><strong>参数估计</strong></p>
+<p>给定分类器结构和函数形式，从而训练样本估计参数。使用最大似然（maximum likehood），贝叶斯估计（bayesian estimation）来估计模型的参数。</p>
+<p><strong>最大似然估计</strong></p>
+<p>最大似然估计的前提是默认知道了模型的形式。</p>
+<p><img src="/images/nlp/image-20200131205146516.png" alt="image-20200131205146516" style="zoom:50%;"></p>
+<p>最大似然估计的原理如上，样本间分布相互独立，概率密度的格式为：$p(x|w_i,\theta_i)$，通过估计参数$\theta$得出最后的结果，原理如下：</p>
+<p><img src="/images/nlp/image-20200131212844576.png" alt="image-20200131212844576" style="zoom:50%;"></p>
+<p>最大似然公式，通过最大求导令导数为零的方式来计算模型参数如下。</p>
+<p><img src="/images/nlp/image-20200131215730451.png" alt="image-20200131215730451" style="zoom:50%;"></p>
+<p>举个例子，概率密度函数形式为高斯混合函数：</p>
+<p><img src="/images/nlp/image-20200131220410254.png" alt="image-20200131220410254" style="zoom:50%;"></p>
+<p>通过求导数为0的方式，计算出模型的关键参数为 $\mu$ 以及 $\sum$ ，计算过程如下：</p>
+<p><img src="/images/nlp/image-20200131222132022.png" alt="image-20200131222132022" style="zoom:50%;"></p>
+<p><img src="/images/nlp/image-20200131222144463.png" alt="image-20200131222144463" style="zoom:50%;"></p>
+<p><img src="/images/nlp/image-20200201151054278.png" alt="image-20200201151054278" style="zoom:60%;"></p>
+<p><strong>贝叶斯参数估计</strong></p>
+<p><img src="/images/nlp/image-20200131234433018.png" alt="image-20200131234433018" style="zoom:50%;"></p>
+<p>主要原理是假设已经知道先验，用贝叶斯公式去估计模型的参数的后验分布，通常对于一些服从高斯分布的数据适用。</p>
+<p><img src="/images/nlp/image-20200131234727931.png" alt="image-20200131234727931" style="zoom:50%;"></p>
+<p>贝叶斯估计的步骤以及需要的条件。</p>
+<p><img src="/images/nlp/image-20200201151321933.png" alt="image-20200201151321933" style="zoom:60%;"></p>
+<p><strong>最大似然估计和贝叶斯估计的区别</strong></p>
+<blockquote>
+<p>最大似然估计和贝叶斯估计最大区别便在于估计的参数不同，最大似然估计要估计的参数θ被当作是固定形式的一个未知变量，然后我们结合真实数据通过最大化似然函数来求解这个固定形式的未知变量！</p>
+</blockquote>
+<blockquote>
+<p>贝叶斯估计则是将参数视为是有某种已知先验分布的随机变量，意思便是这个参数他不是一个固定的未知数，而是符合一定先验分布如：随机变量θ符合正态分布等！那么在贝叶斯估计中除了类条件概率密度p(x|w)符合一定的先验分布，参数θ也符合一定的先验分布。我们通过贝叶斯规则将参数的先验分布转化成后验分布进行求解！</p>
+</blockquote>
+<h3 id="期望最大法EM"><a href="#期望最大法EM" class="headerlink" title="期望最大法EM"></a>期望最大法EM</h3><p><img src="/images/nlp/image-20200201153104416.png" alt="image-20200201153104416" style="zoom:50%;"></p>
+<p>数据存在好数据以及bad数据，通过以及的参数，以及好的数据，共同来对缺失数据求期望。</p>
+<p><img src="/images/nlp/image-20200201153235737.png" alt="image-20200201153235737" style="zoom:50%;"></p>
+<p>步骤如上，首先计算预测函数的期望E。M步计算期望函数的最大化结果，直到模型性能提升程度小于阈值。</p>
+<p>EM算法在高斯模型上的使用步骤：</p>
+<p><img src="/images/nlp/image-20200201154032629.png" alt="image-20200201154032629" style="zoom:50%;"></p>
+<p><img src="/images/nlp/image-20200201154122745.png" alt="image-20200201154122745" style="zoom:50%;"></p>
+<h3 id="隐形马尔科夫模型"><a href="#隐形马尔科夫模型" class="headerlink" title="隐形马尔科夫模型"></a>隐形马尔科夫模型</h3><p>硬性马尔科夫模型是统计模型，用来描述一个含有未知参数的马尔科夫过程，其难点是从观测到的结果或参数中获得该过程的隐含参数，下面举个例子来说明：</p>
+<p><img src="/images/nlp/image-20200201163743843.png" alt="image-20200201163743843" style="zoom:50%;"></p>
+<p>我们有以上三种骰子，假设我们开始掷骰子，随机挑选骰子后记录得到的数字，最后得到的结果为一串3数字序列：1 6 3 5 2 7 3 5 2 4</p>
+<p>这串数字叫做<strong>可见状态链</strong>，此外还有一个<strong>隐含的状态链</strong>，即选择骰子的序号：D6 D8 D8 D6 D4 D8 D6 D6 D4 D8。</p>
+<p>马尔科夫链其实指的是这个隐含状态链，每个状态之间存在一个<strong>转换概率</strong>，例如D6后面下一个状态的概率都是1/3，其实我们也可以人为的设置骰子之间的转换概率。此外还有一个<strong>输出概率</strong>的概念，即在隐含状态和可见状态之间的输出概率。即D6骰子输出一个数字的概率是1/6，这个输出概率我们也是可以设置的。</p>
+<p><img src="/images/nlp/image-20200201164743562.png" alt="image-20200201164743562" style="zoom:50%;"></p>
+<p>通常我们在应用hhm的时候，这些状态信息是存在缺失的，因此hhm模型相关的算法主要分为三类：</p>
+<ul>
+<li><strong>知道骰子有几种（隐含状态数量），每种骰子是什么（转换概率），根据掷骰子掷出的结果（可见状态链），我想知道每次掷出来的都是哪种骰子（隐含状态链）</strong><ul>
+<li>这个问题在语音识别领域称为解码问题，一种解法是求最大似然状态路径，即求一串骰子序列，该序列输出该观测结果的概率最大</li>
+<li>第二种解法是求每次掷骰子是哪种骰子的概率。</li>
+</ul>
+</li>
+<li><strong>知道骰子有几种（隐含状态数量），每种骰子是什么 （转换概率），根据掷骰子掷出的结果（可见状态链），我想知道掷出这个结果的概率。</strong> <ul>
+<li>即根据模型去求解当前输出结果的概率大小，判断模型是否和数据相互匹配</li>
+</ul>
+</li>
+<li><strong>知道骰子有几种（隐含状态数量），不知道每种骰子是什么（转换概率），观测到很多次掷骰子的结果 （可见状态链 ），我想反推出每种骰子是什么（转换概率）</strong><ul>
+<li>这是个很常见的问题，根据可观测到的大量的可见状态链，去反推hhm模型中的参数，极可能是骰子的转换概率等</li>
+</ul>
+</li>
+</ul>
+<p><strong>破解骰子序列问题</strong></p>
+<p><strong>求解最大似然路径问题：</strong>已知到骰子的结果序列，但是不知道用了哪种骰子，最简单的方法就是穷举从中选择最大概率序列。另一种选择方法为：<strong>viterbi algorithm</strong></p>
+<p><strong>viterbi algorithm</strong></p>
+<p>每次计算产生结果的骰子的序号时，选择最大概率的骰子作为当前位置上的骰子。我们发现，我们要求最大概率骰子序列时要做这么几件事情。首先，不管序列多长，要从序列长度为1算起，算序列长度为1时取到每个骰子的最大概率。然后，逐渐增加长度，每增加一次长度，重新算一遍在这个长度下最后一个位置取到每个骰子的最大概率。因为上一个长度下的取到每个骰子的最大概率都算过了，重新计算的话其实不难。当我们算到最后一位时，就知道最后一位是哪个骰子的概率最大了。然后，我们要把对应这个最大概率的序列从后往前推出来。<strong>只有算到最后，计算出最大的序列概率之后，才能确定序列上骰子是哪个。</strong></p>
+<p><strong>谁动了骰子的问题</strong></p>
+<p>当出现一段序列，你怀疑骰子被别人动过手脚，因此我们需要计算一下有问题骰子出现这段序列的概率是多少，正常的骰子出现这段序列的概率是多少。计算这段序列的概率就是所有结果的加和。计算这个问题的方法叫做<strong>forward algorithm</strong></p>
+<p><strong>forward algorithm</strong></p>
+<p>前向算法的计算方法为计算可能产生这个序列的所有的骰子的概率之和。例如这个三个骰子的情况，所有的概率之和计算如下：</p>
+<p><img src="/images/nlp/image-20200202144838271.png" alt="image-20200202144838271" style="zoom:50%;"></p>
+<p><strong>hhm总结</strong></p>
+<p>以上两种方法，viterbi 以及forward算法一种计算序列上的最短路径，一种是计算产生所有的结果可能的骰子序列概率的加和算法。</p>
+<h3 id="非参数方法"><a href="#非参数方法" class="headerlink" title="非参数方法"></a>非参数方法</h3><p><img src="/images/nlp/image-20200202150246277.png" alt="image-20200202150246277" style="zoom:50%;"></p>
+<p>常用的密度估计算法如下：</p>
+<p><img src="/images/nlp/image-20200202150336756.png" alt="image-20200202150336756" style="zoom:50%;"></p>
+<p><strong>parzen window</strong></p>
+<p><img src="/images/nlp/image-20200202151729629.png" alt="image-20200202151729629" style="zoom:50%;"></p>
+<p>如上式，利用parzen window计算样本的概率密度分布，其中$h_n$为超参数。</p>
+<p><img src="/images/nlp/image-20200202152404784.png" alt="image-20200202152404784" style="zoom:50%;"></p>
+<p><strong>k近邻估计</strong></p>
+<p><img src="/images/nlp/image-20200202152640531.png" alt="image-20200202152640531" style="zoom:50%;"></p>
+<p>当收敛条件满足时，趋近于贝叶斯错误率。当k的个数为1时：</p>
+<p><img src="/images/nlp//image-20200202152902374.png" alt="image-20200202152902374" style="zoom:50%;"></p>
+<p><img src="/images/nlp/image-20200202153225602.png" alt="image-20200202153225602" style="zoom:50%;"></p>
+</div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2020/01/30/朴素贝叶斯法-4/">https://wenhui-zhou.github.io/2020/01/30/朴素贝叶斯法-4/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="next" href="/2020/01/29/k近邻法-3/">k近邻法(3)</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'civq9nKD49NpRALooR9Llqmf-gzGzoHsz',
+  appKey:'JggO9HaSi1Lfx17nt16oDfsI',
+  placeholder:'Shall we talk',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/统计学习方法/">统计学习方法</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/NLP/" style="font-size: 15px;">NLP</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/01/30/朴素贝叶斯法-4/">朴素贝叶斯法(4)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/29/k近邻法-3/">k近邻法(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/29/感知机-2/">感知机(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/26/统计学习方法概述/">统计学习方法概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/09/cs224N-word-vector-I/">cs224N word vector I</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/01/01/2019！2020！/">2019！2020！</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/29/GPT/">GPT</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/29/finetune-诗句生成/">finetune-诗句生成</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/19/bert的一些思考/">bert的一些思考</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/09/pytorch-重点回顾/">pytorch 重点回顾</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
