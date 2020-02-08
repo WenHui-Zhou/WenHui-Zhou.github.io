@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-02-02T07:34:23.207Z</updated>
+  <updated>2020-02-08T08:30:14.280Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>OpenPose: Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields</title>
+    <link href="https://wenhui-zhou.github.io/2020/02/05/OpenPose-Realtime-Multi-Person-2D-Pose-Estimation-using-Part-Affinity-Fields/"/>
+    <id>https://wenhui-zhou.github.io/2020/02/05/OpenPose-Realtime-Multi-Person-2D-Pose-Estimation-using-Part-Affinity-Fields/</id>
+    <published>2020-02-05T08:27:15.000Z</published>
+    <updated>2020-02-08T08:30:14.280Z</updated>
+    
+    <content type="html"><![CDATA[<p>这篇文章是2017年发表在CVPR上，作者开源了代码openpose，openpose代码完整，在推动人体识别，起到了巨大的作用。</p><a id="more"></a><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><strong>人体姿态估计</strong>是理解视频图像的一个核心问题，一种比较简单的方法是two-step的框架，首先检测出图像中的人，然后解决人体姿态估计的问题。这种方法的问题在于，算法执行时间与图片中的人数呈正比，同时若第一步未检出行人，将会出现比较严重的漏检。</p><p>这篇文章提出一种<strong>bottom-up approach</strong>，这种方法检测出人体的部分，然后parsing成人体姿态的结果。这种方法执行时间与人数无关。</p><h3 id="architecture-网络框架"><a href="#architecture-网络框架" class="headerlink" title="architecture 网络框架"></a>architecture 网络框架</h3><p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200205200758114.png" alt="image-20200205200758114" style="zoom:50%;"></p><ul><li>首先通过baseline10层的VGG-19网络，生成feature map</li><li>将feature map 分为两路，通过多层的CNN生成：<ul><li><strong>a set of Part Confidence Maps</strong> 身体部位的置信度</li><li><strong>a set of Part Affinity Fields (PAFs)</strong> 部位亲和场</li></ul></li><li><strong>Part Confidence Maps</strong>: a set of 2D confidence maps <strong>S</strong> for body part locations. Each joint location has a map.也就是说，每一个节点都对应了一张map，如果有25个节点的时候，就会有25张map。</li><li><strong>Part Affinity Fields (PAFs)</strong>: a set of 2D vector fields <strong>L</strong> which encodes the degree of association between parts.  生成parts之间的单位向量场。</li><li>Finally, the <strong>Confidence Maps</strong> and <strong>Part Affinity Fields</strong> are processed by a greedy algorithm to obtain the poses for each person in the image 联合置信图以及亲合场得出图像中每一个人的pose</li></ul><h3 id="confidence-maps"><a href="#confidence-maps" class="headerlink" title="confidence maps"></a>confidence maps</h3><p>置信图指的是一张2D表示的置信度图，可以定位到图像中关节点的像素上。</p><p>令$J$作为人体的的关节点总数，confidence map如下：<br>$$<br>\text { the set } S=\left(S_{1}, S_{2}, \ldots, S_{J}\right) \text { where } S_{j} \in R^{w \times h}, j \in 1 \ldots J<br>$$<br>总的来说，每一张map都对应一个节点，并且与输入的图片有着相同的size。</p><h3 id="Part-Affinity-Fields（PAFs）"><a href="#Part-Affinity-Fields（PAFs）" class="headerlink" title="Part Affinity Fields（PAFs）"></a>Part Affinity Fields（PAFs）</h3><p>PAF指的是流向量场，流向量场用来编码第一部分成对的关节点对，例如nose，neck，elbow等等：<br>$$<br>\text { the set } L=\left(L_{1}, L_{2}, \ldots, L_{C}\right) \text { where } L_{c} \in R^{w \times h \times 2}, c \in 1 \ldots C<br>$$<br>如果一个点在他的body part上（腿），那么这个点的值是一个2D单位向量，从起点joint指向终点的joint。</p><p><img src="/Users/zhouwenhui/blog/source/images/nlp//image-20200206214339000.png" alt="image-20200206214339000" style="zoom:40%;"></p><p>如上所述，整个流程分成两个步骤，第一个阶段生成PAF流向量场，第二个向量生成关节点密度场。</p><h3 id="Multi-Person-Parsing-using-PAFs"><a href="#Multi-Person-Parsing-using-PAFs" class="headerlink" title="Multi-Person Parsing using PAFs"></a>Multi-Person Parsing using PAFs</h3><p>从图像中找出人体姿态的步骤如下：</p><ul><li><strong>Step 1</strong>: Find <strong>all joints</strong> locations using the <strong>confidence maps</strong>.</li><li><strong>Step 2</strong>: Find which joints go together to <strong>form limbs (body parts)</strong> using the <strong>part affinity fields</strong> and joints in step 1.</li><li><strong>Step 3</strong>: <strong>Associate limbs that belong to the same person</strong> and get the final list of human poses.</li></ul><h3 id="如何生成人体limb"><a href="#如何生成人体limb" class="headerlink" title="如何生成人体limb"></a>如何生成人体limb</h3><ul><li>首先将生成的PAFs放大到输入的尺寸，</li><li>对于每一个limb类型，例如对wrist_elbow：<ul><li>从深度图中拿到所有的wrist和elbow的关节点的位置</li><li>对每一个起点peak和终点peak：<ul><li>用终点减去起点，然后归一化之后得到单位方向向量</li><li>每一对起点和终点之间的点，计算他们的PAFs的值</li><li>通过这中间所有点的PAFs值得平均值，计算当前limb connection的score</li><li>添加一个score来惩罚long distance：<code>min(0.5*paf_height/limb_dist - 1,0)</code></li><li>添加当前的limb连接到limb connecton candidate中</li></ul></li><li>对limb connection candidate进行排序</li><li>对于每一个候选连接，如果source和destination未被选中，则添加这个connection到最终的list当中</li></ul></li></ul><h3 id="pytorch-implementaton"><a href="#pytorch-implementaton" class="headerlink" title="pytorch implementaton"></a>pytorch implementaton</h3><p>giithub链接：<a href="https://github.com/tensorboy/pytorch_Realtime_Multi-Person_Pose_Estimation" target="_blank" rel="noopener">https://github.com/tensorboy/pytorch_Realtime_Multi-Person_Pose_Estimation</a></p><h3 id="preference"><a href="#preference" class="headerlink" title="preference"></a>preference</h3><ul><li><a href="https://towardsdatascience.com/cvpr-2017-openpose-realtime-multi-person-2d-pose-estimation-using-part-affinity-fields-f2ce18d720e8" target="_blank" rel="noopener">https://towardsdatascience.com/cvpr-2017-openpose-realtime-multi-person-2d-pose-estimation-using-part-affinity-fields-f2ce18d720e8</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这篇文章是2017年发表在CVPR上，作者开源了代码openpose，openpose代码完整，在推动人体识别，起到了巨大的作用。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="论文阅读" scheme="https://wenhui-zhou.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>朴素贝叶斯法(4)</title>
@@ -101,26 +121,6 @@
     </summary>
     
       <category term="统计学习方法" scheme="https://wenhui-zhou.github.io/categories/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>cs224N word vector I</title>
-    <link href="https://wenhui-zhou.github.io/2020/01/09/cs224N-word-vector-I/"/>
-    <id>https://wenhui-zhou.github.io/2020/01/09/cs224N-word-vector-I/</id>
-    <published>2020-01-09T06:29:54.000Z</published>
-    <updated>2020-01-12T16:30:57.842Z</updated>
-    
-    <content type="html"><![CDATA[<p>这篇文章是CS224N winter2019的第一次课的内容，主要针对词的表示，词向量生成的一些方法，从最早到最新，列举了这些算法以及应用。</p><a id="more"></a><h3 id="NLP任务的特殊性"><a href="#NLP任务的特殊性" class="headerlink" title="NLP任务的特殊性"></a>NLP任务的特殊性</h3><p>说道NLP任务的特殊性，其实是针对图像任务来说的。对于图像任务来说，我们所看到的场景通常直接反映了图像中所包含的内涵，同时图像上像素点通常是连续的，对于一个可微分系统求最优化的过程（深度学习的内涵就是构建一个可微分的系统），是天然切合的。</p><p>我们知道NLP最小的单元是词，由众多的词组成句子，形成语义。<strong>对于一个词来说，它在形状上不表示任何的含义，而是指代一种抽象的含义</strong>，因此在理解词含义的时候，我们需要结合上下文，结合语境，诸如LSTM，transformer这种能够获得较长上下文信息的结果在NLP中起到巨大的作用。此外，还存在着大量的一词多义的情形，因此具体的语境，上下文对理解NLP任务显得至关重要。</p><p>另一个显著的不同在于图像色彩在变化上是连续的，而NLP任务中，每个词之间是离散的，不存在连续的关系。因此我们需要对每次词进行适当的编码，转化成连续的词向量的形式。通过这种方式最优化我们的模型，得到NLP任务的解。</p><h3 id="word-vector"><a href="#word-vector" class="headerlink" title="word vector"></a>word vector</h3><p>如何用向量表示词，一个重要的指标是词向量能够反映词之间的相似性和相异性。例如苹果和巧克力，应当比苹果和梨之间的距离要大。下面是自己中词的表示方式：</p><ul><li><strong>同义词的字典：</strong>一个比较直观的解决方法是建立一个同义词的字典，将所有的同义词归类，用字典的方式来表示词，但是这种方式有缺点，我们无法涵盖所有的单词的含义，需要人去维护字典。</li><li><strong>one-hot方式：</strong>采用onehot方式，奖励一个大小为vocab size的向量，在该词的位置为1，其他为0。这种方式的缺点是，需要维护一个巨大的矩阵，同时每个 词之间都是独立的，无法表示不同词的相似性。</li><li><strong>一个词的含义由它周围的词决定：</strong>即一个词的含义应该与他的上下文（fix-window）所决定的。这种利用周围的词来表示当前的词的方式称为词嵌入word-embedding，它实际上是一种分布。</li></ul><p><img src="/images/nlp//image-20200112210153920.png" alt="image-20200112210153920" style="zoom:40%;"></p><h3 id="word-vector-1"><a href="#word-vector-1" class="headerlink" title="word vector"></a>word vector</h3><p>2013年由Mikolov提出，提出利用周围周围的词来预测当前的词：</p><ul><li>一个很大的语料库</li><li>每一个词表示表示成 一个词向量</li><li>遍历句子中的每一个词c</li><li>利用每一个c周围的词（fix-window），来计算c的相似性</li><li>通过迭代，最大化预测c的概率</li></ul><p><img src="/images/nlp//image-20200112214809724.png" alt="image-20200112214809724" style="zoom:50%;"></p><p>构造损失函数如下：</p><p><img src="/images/nlp//image-20200112215013622.png" alt="image-20200112215013622" style="zoom:40%;"></p><p>利用贝叶斯公式，利用前后m个位置的词来预测当前位置词的概率。构造一个负log似然函数，即交叉熵函数，通过最小化交叉熵损失，预测正确的概率最大。</p><p>其中每个词概率的计算p：</p><p><img src="/images/nlp//image-20200112215844822.png" alt="image-20200112215844822" style="zoom:40%;"></p><p>因此对于每一个词来说，同时有两个向量来表示：</p><p><img src="/images/nlp//image-20200112224851890.png" alt="image-20200112224851890" style="zoom:40%;"></p><p>在词的含义由周围词决定的思想下，有着两种模型的变种，一种是CBOW，另一种是skip-gram。</p><h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>Continuous Bag of Words Model,连续的词包模型，将句子挖空，利用其它词来预测当前的词。每个词学习两个向量：</p><ul><li>v：when the word is in the context</li><li>u：when the word is in the center</li></ul><p><img src="/images/nlp//image-20200112230514347.png" alt="image-20200112230514347" style="zoom:50%;"></p><p>如上，我们输入一个长度为字典词数长度的词（可以使onehot形式），然后学习一个从输入到隐变量的一个映射，然后在学一个隐变量到输出的映射。输入时句子中出了挖空的那个单词。最后通过softmax变成概率之后，最优化交叉熵损失，得到最优的结果。</p><h3 id="skip-gram-model"><a href="#skip-gram-model" class="headerlink" title="skip gram model"></a>skip gram model</h3><p>这个模型的思路和CBOW相反，利用一个单词去预测其他周围位置的单词，网路结构如下：</p><p><img src="/images/nlp//image-20200112231300222.png" alt="image-20200112231300222" style="zoom:50%;"></p><p>输入为一个词的onehot，学习两个映射过程，最终得到其周围fix-window内的其他词的预测结果，其过程与CBOW类似。</p><p>上述的两个模型中，均是三层结构，隐藏层维度为我们希望的词向量的长度，从输入到隐藏层之间的映射参数即为词典长度x词向量长度的一个矩阵，即我们所要的wordvec。</p><h3 id="negative-sampling"><a href="#negative-sampling" class="headerlink" title="negative sampling"></a>negative sampling</h3><p>在训练神经网络时，每当接受一个训练样本，然后调整所有神经单元权重参数，来使神经网络预测更加准确。换句话说，每个训练样本都将会调整所有神经网络中的参数。<br> 我们词汇表的大小决定了我们skip-gram 神经网络将会有一个非常大的权重参数，并且所有的权重参数会随着数十亿训练样本不断调整。</p><p>negative sampling  每次让一个训练样本仅仅更新一小部分的权重参数，从而降低梯度下降过程中的计算量。<br> 如果 vocabulary 大小为1万时， 当输入样本 ( “fox”, “quick”) 到神经网络时， “ fox” 经过 one-hot 编码，在输出层我们期望对应 “quick” 单词的那个神经元结点输出 1，其余 9999 个都应该输出 0。在这里，这9999个我们期望输出为0的神经元结点所对应的单词我们为 negative word.   negative sampling 的想法也很直接 ，将随机选择一小部分的 negative words，比如选 10个 negative words 来更新对应的权重参数。（选择onehot中为0的一部分数参与模型的更新。）</p><p>在论文中作者指出指出对于小规模数据集，建议选择 5-20 个 negative words，对于大规模数据集选择 2-5个 negative words.</p><p>如果使用了 negative sampling 仅仅去更新positive word- “quick” 和选择的其他 10 个negative words 的结点对应的权重，共计 11 个输出神经元，相当于每次只更新 300 x 11 = 3300 个权重参数。对于 3百万 的权重来说，相当于只计算了千分之一的权重，这样计算效率就大幅度提高。</p><p><strong>如何选择负样本</strong></p><p>一个词是否会被选择为负样本与其出现的频率有关，出现的频次越高，越容易被当成负样本：</p><p><img src="/images/nlp//image-20200112233855262.png" alt="image-20200112233855262" style="zoom:50%;"></p><p>经过实验，当这个数为3/4的时候，模型表现最好。</p><h3 id="hierarchical-softmax"><a href="#hierarchical-softmax" class="headerlink" title="hierarchical softmax"></a>hierarchical softmax</h3><p>层次softmax是另一种优化模型计算的方法，他的思路借鉴了huffman树的思想，出现越是频繁的树，他出现的位置越浅。哈夫曼树每一个叶子节点表示一个类别，每个非叶子节点需要做一次二分类，走左边后走右边的概率用逻辑回归来表示：</p><p><img src="/images/nlp//image-20200113002246268.png" alt="image-20200113002246268" style="zoom:50%;"></p><p>如何降低复杂度呢，当k为词个数时,h为维度，可以将复杂度降到 $O(hlog_2(k))$。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以上便是wordvec的表示方法，即解决了NLP的一个最基本，最重要的问题，词的表示。我们利用CBOW，skip-gram等模型，在优化模型的过程中，得到了词到向量的一个映射关系，这个关系就是wordvec的一个映射矩阵，有了这个矩阵我们就可以将词转化成向量。此时向量是根据其前后的单词而产生的，因此此位置的单词是根据前后的词而产生。下面一篇post将介绍wordvec更深层的东西，wordsence。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;这篇文章是CS224N winter2019的第一次课的内容，主要针对词的表示，词向量生成的一些方法，从最早到最新，列举了这些算法以及应用。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="NLP" scheme="https://wenhui-zhou.github.io/categories/NLP/"/>
     
     
   </entry>
