@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-02-16T16:09:44.401Z</updated>
+  <updated>2020-02-16T16:10:05.733Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://wenhui-zhou.github.io/2020/02/16/%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%87%BD%E6%95%B0/"/>
     <id>https://wenhui-zhou.github.io/2020/02/16/线性判别函数/</id>
     <published>2020-02-16T13:53:23.000Z</published>
-    <updated>2020-02-16T16:09:44.401Z</updated>
+    <updated>2020-02-16T16:10:05.733Z</updated>
     
     <content type="html"><![CDATA[<p><strong>线性判别函数</strong>：用于分类的判别函数的参数形式已知，通过从样本来估计判别函数的参数。</p><a id="more"></a><h3 id="模式分类的途径"><a href="#模式分类的途径" class="headerlink" title="模式分类的途径"></a>模式分类的途径</h3><ul><li>估计类条件概率密度函数，然后通过贝叶斯得到后验概率，用于决策</li><li>直接估计后验概率：k-近邻分类器等</li><li>使用判别函数，直接决策</li></ul><h3 id="线性判别函数与决策面"><a href="#线性判别函数与决策面" class="headerlink" title="线性判别函数与决策面"></a>线性判别函数与决策面</h3><p><img src="/images/nlp/image-20200216222218691.png" alt="image-20200216222218691" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200216222522730.png" alt="image-20200216222522730" style="zoom:40%;"></p><p><strong>多类情况-判别器</strong></p><ul><li>one-vs-all：构造C的二分类器，逐一比较</li><li>one-vs-one：两两配对，构造c/2个二分类器</li></ul><p><strong>增广性</strong></p><p>对线性判别函数采用其次增广表示，使得决策平面过原点，具有一些很好地分类性质。</p><p><img src="/images/nlp/image-20200216230032056.png" alt="image-20200216230032056" style="zoom:40%;"></p><h3 id="感知准则函数"><a href="#感知准则函数" class="headerlink" title="感知准则函数"></a>感知准则函数</h3><p><img src="/images/nlp/image-20200216230427121.png" alt="image-20200216230427121" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200216231014083.png" alt="image-20200216231014083" style="zoom:40%;"></p><p>越靠近区域中间的解向量，越能对新的样本正确分类，可以对解区进行限制：</p><p><img src="/images/nlp/image-20200216233948027.png" alt="image-20200216233948027" style="zoom:40%;"></p><p>感知器准则：最小化错分样本</p><p><img src="/images/nlp/image-20200216234659412.png" alt="image-20200216234659412" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200216234827162.png" alt="image-20200216234827162" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200216235836881.png" alt="image-20200216235836881" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217000045647.png" alt="image-20200217000045647" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217000108761.png" alt="image-20200217000108761" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217000130566.png" alt="image-20200217000130566" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217000842488.png" alt="image-20200217000842488" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217000608368.png" alt="image-20200217000608368" style="zoom:40%;"></p>]]></content>
     
