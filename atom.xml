@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-02-16T16:10:05.733Z</updated>
+  <updated>2020-02-18T06:12:04.239Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>神经网络</title>
+    <link href="https://wenhui-zhou.github.io/2020/02/17/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+    <id>https://wenhui-zhou.github.io/2020/02/17/神经网络/</id>
+    <published>2020-02-17T10:17:06.000Z</published>
+    <updated>2020-02-18T06:12:04.239Z</updated>
+    
+    <content type="html"><![CDATA[<p>神经网络是一个并行的分布式处理结构，由处理单元及其链接的无向通道组成。</p><a id="more"></a><h3 id="人工神经元"><a href="#人工神经元" class="headerlink" title="人工神经元"></a>人工神经元</h3><p>人工神经元接受一个输入，经过激活函数，得到一个输出。</p><p><img src="/images/nlp/image-20200217190314746.png" alt="image-20200217190314746" style="zoom:40%;"></p><p><strong>激活函数</strong></p><p><img src="/images/nlp/image-20200217195205430.png" alt="image-20200217195205430" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217195431829.png" alt="image-20200217195431829" style="zoom:40%;"></p><h3 id="单层感知器"><a href="#单层感知器" class="headerlink" title="单层感知器"></a>单层感知器</h3><p><img src="/images/nlp/image-20200217200553358.png" alt="image-20200217200553358" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217200623566.png" alt="image-20200217200623566" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217210505691.png" alt="image-20200217210505691" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217214410100.png" alt="image-20200217214410100" style="zoom:40%;"></p><h3 id="多层感知器"><a href="#多层感知器" class="headerlink" title="多层感知器"></a>多层感知器</h3><p><img src="/images/nlp/image-20200217224218769.png" alt="image-20200217224218769" style="zoom:40%;"></p><p><strong>误差反向传播算法BP</strong></p><p>利用输出后的误差来估计输出层的前一层的误差，再用这个误差去估计更前一层的误差，从而获得各层的误差估计。</p><p><img src="/images/nlp/image-20200217225713435.png" alt="image-20200217225713435" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217231110300.png" alt="image-20200217231110300" style="zoom:40%;"></p><p>反向传播如下：</p><p><img src="/images/nlp/image-20200217231224975.png" alt="image-20200217231224975" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217233040444.png" alt="image-20200217233040444" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217233643956.png" alt="image-20200217233643956" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217233705608.png" alt="image-20200217233705608" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200217234019319.png" alt="image-20200217234019319" style="zoom:40%;"></p><p><strong>人工神经网络到深度网络的演化</strong></p><p><img src="/images/nlp/image-20200218121400892.png" alt="image-20200218121400892" style="zoom:40%;"></p><p>网络发展的趋势是参数越来越多，网络越来越深。</p><p><img src="/images/nlp/image-20200218122631866.png" alt="image-20200218122631866" style="zoom:40%;"></p><h3 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h3><p><img src="/images/nlp/image-20200218123425909.png" alt="image-20200218123425909" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218123610159.png" alt="image-20200218123610159" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218123655620.png" alt="image-20200218123655620" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218123747946.png" alt="image-20200218123747946" style="zoom:40%;"></p><p>对于自然图像而言，我们希望从图像底层开始进行学习，而非利用人为设计的特征，如果直接将图像作为输入，采用全连接的方式，将造成巨大的计算量，因此我们提出卷积神经网络：</p><ul><li>局部连接：每次计算仅考虑卷积核大小的区域<ul><li>对图像而言，局部领域内的像素联系比较紧密，距离较远的像素相关性则比较弱</li><li>卷积核对局部信息进行感知，在高层则将局部信息综合起来得到全局信息</li></ul></li><li>权值共享：克服参数过多问题<ul><li>利用一个参数待学习的卷积核（3x3），对图像进行卷积过滤，每个卷积核可视为学习一种参数</li></ul></li></ul><p><img src="/images/nlp/image-20200218125212298.png" alt="image-20200218125212298" style="zoom:40%;"></p><p>采用卷积得到的结果得到的仍然是一个较高维度的结果，在如此高维的特征下设计分类器容易产生过拟合，并且计算量较大。</p><p>因此一个方法就是对不同位置上的特征进行聚合：</p><p><img src="/images/nlp/image-20200218125659834.png" alt="image-20200218125659834" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218133024988.png" alt="image-20200218133024988" style="zoom:40%;"></p><h3 id="自编码器（autoencoder）"><a href="#自编码器（autoencoder）" class="headerlink" title="自编码器（autoencoder）"></a>自编码器（autoencoder）</h3><p><img src="/images/nlp/image-20200218133233532.png" alt="image-20200218133233532" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218134846541.png" alt="image-20200218134846541" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218135048551.png" alt="image-20200218135048551" style="zoom:40%;"></p><h3 id="RNN网络"><a href="#RNN网络" class="headerlink" title="RNN网络"></a>RNN网络</h3><p><img src="/images/nlp/image-20200218140718801.png" alt="image-20200218140718801" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218140918045.png" alt="image-20200218140918045" style="zoom:40%;"></p><p><img src="/images/nlp/image-20200218141105912.png" alt="image-20200218141105912" style="zoom:40%;"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;神经网络是一个并行的分布式处理结构，由处理单元及其链接的无向通道组成。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="统计学习方法" scheme="https://wenhui-zhou.github.io/categories/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>线性判别函数</title>
@@ -89,26 +109,6 @@
     
       &lt;p&gt;《统计学习方法》第4章 朴素贝叶斯法&lt;/p&gt;
 &lt;p&gt;朴素贝叶斯法是基于贝叶斯定理与特征条件独立假设的分类方法，对于给定的数据集，首先基于特征条件独立假设学习输入、输出的联合概率分布。对于给定的输入x，利用贝叶斯定理求出后验概率最大的输出y。&lt;br&gt;$$&lt;br&gt;P\left(\omega_{i} | \mathbf{x}\right)=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{p(\mathbf{x})}=\frac{p\left(\mathbf{x} | \omega_{i}\right) P\left(\omega_{i}\right)}{\sum_{i=1}^{c} p\left(\mathbf{x} | \omega_{j}\right) P\left(\omega_{j}\right)}&lt;br&gt;$$&lt;br&gt;将后验问题转化为先验的形式。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="统计学习方法" scheme="https://wenhui-zhou.github.io/categories/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>k近邻法(3)</title>
-    <link href="https://wenhui-zhou.github.io/2020/01/29/k%E8%BF%91%E9%82%BB%E6%B3%95-3/"/>
-    <id>https://wenhui-zhou.github.io/2020/01/29/k近邻法-3/</id>
-    <published>2020-01-29T05:08:45.000Z</published>
-    <updated>2020-01-29T16:29:18.333Z</updated>
-    
-    <content type="html"><![CDATA[<p>《统计学习方法》第三章 k近邻法</p><a id="more"></a><h3 id="k近邻模型"><a href="#k近邻模型" class="headerlink" title="k近邻模型"></a>k近邻模型</h3><p>k近邻算法是一类基本的分类回归方法，假定给定一个训练数据集，其中实例类别已定，对新的实例，根据其k个最近邻的训练实例的类别通过多数表决等方式进行预测。其中k值得选择，距离度量以及分类决策规则是k近邻法的三个基本要素：</p><ul><li><p>优点</p><ul><li>精度高</li><li>对异常值不敏感</li><li>无数据输入假定</li></ul></li><li><p>缺点</p><ul><li>计算复杂度高</li><li>空间复杂度高</li></ul></li><li><p>适用数据范围</p><ul><li>数值型和标称型</li></ul></li></ul><p><strong>工作原理</strong></p><p>存在一个数据集，且数据集中样本与标签存在一一对应的关系，输入没有标签的新数据后，将新数据的每个特征与样本集中数据对应的特征进行比较，然后算法提取样本集中特征最相似数据（最近邻）的分类标签作为新数据的分类类别。</p><p><strong>距离量度</strong></p><p>我们在确定两个向量是否属于同一类别的时候，我们需要利用一个距离量度来决定该实例的类别，距离定义方式有以下几种：</p><p>$L_p$距离：<br>$$<br>L_{p}\left(x_{i}, x_{j}\right)=\left(\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right|^{p}\right)^{\frac{1}{p}}<br>$$<br>欧氏距离，L1以及L无穷距离：<br>$$<br>\begin{aligned} L_{2}\left(x_{i}, x_{j}\right) &amp;=\left(\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right|^{2}\right)^{\frac{1}{2}} \ L_{1}\left(x_{i}, x_{j}\right) &amp;=\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right| \ L_{\infty}\left(x_{i}, x_{j}\right) &amp;=\max _{l}\left|x_{i}^{(l)}-x_{j}^{(l)}\right| \end{aligned}<br>$$<br><strong>k值选择</strong></p><ul><li><p>如果选择较小的K值</p><ul><li>学 习”的近似误差（approximation error)会减小，但 “学习”的估计误差（estimation error) 会增大</li><li>噪声敏感</li><li>K值的减小就意味着整体模型变得复杂，容易发生过 拟合</li></ul></li><li><p>如果选择较大的K值</p><ul><li>减少学习的估计误差，但缺点是学习的近似误差会增大.</li><li>K值的增大 就意味着整体的模型变得简单.</li></ul></li></ul><h3 id="KD-tree"><a href="#KD-tree" class="headerlink" title="KD tree"></a>KD tree</h3><p>实现k近邻法时，主要考虑的问题是如何对训练数据进行快速k近邻搜索，为了提高这种搜索的效率，可以考虑使用特殊的结构存储训练数据，以减少计算距离的次数，一个常用的存储结构就是kd tree。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;《统计学习方法》第三章 k近邻法&lt;/p&gt;
     
     </summary>
     
