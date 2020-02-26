@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-02-20T18:25:25.914Z</updated>
+  <updated>2020-02-26T16:38:41.056Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>支持向量机-SVM</title>
+    <link href="https://wenhui-zhou.github.io/2020/02/26/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-SVM/"/>
+    <id>https://wenhui-zhou.github.io/2020/02/26/支持向量机-SVM/</id>
+    <published>2020-02-26T12:59:31.000Z</published>
+    <updated>2020-02-26T16:38:41.056Z</updated>
+    
+    <content type="html"><![CDATA[<p>SVM原理的简要梳理，包括了hard-svm，soft-svm，拉格朗日，对偶等知识点。</p><a id="more"></a><h3 id="VC维"><a href="#VC维" class="headerlink" title="VC维"></a>VC维</h3><p>VC维指的是在线性分类模型中，最多可以划分的簇的个数，例如2D平面中VC维为3.</p><p>对于非线性的模型来说，VC维是无限大的。通常来说，VC维越大分类器的分类性能越灵活。</p><h3 id="硬间隔SVM"><a href="#硬间隔SVM" class="headerlink" title="硬间隔SVM"></a>硬间隔SVM</h3><p>在对数据进行分两类的时候，尽可能找一条最粗的分界线，即margin最大，这条线恰好能够对数据进行分割。在分界线边上的点即为支撑向量。</p><p>平面中任意一点到分界面的距离为：<br>$$<br>d(\mathbf{x})=\frac{|\mathbf{x} \cdot \mathbf{w}+b|}{\sqrt{|\mathbf{w}|_{2}^{2}}}=\frac{|\mathbf{x} \cdot \mathbf{w}+b|}{\sqrt{\sum_{i=1}^{d} w_{i}^{2}}}<br>$$<br>我们找到所有样本点距离分界面最近的距离，作为当前样本的margin：</p><p><img src="/images/nlp/image-20200226224459260.png" alt="image-20200226224459260" style="zoom:50%;"><br>$$<br>\operatorname{margin} \equiv \underset{\mathbf{x} \in D}{\arg \min } d(\mathbf{x})=\underset{\mathbf{x} \in D}{\arg \min } \frac{|\mathbf{x} \cdot \mathbf{w}+b|}{\sqrt{\sum_{i=1}^{d} w_{i}^{2}}}<br>$$<br>为了使margin最大，达到最鲁棒的效果，调整w，b使：<br>$$<br>\underset{\mathbf{w}, b}{\operatorname{argmax}} \arg \min _{\mathbf{x} \in D} \frac{\left|b+\mathbf{x}_{i} \cdot \mathbf{w}\right|}{\sqrt{\sum_{i=1}^{d} w_{i}^{2}}}\\<br>\text { subject to } \forall \mathbf{x}_{i} \in D: y_{i}\left(\mathbf{x}_{i} \cdot \mathbf{w}+b\right) \geq 0<br>$$<br>即最大化最小间距，上式成立必须满足一个条件，即所有的点都必须在正确的分类。</p><p>由于$|xw + b|$的取值不会影响函数优化的结果，因此我们将它设为1，方便计算，即可得到：<br>$$<br>\begin{array}{l}{\underset{\mathbf{w}, b}{\operatorname{argmin}} \sum_{i=1}^{d} w_{i}^{2}} \ {\text { subject to } \forall \mathbf{x}_{i} \in D: y_{i}\left(\mathbf{x}_{i} \cdot \mathbf{w}+b\right) \geq 1}\end{array}<br>$$<br>上式即为硬间距SVM的表达式，通过计算出其中的w得到分界线的位置。</p><h3 id="soft-SVM"><a href="#soft-SVM" class="headerlink" title="soft-SVM"></a>soft-SVM</h3><p>在有些数据中，大部分数据都是可分的，但是可能存在一些噪点，使得数据整体不可分。因此我们需要加上一些tradesoff来解决这个问题，修改后的函数如下：</p><p><img src="/images/nlp/image-20200226232159974.png" alt="image-20200226232159974" style="zoom:50%;"></p><p><img src="/images/nlp/image-20200226232318315.png" alt="image-20200226232318315" style="zoom:50%;"></p><p>每一个样本点对应一个tradesoff，通过最小化tradesoff的方式，使误分样本尽量少，同时鲁棒性好</p><h3 id="hinge-loss"><a href="#hinge-loss" class="headerlink" title="hinge loss"></a>hinge loss</h3><p>hinge loss是一个可导的函数，可视为是0-1loss的上界。</p><p><img src="/images/nlp/image-20200226233815693.png" alt="image-20200226233815693" style="zoom:50%;"></p><h3 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h3><h4 id="拉格朗日乘子"><a href="#拉格朗日乘子" class="headerlink" title="拉格朗日乘子"></a>拉格朗日乘子</h4><p>拉格朗提乘子满足下面的变换关系：</p><p><img src="/images/nlp/image-20200227001235311.png" alt="image-20200227001235311" style="zoom:50%;"></p><p>KKT条件：</p><p><img src="/images/nlp/image-20200227001334193.png" alt="image-20200227001334193" style="zoom:50%;"></p><p>用拉格朗日乘子求解SVM问题：</p><p><img src="/images/nlp/image-20200227001418834.png" alt="image-20200227001418834" style="zoom:50%;"></p><p>将偏导结果带回上式，得到对偶问题：</p><p><img src="/images/nlp/image-20200227001548912.png" alt="image-20200227001548912" style="zoom:50%;"></p><h3 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h3><p>由于有些数据是非线性，不可分的。在低维空间中无法分隔开，因此需要使用核函数，对数据进行升维，使得数据可分。</p><p>核函数的表达式如下：<br>$$<br>K\left(x_{i}, x_{j}\right)=\phi\left(x_{i}\right) \cdot \phi\left(x_{j}\right)<br>$$<br>因此可以整体替换掉点乘项，使用核函数对数据进行升维。因为函数仅仅需要点乘的结果，我们不需要直接写出从低维到高维的映射函数。</p><p><img src="/images/nlp/image-20200227003536399.png" alt="image-20200227003536399" style="zoom:50%;"></p><p>常见的核函数如下：</p><p><img src="/images/nlp/image-20200227003606023.png" alt="image-20200227003606023" style="zoom:50%;"></p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以上便是SVM的主要内容，下次回忆SVM算法的时候，可以从点到直线的距离开始，然后入手，将hard，soft，maxmin，拉格朗日，对偶，KTT，偏导那些东西全部过一遍便可。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;SVM原理的简要梳理，包括了hard-svm，soft-svm，拉格朗日，对偶等知识点。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="统计学习方法" scheme="https://wenhui-zhou.github.io/categories/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>聚类</title>
@@ -92,26 +112,6 @@
     </summary>
     
       <category term="webSearch" scheme="https://wenhui-zhou.github.io/categories/webSearch/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>OpenPose: Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields</title>
-    <link href="https://wenhui-zhou.github.io/2020/02/05/OpenPose-Realtime-Multi-Person-2D-Pose-Estimation-using-Part-Affinity-Fields/"/>
-    <id>https://wenhui-zhou.github.io/2020/02/05/OpenPose-Realtime-Multi-Person-2D-Pose-Estimation-using-Part-Affinity-Fields/</id>
-    <published>2020-02-05T08:27:15.000Z</published>
-    <updated>2020-02-16T06:36:22.947Z</updated>
-    
-    <content type="html"><![CDATA[<p>这篇文章是2017年发表在CVPR上，作者开源了代码openpose，openpose代码完整，在推动人体识别，起到了巨大的作用。</p><a id="more"></a><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><strong>人体姿态估计</strong>是理解视频图像的一个核心问题，一种比较简单的方法是two-step的框架，首先检测出图像中的人，然后解决人体姿态估计的问题。这种方法的问题在于，算法执行时间与图片中的人数呈正比，同时若第一步未检出行人，将会出现比较严重的漏检。</p><p>这篇文章提出一种<strong>bottom-up approach</strong>，这种方法检测出人体的部分，然后parsing成人体姿态的结果。这种方法执行时间与人数无关。</p><h3 id="architecture-网络框架"><a href="#architecture-网络框架" class="headerlink" title="architecture 网络框架"></a>architecture 网络框架</h3><p><img src="/images/nlp/image-20200205200758114.png" alt="image-20200205200758114" style="zoom:50%;"></p><ul><li>首先通过baseline10层的VGG-19网络，生成feature map</li><li>将feature map 分为两路，通过多层的CNN生成：<ul><li><strong>a set of Part Confidence Maps</strong> 身体部位的置信度</li><li><strong>a set of Part Affinity Fields (PAFs)</strong> 部位亲和场</li></ul></li><li><strong>Part Confidence Maps</strong>: a set of 2D confidence maps <strong>S</strong> for body part locations. Each joint location has a map.也就是说，每一个节点都对应了一张map，如果有25个节点的时候，就会有25张map。</li><li><strong>Part Affinity Fields (PAFs)</strong>: a set of 2D vector fields <strong>L</strong> which encodes the degree of association between parts.  生成parts之间的单位向量场。</li><li>Finally, the <strong>Confidence Maps</strong> and <strong>Part Affinity Fields</strong> are processed by a greedy algorithm to obtain the poses for each person in the image 联合置信图以及亲合场得出图像中每一个人的pose</li></ul><h3 id="confidence-maps"><a href="#confidence-maps" class="headerlink" title="confidence maps"></a>confidence maps</h3><p>置信图指的是一张2D表示的置信度图，可以定位到图像中关节点的像素上。</p><p>令$J$作为人体的的关节点总数，confidence map如下：<br>$$<br>\text { the set } S=\left(S_{1}, S_{2}, \ldots, S_{J}\right) \text { where } S_{j} \in R^{w \times h}, j \in 1 \ldots J<br>$$<br>总的来说，每一张map都对应一个节点，并且与输入的图片有着相同的size。</p><h3 id="Part-Affinity-Fields（PAFs）"><a href="#Part-Affinity-Fields（PAFs）" class="headerlink" title="Part Affinity Fields（PAFs）"></a>Part Affinity Fields（PAFs）</h3><p>PAF指的是流向量场，流向量场用来编码第一部分成对的关节点对，例如nose，neck，elbow等等：<br>$$<br>\text { the set } L=\left(L_{1}, L_{2}, \ldots, L_{C}\right) \text { where } L_{c} \in R^{w \times h \times 2}, c \in 1 \ldots C<br>$$<br>如果一个点在他的body part上（腿），那么这个点的值是一个2D单位向量，从起点joint指向终点的joint。</p><p><img src="/images/nlp/image-20200206214339000.png" alt="image-20200206214339000" style="zoom:40%;"></p><p>如上所述，整个流程分成两个步骤，第一个阶段生成PAF流向量场，第二个向量生成关节点密度场。</p><h3 id="Multi-Person-Parsing-using-PAFs"><a href="#Multi-Person-Parsing-using-PAFs" class="headerlink" title="Multi-Person Parsing using PAFs"></a>Multi-Person Parsing using PAFs</h3><p>从图像中找出人体姿态的步骤如下：</p><ul><li><strong>Step 1</strong>: Find <strong>all joints</strong> locations using the <strong>confidence maps</strong>.</li><li><strong>Step 2</strong>: Find which joints go together to <strong>form limbs (body parts)</strong> using the <strong>part affinity fields</strong> and joints in step 1.</li><li><strong>Step 3</strong>: <strong>Associate limbs that belong to the same person</strong> and get the final list of human poses.</li></ul><h3 id="如何生成人体limb"><a href="#如何生成人体limb" class="headerlink" title="如何生成人体limb"></a>如何生成人体limb</h3><ul><li>首先将生成的PAFs放大到输入的尺寸，</li><li>对于每一个limb类型，例如对wrist_elbow：<ul><li>从深度图中拿到所有的wrist和elbow的关节点的位置</li><li>对每一个起点peak和终点peak：<ul><li>用终点减去起点，然后归一化之后得到单位方向向量</li><li>每一对起点和终点之间的点，计算他们的PAFs的值</li><li>通过这中间所有点的PAFs值得平均值，计算当前limb connection的score</li><li>添加一个score来惩罚long distance：<code>min(0.5*paf_height/limb_dist - 1,0)</code></li><li>添加当前的limb连接到limb connecton candidate中</li></ul></li><li>对limb connection candidate进行排序</li><li>对于每一个候选连接，如果source和destination未被选中，则添加这个connection到最终的list当中</li></ul></li></ul><h3 id="pytorch-implementaton"><a href="#pytorch-implementaton" class="headerlink" title="pytorch implementaton"></a>pytorch implementaton</h3><p>giithub链接：https:/github.com/tensorboy/pytorch_Realtime_Multi-Person_Pose_Estimation</p><h3 id="preference"><a href="#preference" class="headerlink" title="preference"></a>preference</h3><ul><li><a href="https://blog.csdn.net/qq_14845119/article/details/98192997" target="_blank" rel="noopener">https:/towardsdatascience.com/cvpr-2017-openpose-realtime-multi-person-2d-pose-estimation-using-part-affinity-fields-f2ce18d720e8</a></li><li><a href="https://blog.csdn.net/qq_14845119/article/details/98192997" target="_blank" rel="noopener">https://blog.csdn.net/qq_14845119/article/details/98192997</a></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;这篇文章是2017年发表在CVPR上，作者开源了代码openpose，openpose代码完整，在推动人体识别，起到了巨大的作用。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="论文阅读" scheme="https://wenhui-zhou.github.io/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
     
     
   </entry>
