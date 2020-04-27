@@ -54,7 +54,116 @@
 <p>person mIU: 0.8811813306596593; ski mIU 0.47062399967040647</p>
 <p><strong>人体倒立的效果不好：</strong></p>
 <p>目前有的数据增强操作有：resize：[(1333, 640), (1333, 800)]，randomFilp（左右翻转），Normalize，Pad</p>
-<p>增加上下翻转的操作，同时翻转mask和box:</p>
+<p>增加上下翻转的操作，同时翻转mask和box。</p>
+<p><strong>检测人体的一些参数：</strong></p>
+<p>置信度threshold=0.3</p>
+<p>4.5最新的segmentation结果：</p>
+<ul>
+<li><p>增加了人的上下翻转</p>
+</li>
+<li><p>改变了mask和人的面积的占比的阈值</p>
+</li>
+<li><p>使用了RDSNet原始的预训练模型</p>
+</li>
+<li>先过滤掉skis的GT，用原始的模型跑了一版只有人的mask，然后再训练所有的数据</li>
+</ul>
+<p>nums of all images:574 detect img: 574<br>pa: 0.9354692319143859<br>person pa: 0.952586679919327; ski pa 0.795659633538158<br>person mIU: 0.8703372762800548; ski mIU 0.4621799597472673</p>
+<p>赅睦v3结果：</p>
+<p>nums of all images:574 detect img: 315 </p>
+<p>pa: 0.9402883800000756        person pa: 0.9549458484555311;     </p>
+<p>ski pa    0.8145014928441581 person mIU: 0.8682211200110778</p>
+<p>ski mIU 0.4661748785006413</p>
+<p>4.3最新segmentation结果：</p>
+<p>nums of all images:574 detect img: 233</p>
+<p>pa: 0.9369132159512628</p>
+<p>person pa: 0.9535568322424365;      ski pa 0.7994298667822376</p>
+<p>person mIU: 0.8703037390529358;   ski mIU 0.4607294905584023</p>
+<p>513张检测出来</p>
+<p>pa: 0.931</p>
+<p>person pa: 0.948; ski pa 0.786</p>
+<p>person mIU: 0.881; ski mIU 0.450</p>
+<p>最新的，雪板缺失的结果：</p>
+<p>nums of all images:574 detect img: 492<br>pa: 0.9325332039535604<br>person pa: 0.952345728818519;        ski pa 0.774363662229735<br>person mIU: 0.8692397985003847;   ski mIU 0.46683807840731795</p>
+<h4 id="本周的工作"><a href="#本周的工作" class="headerlink" title="本周的工作"></a>本周的工作</h4><ol>
+<li>对视频进行mask抠像</li>
+<li>将标注数据转化成80分类的数据格式，共8k张</li>
+<li>训练了一版没有加入coco数据集80分类的结果</li>
+<li>将coco加入数据集，重新训练新一版的结果</li>
+</ol>
+<p>0413：将划水数据加入数据集中得到的结果，感觉还有提升空间，可以继续训练</p>
+<p>nums of all images:574 detect img: 496<br>pa: 0.9343723520825538<br>person pa: 0.9539596612578186; ski pa 0.7762043705731111<br>person mIU: 0.8691335572039341; ski mIU 0.4734166211250842<br>122.55705881118774</p>
+<p>0415：80分类的跳水 + 滑雪数据：</p>
+<p>nums of all images:574 detect img: 500<br>pa: 0.9338427680139673<br>person pa: 0.9529509669453708; ski pa 0.7774459065324504<br>person mIU: 0.8697633935721094; ski mIU 0.4716099906503192<br>123.1501772403717</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>总数</th>
+<th>det_img</th>
+<th>pa</th>
+<th>person pa</th>
+<th>person miu</th>
+<th>ski pa</th>
+<th>ski miu</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0420_epoch16</td>
+<td>574</td>
+<td>279</td>
+<td>0.95</td>
+<td>0.97</td>
+<td>0.88</td>
+<td>0.84</td>
+<td>0.50</td>
+<td>加入coco数据</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="修改的点"><a href="#修改的点" class="headerlink" title="修改的点"></a>修改的点</h3><ol>
+<li>数据增强：加入forst，上下翻转，brightness（defocus）</li>
+<li>FL with distance aware</li>
+</ol>
+<h3 id="A-distance-aware-cross-entropy-loss"><a href="#A-distance-aware-cross-entropy-loss" class="headerlink" title="A distance-aware cross entropy loss"></a><strong>A distance-aware cross entropy loss</strong></h3><p>即： Class Weight based Dual Focal Loss</p>
+<p> although FL proved to be better than CE and WCE to address both class imbalance and class weakness, it increases the weight factor on ‘positive hard’ classes {𝑃𝑖 ̂: 𝑃𝑖 = 1, 𝑃𝑖 ̂ ≪ 1}) only and remains blind to the ‘negative easy’</p>
+<h3 id="剪视频"><a href="#剪视频" class="headerlink" title="剪视频"></a>剪视频</h3><p>滑雪视频：bFF_20191214095649.mp4</p>
+<p>跳水场景</p>
+<p>V1:</p>
+<p>nums of all images:372 detect img: 109<br>pa: 0.8202673860246401<br>person pa: 0.8604234773163142; ski pa 0.4365939611642742<br>person mIU: 0.834689556354205; ski mIU 0.32204986948916425<br>57.603790283203125</p>
+<p>v2：无</p>
+<p>v3：</p>
+<p>nums of all images:372 detect img: 234<br>pa: 0.8635791399587737<br>person pa: nan; ski pa 0.52861091026923<br>person mIU: 0.8660126998199129; ski mIU 0.37964839550921387<br>64.33940291404724</p>
+<p>v4：（0413.epoch_47）</p>
+<p>nums of all images:372 detect img: 240<br>pa: 0.8728082198181446<br>person pa: 0.9037850500010524; ski pa 0.5343325737147256<br>person mIU: 0.8766753717860475; ski mIU 0.3892417225535218<br>67.59345650672913</p>
+<p>V5:(epoch_16)</p>
+<p>nums of all images:372 detect img: 74<br>pa: 0.9405744365529746<br>person pa: 0.9630469046257544; ski pa nan<br>person mIU: 0.9072004643371733; ski mIU 0.0<br>62.072516441345215</p>
+<ol>
+<li>将部分跳水数据转成2分类，80分类验证集</li>
+<li>对历史模型重新测试在跳水上的效果</li>
+<li>绘制mask可视化视频（跳水和滑雪融合）</li>
+<li>训练加入coco的RDSNet，验证最新结果</li>
+</ol>
+<h3 id="RDSNet的loss修改"><a href="#RDSNet的loss修改" class="headerlink" title="RDSNet的loss修改"></a>RDSNet的loss修改</h3><p>RDSNet目标检测上使用的loss是focal loss，在mask 分割上使用的loss是cross entropy loss。</p>
+<p>mask分割的内部实现：</p>
+<p><strong>mmdet/models/mask_heads/rdsnet_mask_head.py：213行</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	(Pdb) pred_mask.shape</span><br><span class="line">torch.Size([<span class="number">34</span>, <span class="number">2</span>, <span class="number">248</span>, <span class="number">160</span>])</span><br><span class="line">	(Pdb) gt_mask.shape</span><br><span class="line">torch.Size([<span class="number">34</span>, <span class="number">248</span>, <span class="number">160</span>])</span><br><span class="line">最终通过下面函数进行计算：</span><br><span class="line">input = log_softmax(input, <span class="number">1</span>)</span><br><span class="line">ret = torch._C._nn.nll_loss2d(input, target, weight, _Reduction.get_enum(reduction), ignore_index)</span><br></pre></td></tr></table></figure>
+<p>V6 (epoch_37 0427)</p>
+<p>滑雪：</p>
+<p>nums of all images:574 detect img: 395<br>pa: 0.9525877472767361<br>person pa: 0.9645798724157836; ski pa 0.8437678375390546<br>person mIU: 0.8893634429910271; ski mIU 0.4647400425444946<br>110.54691290855408</p>
+<p>跳水：</p>
+<p>nums of all images:372 detect img: 143<br>pa: 0.9387247103765048<br>person pa: 0.9542593861783638; ski pa 0.7321668474084746<br>person mIU: 0.909753853880885; ski mIU 0.44296937228518907<br>61.86693835258484</p>
 </div><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>WenHui Zhou</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2020/03/18/RDSNet/">https://wenhui-zhou.github.io/2020/03/18/RDSNet/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>| 本博客所有文章除特别声明外，均采用 <a href="&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/cn/&quot;" rel="&quot;external" nofollow&quot;="" target="&quot;_blank&quot;">CC BY-NC-SA 3.0 CN</a> 许可协议。转载请注明出处！ </li></ul></div><br><div class="tags"></div><div class="post-nav"><a class="pre" href="/2020/03/25/problem-summary/">problem summary</a><a class="next" href="/2020/03/14/LR-推导/">LR 推导</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'false' == true ? true : false;
 var verify = 'false' == true ? true : false;
 var GUEST_INFO = ['nick','mail','link'];
@@ -72,7 +181,7 @@ window.valine = new Valine({
   avatar:'mm',
   guest_info:guest_info,
   pageSize:'10'
-})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/webSearch/">webSearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/深度学习/">深度学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/统计学习方法/">统计学习方法</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试准备/">面试准备</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/NLP/" style="font-size: 15px;">NLP</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/03/25/problem-summary/">problem summary</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/18/RDSNet/">RDSNet</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/14/LR-推导/">LR 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/12/TrackIn-BERT/">TrackIn:BERT five-classification on MSMARCO.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/Bert，XLNet，UNILM，RoBERTa以及QA/">Bert，XLNet，UNILM，RoBERTa以及QA</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/天池安全AI挑战赛细枝末节/">天池安全AI挑战赛细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/08/精彩视频剪辑的细枝末节/">精彩视频剪辑的细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/07/openpose细枝末节/">openpose细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/26/支持向量机-SVM/">支持向量机-SVM</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/19/聚类/">聚类</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
+})</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/3D重建/">3D重建</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mac/">Mac</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tensorflow/">Tensorflow</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/effective-cpp/">effective cpp</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/super-resolution/">super resolution</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">tool</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/webSearch/">webSearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xigua/">xigua</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/建站/">建站</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/手撕系列/">手撕系列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/推荐系统/">推荐系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/模型评价/">模型评价</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/比赛/">比赛</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/深度学习/">深度学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法扫盲/">算法扫盲</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/统计学习方法/">统计学习方法</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文复现/">论文复现</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/">论文阅读</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/论文阅读/3D重建/">3D重建</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试准备/">面试准备</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目/">项目</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/">项目总结</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/项目总结/论文阅读/">论文阅读</a><span class="category-list-count">3</span></li></ul></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interview/" style="font-size: 15px;">interview</a> <a href="/tags/dialog/" style="font-size: 15px;">dialog</a> <a href="/tags/leetcode/" style="font-size: 15px;">leetcode</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/3D重建/" style="font-size: 15px;">3D重建</a> <a href="/tags/项目总结/" style="font-size: 15px;">项目总结</a> <a href="/tags/论文阅读/" style="font-size: 15px;">论文阅读</a> <a href="/tags/netStation/" style="font-size: 15px;">netStation</a> <a href="/tags/tool/" style="font-size: 15px;">tool</a> <a href="/tags/SR/" style="font-size: 15px;">SR</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/tip/" style="font-size: 15px;">tip</a> <a href="/tags/Tensorflow/" style="font-size: 15px;">Tensorflow</a> <a href="/tags/learning-cpp/" style="font-size: 15px;">learning cpp</a> <a href="/tags/NLP/" style="font-size: 15px;">NLP</a> <a href="/tags/tips/" style="font-size: 15px;">tips</a> <a href="/tags/职业规划/" style="font-size: 15px;">职业规划</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/—-leetcode/" style="font-size: 15px;">— leetcode</a> <a href="/tags/超分辨率/" style="font-size: 15px;">超分辨率</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/14/cpp常见的考点/">cpp常见的考点</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/25/problem-summary/">problem summary</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/18/RDSNet/">RDSNet</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/14/LR-推导/">LR 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/12/TrackIn-BERT/">TrackIn:BERT five-classification on MSMARCO.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/Bert，XLNet，UNILM，RoBERTa以及QA/">Bert，XLNet，UNILM，RoBERTa以及QA</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/天池安全AI挑战赛细枝末节/">天池安全AI挑战赛细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/08/精彩视频剪辑的细枝末节/">精彩视频剪辑的细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/07/openpose细枝末节/">openpose细枝末节</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/26/支持向量机-SVM/">支持向量机-SVM</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/WenHui-Zhou" title="GITHUB" target="_blank">GITHUB</a><ul></ul><a href="http://www.google.com/" title="GOOGLE" target="_blank">GOOGLE</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">WenHuiZhou.</a> 访问人数:<span id="busuanzi_value_site_uv"></span> 
 访问量:<span id="busuanzi_value_site_pv"></span></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
 if (search_path.length == 0) {
    search_path = 'search.xml';

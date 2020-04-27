@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://wenhui-zhou.github.io/2020/03/25/problem-summary/</loc>
-    <lastmod>2020-04-03</lastmod>
-  </url>  <url>
     <loc>https://wenhui-zhou.github.io/2020/03/12/TrackIn-BERT/</loc>
-    <lastmod>2020-03-30</lastmod>
+    <lastmod>2020-04-27</lastmod>
   </url>  <url>
     <loc>https://wenhui-zhou.github.io/2020/03/18/RDSNet/</loc>
-    <lastmod>2020-03-30</lastmod>
+    <lastmod>2020-04-27</lastmod>
+  </url>  <url>
+    <loc>https://wenhui-zhou.github.io/2020/04/14/cpp%E5%B8%B8%E8%A7%81%E7%9A%84%E8%80%83%E7%82%B9/</loc>
+    <lastmod>2020-04-20</lastmod>
+  </url>  <url>
+    <loc>https://wenhui-zhou.github.io/2020/03/25/problem-summary/</loc>
+    <lastmod>2020-04-03</lastmod>
   </url>  <url>
     <loc>https://wenhui-zhou.github.io/2020/03/10/Bert%EF%BC%8CXLNet%EF%BC%8CUNILM%EF%BC%8CRoBERTa%E4%BB%A5%E5%8F%8AQA/</loc>
     <lastmod>2020-03-16</lastmod>
