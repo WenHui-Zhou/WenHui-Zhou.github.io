@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://wenhui-zhou.github.io/"/>
-  <updated>2020-05-04T07:15:55.150Z</updated>
+  <updated>2020-05-05T08:00:39.985Z</updated>
   <id>https://wenhui-zhou.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>优化器总结</title>
+    <link href="https://wenhui-zhou.github.io/2020/05/04/%E4%BC%98%E5%8C%96%E5%99%A8%E6%80%BB%E7%BB%93/"/>
+    <id>https://wenhui-zhou.github.io/2020/05/04/优化器总结/</id>
+    <published>2020-05-04T07:15:24.000Z</published>
+    <updated>2020-05-05T08:00:39.985Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文总结了常用的优化器，以及优化器的优缺点等。</p><a id="more"></a><h3 id="Batch-Gradient-Descent"><a href="#Batch-Gradient-Descent" class="headerlink" title="Batch Gradient Descent"></a>Batch Gradient Descent</h3><p>批量梯度下降，每次更新整个数据集计算一次梯度，确定是每次迭代比较耗时，遇到比较大的数据集则比较棘手。BGD容易陷入局部极小值点。<br>$$<br>\theta=\theta-\eta \cdot \nabla_{\theta} J(\theta)<br>$$</p><h3 id="Stochastic-gradient-Descent"><a href="#Stochastic-gradient-Descent" class="headerlink" title="Stochastic gradient Descent"></a>Stochastic gradient Descent</h3><p>随机梯度下降，每次更新时根据单个样本对梯度进行更新。SGD的优点是计算较快，缺点是会造成loss的剧烈震荡。<br>$$<br>\theta=\theta-\eta \cdot \nabla_{\theta} J\left(\theta ; x^{(i)} ; y^{(i)}\right)<br>$$<br>SGD剧烈震荡可能会使得最后loss降到一个比较小的局部极小值点上。</p><h3 id="Mini-batch-Gradient-Descent"><a href="#Mini-batch-Gradient-Descent" class="headerlink" title="Mini-batch Gradient Descent"></a>Mini-batch Gradient Descent</h3><p>MBGD 小批样本的梯度下降，每次经过n个样本后才更新模型参数。这样的好处是可以降低参数更新时的方差，使得收敛更加稳定，另一方面可以利用矩阵计算来计算计算的速度。<br>$$<br>\theta=\theta-\eta \cdot \nabla_{\theta} J\left(\theta ; x^{(i: i+n)} ; y^{(i: i+n)}\right)<br>$$</p><h3 id="普通梯度下降方法总结"><a href="#普通梯度下降方法总结" class="headerlink" title="普通梯度下降方法总结"></a>普通梯度下降方法总结</h3><ul><li>对于SGD方法来说，算法不能够保证很好的收敛性，如果learning rate选择太小，收敛速度比较慢，如果learning rate 选择过大则loss过分震荡无法收敛。</li><li><p>学习率的一种策略是逐步的降低learning rate的大小，如果数据是稀疏的，我们希望对出现频率低的特征进行大一点的更新。</p></li><li><p>此外对于非凸函数，当梯度下降时，loss陷入鞍点时，所有维度的梯度都为0，导致SGD方法无法更新参数。</p></li></ul><h3 id="Momentum"><a href="#Momentum" class="headerlink" title="Momentum"></a>Momentum</h3><p>针对上面SGD容易陷入局部位置，可以利用前一次梯度更新的方向，作为一个动量，使当前loss脱离当前的位置。</p><p>加入前一次更新的动量，可以使得loss在梯度方向不变的方向上更新速度加快，在梯度方向变化的方向上，使更新速度变慢，可以起到收敛并减小震荡的作用。</p><p>缺点是动量完全取决于上一次的梯度方向，先验知识不足。<br>$$<br>\begin{array}{l}v_{t}=\gamma v_{t-1}+\eta \nabla_{\theta} J(\theta) \ \theta=\theta-v_{t}\end{array}<br>$$</p><h3 id="Nesterov-Accelerated-Gradient"><a href="#Nesterov-Accelerated-Gradient" class="headerlink" title="Nesterov Accelerated Gradient"></a>Nesterov Accelerated Gradient</h3><p>NAG在momentum的基础上，对网络下一步更新方向进行微调：<br>$$<br>\begin{array}{l}v_{t}=\gamma v_{t-1}+\eta \nabla_{\theta} J\left(\theta-\gamma v_{t-1}\right) \ \theta=\theta-v_{t}\end{array}<br>$$<br>利用动量调整网络下一步迭代的方向。</p><p> NAG 会先在前一步的累积梯度上有一个大的跳跃，然后衡量一下梯度做一下修正，这种预期的更新可以避免我们走的太快。</p><h3 id="Adagrad"><a href="#Adagrad" class="headerlink" title="Adagrad"></a>Adagrad</h3><p>Adagrad在上面的基础上，改进了学习率，由于上诉的学习率无法自己调整，因此Adagrad通过累计梯度的方式，学习模型的学习率。<br>$$<br>\theta_{t+1, i}=\theta_{t, i}-\frac{\eta}{\sqrt{G_{t, i i}+\epsilon}} \cdot \nabla_{\theta} J\left(\theta_{i}\right)<br>$$<br>其中 $G_t$ 是个对角矩阵， (i,i) 元素就是 t 时刻参数 $θ_i$ 的梯度平方和。</p><p>我们累计每一次梯度的平方，接着让学习率除以它的开方。这个的作用是为了改变不同参数的学习率。假如一个参数的梯度一直很大，那么通过这个约束，它改变的就越少。假如一个参数的梯度一直很小，那么通过这个约束它，它变化的也就越快。</p><p>缺点是，随着梯度的累积，权重步长难免变得很小。</p><h3 id="adadelta"><a href="#adadelta" class="headerlink" title="adadelta"></a>adadelta</h3><p>adadelta使用梯度的均方根（先平方，在求平均，最后开方）作为分母，替代了所有t时刻的梯度平方，仅仅需要保留上一次的均方根和这一次的梯度值，减小了算法占用的空间。</p><p>相比于adagrad，分母使用了梯度平方的衰减平均值，公式如下：<br>$$<br>\Delta \theta_{t}=-\frac{\eta}{\sqrt{E\left[g^{2}\right]_{t}+\epsilon}}g_{t}<br>$$<br>其中：<br>$$<br>g_{t}=\nabla_{\theta} J\left(\theta\right)<br>$$<br>E的计算仅仅与上一次的E与这次的梯度有关：<br>$$<br>E\left[g^{2}\right]_{t}=\gamma E\left[g^{2}\right]_{t-1}+(1-\gamma) g_{t}^{2}<br>$$<br>更新公式为：<br>$$<br>\theta_t =\theta_{t-1} + \Delta \theta_{t-1}<br>$$<br>学习率初值为：RMS[Δθ]</p><h3 id="RMSprop"><a href="#RMSprop" class="headerlink" title="RMSprop"></a>RMSprop</h3><p>这个方法与adadelta类似，是hinton在课上提出来的，建议将E的超参数设置为0.9：<br>$$<br>\begin{array}{l}E\left[g^{2}\right]_{t}=0.9 E\left[g^{2}\right]_{t-1}+0.1 g_{t}^{2} \ \theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{E\left[g^{2}\right]_{t}+\epsilon}} g_{t}\end{array}<br>$$</p><h3 id="adam"><a href="#adam" class="headerlink" title="adam"></a>adam</h3><p>adam设计了一种新的参数自适应学习的方法，存储了梯度的平方等衰减值，更新公式如下：<br>$$<br>\begin{array}{l}m_{t}=\beta_{1} m_{t-1}+\left(1-\beta_{1}\right) g_{t} \ v_{t}=\beta_{2} v_{t-1}+\left(1-\beta_{2}\right) g_{t}^{2}\end{array}<br>$$<br>其中m，v初始化为0，初始化为0矫正检查之后即为：<br>$$<br>\begin{array}{l}\hat{m}_{t}=\frac{m_{t}}{1-\beta_{1}^{t}} \ \hat{v}_{t}=\frac{v_{t}}{1-\beta_{2}^{t}}\end{array}<br>$$<br>迭代公式如下：<br>$$<br>\theta_{t+1}=\theta_{t}-\frac{\eta}{\sqrt{\hat{v}_{t}}+\epsilon} \hat{m}_{t}<br>$$<br>即adam同时结合了momentum和adadelta的特点，对梯度和累积梯度做一个叠加。</p><p>参数设置为β1 ＝ 0.9，β2 ＝ 0.999，ϵ ＝ 10e−8。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>BGD方法是最基础的梯度下降方法，每次遍历整个数据集</p><p>SGD方法对单个样本计算梯度，速度快，但是容易陷入鞍点</p><p>MBGD方法采用小样本更新梯度，loss震荡比较平缓</p><p>Momentum方法采用前一个梯度方向作为动量，使得梯度快速下降，能够脱离鞍点</p><p>NAG在动量的基础上，加上对梯度方向上的调整</p><p>adagrad方法通过累积梯度平方对学习率进行调整</p><p>adadelta方法通过计算每一时刻梯度的平方和的根，通过动量的方式调整平方根，从而调整梯度</p><p>RMSprop在adadelta的基础上，设定了动量的参数，是adadelta的一种</p><p>adam使用一种结合动量和动态调节学习率的方法</p><p>如果数据是稀疏的，就用自适用方法，即 Adagrad, Adadelta, RMSprop, Adam（动态调节loss）</p><p>Adam 就是在 RMSprop 的基础上加了 bias-correction 和 momentum</p><p>随着梯度变的稀疏，Adam 比 RMSprop 效果会好。</p><p>整体来讲，Adam 是最好的选择。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文总结了常用的优化器，以及优化器的优缺点等。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="深度学习总结" scheme="https://wenhui-zhou.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>深度学习知识点总结1</title>
@@ -96,26 +116,6 @@
     </summary>
     
       <category term="深度学习" scheme="https://wenhui-zhou.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>LR 推导</title>
-    <link href="https://wenhui-zhou.github.io/2020/03/14/LR-%E6%8E%A8%E5%AF%BC/"/>
-    <id>https://wenhui-zhou.github.io/2020/03/14/LR-推导/</id>
-    <published>2020-03-14T15:57:51.000Z</published>
-    <updated>2020-03-14T16:42:48.396Z</updated>
-    
-    <content type="html"><![CDATA[<p>逻辑斯蒂回归是一种二分类模型，使用sigmoid函数判别函数，下面将详细讲一下逻辑回归的原理。</p><a id="more"></a><h3 id="逻辑回归函数"><a href="#逻辑回归函数" class="headerlink" title="逻辑回归函数"></a>逻辑回归函数</h3><ul><li>逻辑回归需要满足伯努利二次分布，即$h(\theta)$ 为正样本的概率，那么$1-h(\theta)$ 为负样本的概率。</li><li>样本分布相互独立，即求所有样本出现的概率可以通过连乘的形式得到。</li></ul><p><strong>sigmoid函数</strong><br>$$<br>h(\theta) = \frac{e^{wx}}{1+e^{wx}}<br>$$<br><strong>逻辑回归的损失函数：</strong></p><p>在一个二分类的数据中，一个事件发生的概率为：<br>$$<br>P(y | \boldsymbol{x})=\left{\begin{aligned} p, y &amp;=1 \ 1-p, y &amp;=0 \end{aligned}\right.<br>$$<br>为了方便计算将上式写成：<br>$$<br>P\left(y_{i} | \boldsymbol{x}_{i}\right)=p^{y_{i}}(1-p)^{1-y_{i}}<br>$$<br>当我们采集到一组数据，由于数据分布是相互独立的，因此联合的概率可以写成：<br>$$<br>\begin{aligned} P_{\breve{E}} &amp;=P\left(y_{1} | \boldsymbol{x}_{1}\right) P\left(y_{2} | \boldsymbol{x}_{2}\right) P\left(y_{3} | \boldsymbol{x}_{3}\right) \dots P\left(y_{N} | \boldsymbol{x}_{N}\right) \ &amp;=\prod_{n=1}^{N} p^{y_{n}}(1-p)^{1-y_{n}} \end{aligned}<br>$$<br>为了简化上面的式子，而不失去函数单调性，我们对函数取对数，得到：<br>$$<br>\begin{aligned} F(\boldsymbol{w})=\ln \left(P_{\breve{\mathbf{E}} \mathbf{h}}\right) &amp;=\ln \left(\prod_{n=1}^{N} p^{y_{n}}(1-p)^{1-y_{n}}\right) \ &amp;=\sum_{n=1}^{N} \ln \left(p^{y_{n}}(1-p)^{1-y_{n}}\right) \ &amp;=\sum_{n=1}^{N}\left(y_{n} \ln (p)+\left(1-y_{n}\right) \ln (1-p)\right) \end{aligned}<br>$$<br>其中p为sigmoid函数，可以发现上面实质加上负号就变成了交叉熵。</p><p><strong>逻辑回归函数的求导</strong></p><p>对于sigmoid函数，我们的求导如下：<br>$$<br>\begin{aligned} p^{\prime}=f^{\prime}(\boldsymbol{w}) &amp;=\left(\frac{1}{1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}}\right)^{\prime} \ &amp;=-\frac{1}{\left(1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}\right)^{2}} \cdot\left(1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}\right)^{\prime} \ &amp;=-\frac{1}{\left(1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}\right)^{2}} \cdot e^{-\boldsymbol{w}^{T} \boldsymbol{x}} \cdot\left(-\boldsymbol{w}^{T} \boldsymbol{x}\right)^{\prime} \ &amp;=-\frac{1}{\left(1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}\right)^{2}} \cdot e^{-\boldsymbol{w}^{T} \boldsymbol{x}} \cdot(-\boldsymbol{x}) \ &amp;=\frac{e^{-\boldsymbol{w}^{T} \boldsymbol{x}}}{\left(1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}\right)^{2}} \cdot \boldsymbol{x} \ &amp;=\frac{1}{1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}} \cdot \frac{e^{-\boldsymbol{w}^{T} \boldsymbol{x}}}{1+e^{-\boldsymbol{w}^{T} \boldsymbol{x}}} \cdot \boldsymbol{x} \ &amp;=p(1-p) \boldsymbol{x} \end{aligned}<br>$$<br>接下来对逻辑回归函数进行求导(求函数的最大似然)：<br>$$<br>\begin{aligned} \nabla F(\boldsymbol{w}) &amp;=\nabla\left(\sum_{n=1}^{N}\left(y_{n} \ln (p)+\left(1-y_{n}\right) \ln (1-p)\right)\right) \ &amp;=\sum\left(y_{n} \ln ^{\prime}(p)+\left(1-y_{n}\right) \ln ^{\prime}(1-p)\right) \ &amp;=\sum\left(\left(y_{n} \frac{1}{p} p^{\prime}\right)+\left(1-y_{n}\right) \frac{1}{1-p}(1-p)^{\prime}\right) \ &amp;=\sum_{n=1}\left(y_{n}(1-p) \boldsymbol{x}_{n}-\left(1-y_{n}\right) p \boldsymbol{x}_{n}\right) \ &amp;=\sum_{n=1}^{N}\left(y_{n}-p\right) \boldsymbol{x}_{n} \end{aligned}<br>$$<br><strong>SGD</strong></p><p>对参数进行更新，得到：<br>$$<br>\boldsymbol{w}_{t+1}=\boldsymbol{w}_{t}+\eta \nabla F(\boldsymbol{w})<br>$$</p><p>$$<br>\boldsymbol{w}_{t+1}= \boldsymbol{w}_{t} + \eta \sum_{n=1}^{N}\left(y_{n}-p\right) \boldsymbol{x}_{n}<br>$$</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;逻辑斯蒂回归是一种二分类模型，使用sigmoid函数判别函数，下面将详细讲一下逻辑回归的原理。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="机器学习" scheme="https://wenhui-zhou.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
     
   </entry>
