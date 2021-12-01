@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://wenhui-zhou.github.io/2020/01/01/2019%EF%BC%812020%EF%BC%81/</loc>
+    <lastmod>2021-12-01</lastmod>
+  </url>  <url>
     <loc>https://wenhui-zhou.github.io/2021/01/06/some-spark/</loc>
     <lastmod>2021-03-03</lastmod>
   </url>  <url>
@@ -132,9 +135,6 @@
   </url>  <url>
     <loc>https://wenhui-zhou.github.io/2020/01/09/cs224N-word-vector-I/</loc>
     <lastmod>2020-01-12</lastmod>
-  </url>  <url>
-    <loc>https://wenhui-zhou.github.io/2020/01/01/2019%EF%BC%812020%EF%BC%81/</loc>
-    <lastmod>2020-01-01</lastmod>
   </url>  <url>
     <loc>https://wenhui-zhou.github.io/2019/12/29/GPT/</loc>
     <lastmod>2019-12-29</lastmod>
